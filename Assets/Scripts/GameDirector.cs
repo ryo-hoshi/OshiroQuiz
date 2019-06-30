@@ -123,6 +123,8 @@ namespace QuizManagement
 						string idleTag = CharactorController.AnimationTag.Idle.ToString();
 						// アニメーションがアイドル状態になるまで待つ
 
+						// アニメーションが回答後にすぐに切り替わってないかもしれないので少し待つ
+						yield return new WaitForSeconds(0.5f);
 						string answerTag = CharactorController.AnimationTag.Answer.ToString();
 						if (charactorController.IsAnimation(answerTag)) {
 							yield return new WaitForSeconds(0.2f);
@@ -132,15 +134,15 @@ namespace QuizManagement
 						} else {
 							// 回答後のアニメーションが取得できないので頃合いを見て抜ける(合計2秒待つ)
 							Debug.Log("回答後のアニメーションが取得できないので頃合いを見て抜ける");
-							yield return new WaitForSeconds(2.0f);
+							yield return new WaitForSeconds(1.5f);
 						}
 						/*
 						while (charactorController.IsAnimation(idleTag) == false) {
 							yield return new WaitForSeconds(0.2f);
 						}
 						*/
-						// 回答後のアニメーション完了後の余韻
-						yield return new WaitForSeconds(0.5f);
+//						// 回答後のアニメーション完了後の余韻
+//						yield return new WaitForSeconds(0.2f);
 					}
 
 					// クイズ出題状態にする
@@ -260,17 +262,19 @@ namespace QuizManagement
 		private void buttonStateChange(int no) {
 			
 			if (no == 1) {
-				this.choice1.interactable = false;
-				this.choice2.enabled = false;
-				this.choice3.enabled = false;
-			} else if (no == 2) {
 				this.choice1.enabled = false;
 				this.choice2.interactable = false;
-				this.choice3.enabled = false;
-			} else if (no == 3) {
-				this.choice1.enabled = false;
+				this.choice3.interactable = false;
+			} else if (no == 2) {
+				this.choice1.interactable = false;
 				this.choice2.enabled = false;
 				this.choice3.interactable = false;
+			} else if (no == 3) {
+				this.choice1.interactable = false;
+				this.choice2.interactable = false;
+				this.choice3.enabled = false;
+
+				// 初期化
 			} else if (no == 0) {
 				this.choice1.enabled = true;
 				this.choice2.enabled = true;
@@ -324,7 +328,8 @@ namespace QuizManagement
 //			while (charactorController.IsAnswerAnimation()) {
 
 			// アニメーションが回答後にすぐに切り替わってないかもしれないので少し待つ
-			yield return new WaitForSeconds(0.4f);
+			yield return new WaitForSeconds(0.5f);
+
 			string answerTag = CharactorController.AnimationTag.Answer.ToString();
 			if (charactorController.IsAnimation(answerTag)) {
 				yield return new WaitForSeconds(0.2f);
@@ -334,11 +339,11 @@ namespace QuizManagement
 			} else {
 				// 回答後のアニメーションが取得できないので頃合いを見て抜ける(合計2秒待つ)
 				Debug.Log("回答後のアニメーションが取得できないので頃合いを見て抜ける");
-				yield return new WaitForSeconds(1.6f);
+				yield return new WaitForSeconds(1.5f);
 
 			}
-			// アニメーション完了後の余韻の待機
-			yield return new WaitForSeconds(0.5f);
+//			// アニメーション完了後の余韻の待機
+//			yield return new WaitForSeconds(0.2f);
 
 			SceneManager.LoadScene("ResultScene");
 		}

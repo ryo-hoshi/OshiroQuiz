@@ -107,9 +107,9 @@ namespace QuizManagement
 				quiz = new Quiz(quizeData[1], quizeData[2], quizeData[3], quizeData[4], quizeData[5]);
 
 			} catch (Exception e){
-				Debug.LogError("クイズの作成失敗");
-				Debug.LogError(e.Message);
-				Debug.LogError(e.StackTrace);
+				Debug.LogWarning("クイズの作成失敗");
+				Debug.LogWarning(e.Message);
+				Debug.LogWarning(e.StackTrace);
 			}
 
 			return quiz;

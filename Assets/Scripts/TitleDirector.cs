@@ -68,7 +68,7 @@ namespace QuizManagement
 				yield return new WaitForSeconds(1.0f);
 			//				yield return null;
 //			}
-			SceneManager.LoadScene("GameScene");	
+			SceneManager.LoadScene("GameScene");
 		}
 	}
 }

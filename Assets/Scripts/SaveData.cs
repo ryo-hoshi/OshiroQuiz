@@ -17,7 +17,7 @@ namespace QuizManagement
 		{
 			return new StatusInfo(
 				PlayerPrefs.GetInt(quizRankStar, 0),
-				PlayerPrefs.GetInt(quizRank, 0),
+				PlayerPrefs.GetInt(quizRank, 1),
 				PlayerPrefs.GetInt(quizRankExp, 0),
 				PlayerPrefs.GetString(quizCareerName, StatusController.ASHIGARU),
 				PlayerPrefs.GetInt(quizCareerExp, 0)

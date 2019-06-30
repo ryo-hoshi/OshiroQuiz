@@ -25,12 +25,19 @@ namespace QuizManagement
 		public const string ASHIGARU_KUMIGASHIRA = "足軽組頭";
 		public const string ASHIGARU = "足軽";
 
+		private const int RANK_CALC_INIT = 5;
+		private const int RANK_CALC_STAR_ADD = 15;
+		private const int RANK_CALC_STEP = 7;
+
 		private int nowRankStar;
 		private int nowRank;
 		private int nowRankExp;
 
 		private string nowCareer;
 		private int nowCareerExp;
+
+		private int nextRankUpExp;
+		private int nextCarrerUpExp = 5000;	// ダミー
 
 		SaveData saveData = new SaveData();
 
@@ -46,6 +53,13 @@ namespace QuizManagement
 			this.nowRankExp = statusInfo.RankExp;
 			this.nowCareer = statusInfo.Career;
 			this.nowCareerExp = statusInfo.CareerExp;
+
+			Debug.LogWarning("現在のステータス情報ロード直後");
+			Debug.LogWarning("nowRankStar:" + this.nowRankStar);
+			Debug.LogWarning("nowRank:" + this.nowRank);
+			Debug.LogWarning("nowRankExp:" + this.nowRankExp);
+			Debug.LogWarning("nowCareer:" + this.nowCareer);
+			Debug.LogWarning("nowCareerExp:" + this.nowCareerExp);
 		}
 
 
@@ -53,6 +67,12 @@ namespace QuizManagement
 		public void StatusUpdate(int correctNum) {
 			// ステータス情報を取得
 			loadStatus();
+
+			// 次のランクアップに必要な経験値
+			this.nextRankUpExp = RANK_CALC_INIT + (this.nowRankStar * RANK_CALC_STAR_ADD) + (this.nowRank / RANK_CALC_STEP);
+
+			bukupBeforeStatus();
+
 
 //			Result statusResult;
 //			Result careerResult = Result.STAY;
@@ -81,31 +101,41 @@ namespace QuizManagement
 			*/
 
 			saveData.SaveStatusInfo(this.nowRankStar, this.nowRank, this.nowRankExp, this.nowCareer, this.nowCareerExp);
+
+			bukupAfterStatus();
+
+			Debug.LogWarning("ステータス更新完了時");
+			Debug.LogWarning("nowRankStar:" + this.nowRankStar);
+			Debug.LogWarning("nowRank:" + this.nowRank);
+			Debug.LogWarning("nowRankExp:" + this.nowRankExp);
+			Debug.LogWarning("nowCareer:" + this.nowCareer);
+			Debug.LogWarning("nowCareerExp:" + this.nowCareerExp);
 		}
 
 		private void rankUpdate(int correctNum) {
 //			Result rankResult;
 
-			// ランクアップに必要な経験値
-			int nextRankUpExp = 5 + (nowRankStar * 15) + (nowRank / 7);
 			// 現在の経験値と今回獲得分の合計
-			int rankExpSum = nowRankExp + correctNum;
+			int rankExpSum = this.nowRankExp + correctNum;
 
 			// ランクアップ
-			if (nextRankUpExp <= rankExpSum) {
+			if (this.nextRankUpExp <= rankExpSum) {
 
-				if (nowRank < 99) {
-					nowRank++;
+				if (this.nowRank < 99) {
+					this.nowRank++;
 				} else {
-					nowRankStar++;
-					nowRank = 1;
+					this.nowRankStar++;
+					this.nowRank = 1;
 				}
 
-				nowRankExp = rankExpSum - nextRankUpExp;
+				this.nowRankExp = rankExpSum - this.nextRankUpExp;
 //				rankResult = Result.RankUp;
 				GamePlayInfo.QuizResult = GamePlayInfo.Result.RankUp;
+
+				// 次のランクアップに必要な経験値（ランクアップ後の経験値のパーセント算出用）
+				this.nextRankUpExp = RANK_CALC_INIT + (this.nowRankStar * RANK_CALC_STAR_ADD) + (this.nowRank / RANK_CALC_STEP);
 			} else {
-				nowRankExp = rankExpSum;
+				this.nowRankExp = rankExpSum;
 //				rankResult = Result.STAY;
 				GamePlayInfo.QuizResult = GamePlayInfo.Result.STAY;
 			}
@@ -166,6 +196,22 @@ namespace QuizManagement
 */
 //			careerResult = Result.STAY;
 //			return careerResult;
+		}
+
+		private void bukupBeforeStatus() {
+			GamePlayInfo.BeforeRankStar = this.nowRankStar;
+			GamePlayInfo.BeforeRank = this.nowRank;
+			GamePlayInfo.BeforeRankExpMeter = (float)Math.Round((float)this.nowRankExp / this.nextRankUpExp, 2, MidpointRounding.AwayFromZero);
+			GamePlayInfo.BeforeCareer = this.nowCareer;
+			GamePlayInfo.BeforeCareerExpMeter = (float)Math.Round((float)this.nowCareerExp / this.nextCarrerUpExp, 2, MidpointRounding.AwayFromZero);
+		}
+
+		private void bukupAfterStatus() {
+			GamePlayInfo.AfterRankStar = this.nowRankStar;
+			GamePlayInfo.AfterRank = this.nowRank;
+			GamePlayInfo.AfterRankExpMeter = (float)Math.Round((float)this.nowRankExp / this.nextRankUpExp, 2, MidpointRounding.AwayFromZero);				
+			GamePlayInfo.AfterCareer = this.nowCareer;
+			GamePlayInfo.AfterCareerExpMeter = (float)Math.Round((float)this.nowCareerExp / this.nextCarrerUpExp, 2, MidpointRounding.AwayFromZero);
 		}
 		/*
 		public enum Result
