@@ -35,6 +35,14 @@ namespace QuizManagement
 			PlayerPrefs.Save();
 		}
 
+		public void ClearStatusInfo()
+		{
+			// TODO 定数から取得
+			SaveStatusInfo(0, 1, 0, "足軽", 0);
+
+			PlayerPrefs.Save();
+		}
+
 		/*
 		public void SaveCareerData(string career, int exp)
 		{

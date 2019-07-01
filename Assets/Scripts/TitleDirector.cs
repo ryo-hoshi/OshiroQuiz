@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+//using UnityEditor;
 
 namespace QuizManagement
 {
@@ -10,8 +11,11 @@ namespace QuizManagement
 	{
 //		[SerializeField]
 //		private Text careerText;
+//		[SerializeField]
+//		private Text startText;
+
 		[SerializeField]
-		private Text startText;
+		private Text dataClear;
 
 		private float loadGameSceneTime = 1.0f;
 		private int textBlinkSpeed = (int)TextBlinkType.Init;
@@ -25,12 +29,13 @@ namespace QuizManagement
 		// Start is called before the first frame update
 		void Start()
 		{
+			/*
 			SaveData saveData = new SaveData();
 
 			StatusInfo statusInfo = saveData.GetStatusInfo();
 			Debug.Log("出世経験値(Exp):"+statusInfo.CareerExp);
 			Debug.Log("身分(Career):"+statusInfo.Career);
-
+*/
 //			int currentExp = careerData.Exp;
 //			this.careerText.text = careerData.Career;
 
@@ -39,6 +44,7 @@ namespace QuizManagement
 		// Update is called once per frame
 		void Update()
 		{
+			/*
 			time += Time.deltaTime * textBlinkSpeed;
 
 			var textColor = startText.color;
@@ -51,11 +57,12 @@ namespace QuizManagement
 					StartCoroutine(loadGameScene());
 				}	
 			}
+			*/
 		}
 
 		private IEnumerator loadGameScene () {
 
-			this.textBlinkSpeed = (int)TextBlinkType.Load;
+//			this.textBlinkSpeed = (int)TextBlinkType.Load;
 
 //			while (time < loadGameSceneTime) {
 				
@@ -69,6 +76,19 @@ namespace QuizManagement
 			//				yield return null;
 //			}
 			SceneManager.LoadScene("GameScene");
+		}
+
+		public void DataClear() {
+
+//			if (EditorUtility.DisplayDialog("警告", "データをクリアしますか？", "OK", "CANCEL"))
+			//			{
+				SaveData saveData = new SaveData();
+				saveData.ClearStatusInfo();
+			//}
+		}
+
+		public void GameStart() {
+			StartCoroutine(loadGameScene());
 		}
 	}
 }

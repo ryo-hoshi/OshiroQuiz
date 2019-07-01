@@ -34,6 +34,9 @@ namespace QuizManagement
 		[SerializeField]
 		private Text correctAnswersText;
 
+		[SerializeField]
+		private Image timeLimitMeter;
+
 		private CharactorController charactorController;
 		//	private const int QUIZ_MAX_NUM = 8;
 		public const int QUIZ_MAX_NUM = 5;
@@ -52,6 +55,10 @@ namespace QuizManagement
 		private int correctAnswerNum = 0;
 
 		private bool isQuizEnd = false;
+
+		private const int TIME_OVER = 9;
+
+		private IEnumerator timeLimitCoroutine;
 
 //		private PlayQuizType playQuizType;
 
@@ -88,6 +95,8 @@ namespace QuizManagement
 
 			this.charactorController = this.charactor.GetComponent<CharactorController>(); 
 
+			timeLimitCoroutine = timeLimitCheck();
+
 			StartCoroutine(quizOutputCheck());
 //			this.resultPanel.SetActive(false);
 		}
@@ -111,6 +120,12 @@ namespace QuizManagement
 		}
 
 		private IEnumerator quizOutputCheck() {
+
+			// ゲーム画面表示後、問題を出題するまで少し待つ
+			if (this.quizOutputStatus == QuizOutputStatus.BeforeQuiz) {
+				yield return new WaitForSeconds(0.8f);
+			}
+
 			Debug.Log("クイズ出題判定");
 			// まだクイズ上限数まで出題していない
 			if (this.alreadyQuizNum < QUIZ_MAX_NUM) {
@@ -194,7 +209,7 @@ namespace QuizManagement
 				StartCoroutine(quizEnd());
 				return;
 			}
-			// ボタンの様態を初期化
+			// ボタンの状態を初期化
 			buttonStateChange(0);
 			this.questionText.text = currentQuiz.Question;
 //			this.choiceText1.text = currentQuiz.Choices[1];
@@ -221,10 +236,21 @@ namespace QuizManagement
 			// 回答待ち状態にする
 			this.quizOutputStatus = QuizOutputStatus.AnswerWait;
 
+			StartCoroutine(timeLimitCoroutine);
 		}
 
 		public void AnswerChoice(int choiceNo)
 		{
+			Debug.Log("回答時間制限オーバー");
+			if (choiceNo == TIME_OVER) {
+				this.charactorController.InCorrectAnswerTrigger();
+			} else {
+				StopCoroutine(timeLimitCoroutine);
+			}
+
+			// 再度実行できるように再取得する
+			timeLimitCoroutine = timeLimitCheck();
+
 			Debug.Log("回答ボタン押下！！！");
 //			Debug.Log("回答待ち状態かどうか: " + isAnswerWait);
 			Debug.Log("クイズ出題状況：" + quizOutputStatus.ToString());
@@ -256,6 +282,30 @@ namespace QuizManagement
 				}
 //				this.isAnswerWait = false;
 				StartCoroutine(quizOutputCheck());
+			}
+		}
+
+		/**
+		 * 時間制限チェック
+		 */
+		private IEnumerator timeLimitCheck() {
+			Debug.LogWarning("時間制限チェック開始");
+			float timeLimit = 10.0f;
+
+			while (true) {
+				timeLimit -= Time.deltaTime;
+
+				// 制限時間オーバー
+				if (timeLimit < 0.0f) {
+					
+					AnswerChoice(TIME_OVER);
+					yield break;
+				} else {
+					float meterVal = timeLimit / 10;
+					Debug.Log("時間制限メーター値：" + meterVal);
+					timeLimitMeter.fillAmount = meterVal;
+				}
+				yield return null;
 			}
 		}
 
