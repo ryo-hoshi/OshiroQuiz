@@ -14,12 +14,19 @@ namespace QuizManagement
 //		[SerializeField]
 //		private Text startText;
 
-		[SerializeField]
-		private Text dataClear;
+//		[SerializeField]
+		//		private Text dataClear;
 
 		private float loadGameSceneTime = 1.0f;
 		private int textBlinkSpeed = (int)TextBlinkType.Init;
 		private float time = 0.0f;
+
+		[SerializeField]
+		private InputField rankStarEdit;
+		[SerializeField]
+		private InputField rankEdit;
+		[SerializeField]
+		private InputField rankExpEdit;
 
 		enum TextBlinkType {
 			Init = 3,
@@ -38,7 +45,7 @@ namespace QuizManagement
 */
 //			int currentExp = careerData.Exp;
 //			this.careerText.text = careerData.Career;
-
+			outputStatusEdit();
 		}
 
 		// Update is called once per frame
@@ -84,11 +91,31 @@ namespace QuizManagement
 			//			{
 				SaveData saveData = new SaveData();
 				saveData.ClearStatusInfo();
+			Debug.Log("データクリア！");
+			outputStatusEdit();
 			//}
 		}
 
 		public void GameStart() {
 			StartCoroutine(loadGameScene());
+		}
+
+
+		public void StatusEdit() {
+			SaveData saveData = new SaveData();
+
+			saveData.SaveRankInfo(int.Parse(this.rankStarEdit.text), int.Parse(this.rankEdit.text), int.Parse(this.rankExpEdit.text));
+
+			outputStatusEdit();
+		}
+
+		private void outputStatusEdit() {
+			SaveData saveData = new SaveData();
+			StatusInfo statusInfo = saveData.GetStatusInfo();
+
+			this.rankStarEdit.text = statusInfo.RankStar.ToString();
+			this.rankEdit.text = statusInfo.Rank.ToString();
+			this.rankExpEdit.text = statusInfo.RankExp.ToString();
 		}
 	}
 }

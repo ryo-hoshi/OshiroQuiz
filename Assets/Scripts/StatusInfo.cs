@@ -4,7 +4,7 @@ namespace QuizManagement
 {
 	public class StatusInfo
     {
-		public StatusInfo(int rankStar, int rank, int rankExp, string career, int careerExp) {
+		public StatusInfo(int rankStar, int rank, int rankExp, int career, int careerExp) {
 			RankStar = rankStar;
 			Rank = rank;
 			RankExp = rankExp;
@@ -18,7 +18,7 @@ namespace QuizManagement
 
 		public int RankExp {get; private set;}
 
-		public string Career {get; private set;}
+		public int Career {get; private set;}
 
 		public int CareerExp {get; private set;}
 		/*

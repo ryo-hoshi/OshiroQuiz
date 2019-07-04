@@ -221,7 +221,7 @@ namespace QuizManagement
 
 			this.alreadyQuizNum++;
 
-			this.numberOfQuestionsText.text = "No：" + alreadyQuizNum + " / " + QUIZ_MAX_NUM;
+			this.numberOfQuestionsText.text = "出題数：" + alreadyQuizNum + " / " + QUIZ_MAX_NUM;
 
 			this.charactorController.Wait();
 

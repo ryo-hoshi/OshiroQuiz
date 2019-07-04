@@ -16,6 +16,18 @@ namespace QuizManagement
 		public const int ASHIGARU_DAISYOU_THRESHOLD = 11;
 		public const int ASHIGARU_KUMIGASHIRA_THRESHOLD = 5;
 
+		public enum Career {
+			大名 = 8,
+			城主 = 7,
+			城代 = 6,
+			家老 = 5,
+			侍大将 = 4,
+			足軽大将 = 3,
+			足軽組頭 = 2,
+			足軽 = 1,
+		}
+
+		/*
 		public const string DAIMYOU = "大名";
 		public const string JYOUSYU = "城主";
 		public const string JYOUDAI = "城代";
@@ -24,6 +36,7 @@ namespace QuizManagement
 		public const string ASHIGARU_DAISYOU = "足軽大将";
 		public const string ASHIGARU_KUMIGASHIRA = "足軽組頭";
 		public const string ASHIGARU = "足軽";
+		*/
 
 		private const int RANK_CALC_INIT = 5;
 		private const int RANK_CALC_STAR_ADD = 15;
@@ -33,7 +46,7 @@ namespace QuizManagement
 		private int nowRank;
 		private int nowRankExp;
 
-		private string nowCareer;
+		private int nowCareer;
 		private int nowCareerExp;
 
 		private int nextRankUpExp;

@@ -19,17 +19,26 @@ namespace QuizManagement
 				PlayerPrefs.GetInt(quizRankStar, 0),
 				PlayerPrefs.GetInt(quizRank, 1),
 				PlayerPrefs.GetInt(quizRankExp, 0),
-				PlayerPrefs.GetString(quizCareerName, StatusController.ASHIGARU),
+				PlayerPrefs.GetInt(quizCareerName, (int)StatusController.Career.足軽),
 				PlayerPrefs.GetInt(quizCareerExp, 0)
 			);
 		}
 
-		public void SaveStatusInfo(int rankStar, int rank, int rankExp, string careerName, int careerExp)
+		public void SaveRankInfo(int rankStar, int rank, int rankExp)
 		{
 			PlayerPrefs.SetInt(quizRankStar, rankStar);
 			PlayerPrefs.SetInt(quizRank, rank);
 			PlayerPrefs.SetInt(quizRankExp, rankExp);
-			PlayerPrefs.SetString(quizCareerName, careerName);
+
+			PlayerPrefs.Save();
+		}
+
+		public void SaveStatusInfo(int rankStar, int rank, int rankExp, int career, int careerExp)
+		{
+			PlayerPrefs.SetInt(quizRankStar, rankStar);
+			PlayerPrefs.SetInt(quizRank, rank);
+			PlayerPrefs.SetInt(quizRankExp, rankExp);
+			PlayerPrefs.SetInt(quizCareerName, career);
 			PlayerPrefs.SetInt(quizCareerExp, careerExp);
 
 			PlayerPrefs.Save();
@@ -38,7 +47,7 @@ namespace QuizManagement
 		public void ClearStatusInfo()
 		{
 			// TODO 定数から取得
-			SaveStatusInfo(0, 1, 0, "足軽", 0);
+			SaveStatusInfo(0, 1, 0, (int)StatusController.Career.足軽, 0);
 
 			PlayerPrefs.Save();
 		}
