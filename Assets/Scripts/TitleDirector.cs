@@ -28,6 +28,9 @@ namespace QuizManagement
 		[SerializeField]
 		private InputField rankExpEdit;
 
+//		[SerializeField]
+//		private Text testText;
+
 		enum TextBlinkType {
 			Init = 3,
 			Load = 12,
@@ -46,6 +49,8 @@ namespace QuizManagement
 //			int currentExp = careerData.Exp;
 //			this.careerText.text = careerData.Career;
 			outputStatusEdit();
+
+//			StartCoroutine(GetText());
 		}
 
 		// Update is called once per frame
@@ -66,6 +71,32 @@ namespace QuizManagement
 			}
 			*/
 		}
+		/*
+		IEnumerator GetText() {
+			Debug.Log("API実行");
+			UnityWebRequest request = UnityWebRequest.Get("https://us-central1-oshiroquiz.cloudfunctions.net/hello");
+			// リクエスト送信
+			yield return request.Send();
+
+			// 通信エラーチェック
+			if (request.isHttpError) {
+				Debug.Log("■API結果がエラー:"+request.error);
+			} else {
+				if (request.responseCode == 200) {
+					// UTF8文字列として取得する
+					string text = request.downloadHandler.text;
+					Debug.Log("■API結果のtext:"+text);
+					testText.text = text;
+
+					// バイナリデータとして取得する
+					byte[] results = request.downloadHandler.data;
+					foreach(byte a in results) {
+						Debug.Log("■API結果のbyte:"+a);
+					}
+				}
+			}
+		}
+		*/
 
 		private IEnumerator loadGameScene () {
 

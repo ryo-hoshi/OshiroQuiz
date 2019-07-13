@@ -6,6 +6,7 @@ using System.IO;
 using System;
 using System.Text.RegularExpressions;
 using UnityEngine.SceneManagement;
+using QuizManagement.Api;
 
 namespace QuizManagement
 {
@@ -60,6 +61,15 @@ namespace QuizManagement
 
 		private IEnumerator timeLimitCoroutine;
 
+		[SerializeField]
+		private GameObject api;
+		private ApiController apiController;
+
+		[SerializeField]
+		private GameObject gameUIPanel;
+		[SerializeField]
+		private GameObject selectUIPanel;
+
 //		private PlayQuizType playQuizType;
 
 //		private bool isResultEnd = false;
@@ -84,10 +94,13 @@ namespace QuizManagement
 		// Start is called before the first frame update
 		void Start()
 		{
+			this.selectUIPanel.SetActive(true);
+			this.gameUIPanel.SetActive(false);
+
 			//        this.questionText = GameObject.Find("Question");
 			// クイズ情報ロード
 			quizMaker = new QuizMaker();
-			quizMaker.LoadQuizData();
+			quizMaker.RankQuizDataLoad();
 
 			// とりあえずデフォルトでレギュラークイズを行う
 //			playQuizType = PlayQuizType.RegularQuiz;
@@ -95,10 +108,14 @@ namespace QuizManagement
 
 			this.charactorController = this.charactor.GetComponent<CharactorController>(); 
 
+			this.apiController = this.api.GetComponent<ApiController>(); 
+
 			timeLimitCoroutine = timeLimitCheck();
 
 			StartCoroutine(quizOutputCheck());
 //			this.resultPanel.SetActive(false);
+
+			StartCoroutine(this.apiController.CareerQuizLoad());
 		}
 
 		// Update is called once per frame
@@ -117,6 +134,14 @@ namespace QuizManagement
 				}
 			}
 			*/
+		}
+
+		public void SelectQuizType(int quizType) {
+			this.selectUIPanel.SetActive(false);
+			this.gameUIPanel.SetActive(true);
+
+
+
 		}
 
 		private IEnumerator quizOutputCheck() {
@@ -239,6 +264,9 @@ namespace QuizManagement
 			StartCoroutine(timeLimitCoroutine);
 		}
 
+		/**
+		 * 回答
+		 */
 		public void AnswerChoice(int choiceNo)
 		{
 			Debug.Log("回答時間制限オーバー");
@@ -290,7 +318,7 @@ namespace QuizManagement
 		 */
 		private IEnumerator timeLimitCheck() {
 			Debug.LogWarning("時間制限チェック開始");
-			float timeLimit = 10.0f;
+			float timeLimit = 15.0f;
 
 			while (true) {
 				timeLimit -= Time.deltaTime;
@@ -301,7 +329,8 @@ namespace QuizManagement
 					AnswerChoice(TIME_OVER);
 					yield break;
 				} else {
-					float meterVal = timeLimit / 10;
+					// FillAmountが0-1なのでその中に納まるように調整
+					float meterVal = timeLimit / 15;
 					Debug.Log("時間制限メーター値：" + meterVal);
 					timeLimitMeter.fillAmount = meterVal;
 				}

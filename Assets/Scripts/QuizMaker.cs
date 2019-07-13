@@ -31,6 +31,7 @@ namespace QuizManagement
 			(int)QuestionType.MEAN_QUIZ
 		};
 */
+		// 出題対象となるクイズの種別
 		private int[] allQuestionType = {1,2,3,4,5};
 
 		// 出題済クイズタイプ
@@ -48,7 +49,7 @@ namespace QuizManagement
 //			this.csvQuizDatas = new List<string[]>();
 		//		}
 
-		public void LoadQuizData() {
+		public void RankQuizDataLoad() {
 
 			// Resouces配下のCSV読み込み
 			TextAsset csvFile = Resources.Load("QuizData") as TextAsset;
@@ -76,7 +77,6 @@ namespace QuizManagement
 					};
 					allQuizDatas.Add(type, quizData);
 				}
-
 			}
 		}
 
@@ -95,7 +95,7 @@ namespace QuizManagement
 			Quiz quiz = null;
 
 			try{
-				// TODO typeをランダムに選択する
+				// 次のクイズのtypeをランダムに選択する
 				int selectType = nextQuestionType();
 
 				List<string[]> selectTypeQuizs = this.allQuizDatas[selectType];
@@ -104,9 +104,13 @@ namespace QuizManagement
 
 				string[] quizeData = selectTypeQuizs[index];
 
-				quiz = new Quiz(quizeData[1], quizeData[2], quizeData[3], quizeData[4], quizeData[5]);
+				quiz = new Quiz(quizeData[COL_QUESTION], 
+					quizeData[COL_CHOICE_1], 
+					quizeData[COL_CHOICE_2], 
+					quizeData[COL_CHOICE_3], 
+					quizeData[COL_ANSWER]);
 
-			} catch (Exception e){
+			} catch (Exception e) {
 				Debug.LogWarning("クイズの作成失敗");
 				Debug.LogWarning(e.Message);
 				Debug.LogWarning(e.StackTrace);
@@ -120,8 +124,9 @@ namespace QuizManagement
 		 */
 		private int nextQuestionType() {
 			Debug.Log("◆◆◆nextQuestionType◆◆◆");
+			// 全クイズ種別と出題済クイズ種別との差集合を取得
 			List<int> restTypeList = this.allQuestionType.Except(alreadyQuestionType).ToList();
-
+			// 種別を確定するためにListのインデックスを取得
 			int index = (int)UnityEngine.Random.Range(0, restTypeList.Count);
 
 			Debug.Log("全クイズ種類(allQuestionType.Length）: "+allQuestionType.Length);

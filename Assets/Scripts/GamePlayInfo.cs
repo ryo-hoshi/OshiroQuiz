@@ -29,8 +29,8 @@ namespace QuizManagement
 
 		public enum QuizType
 		{
-			RegularQuiz,
-			CareerQuiz
+			RegularQuiz = 1,
+			CareerQuiz = 2
 		}
     }
 }
