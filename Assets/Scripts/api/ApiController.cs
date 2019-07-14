@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
+using QuizManagement;
 
 namespace QuizManagement.Api
 {
@@ -25,7 +26,7 @@ namespace QuizManagement.Api
 		}
 
 
-		public IEnumerator CareerQuizLoad() {
+		public IEnumerator CareerQuizLoad(CareerQuizMaker quizMaker) {
 			Debug.Log("■CareerQuizLoad API実行");
 			UnityWebRequest request = UnityWebRequest.Get(QUIZ_LOAD_URL);
 			// リクエスト送信
@@ -40,13 +41,19 @@ namespace QuizManagement.Api
 				Debug.Log("・API結果のtext:"+text);
 				//testText.text = text;
 
-				CareerQuiz careerQuizData = JsonUtility.FromJson<CareerQuiz>(text);
+				CareerQuizData loadCareerQuizData = JsonUtility.FromJson<CareerQuizData>(text);
 
-				if (careerQuizData == null) {
+				if (loadCareerQuizData == null) {
 					Debug.Log("・レスポンスがNULL");
 				} else {
-					Debug.Log("・レスポンスのサイズ：" + careerQuizData.value.Count);
-					Debug.Log("・レスポンスの値：" + careerQuizData.value[0].question);
+					Debug.Log("・レスポンスのサイズ：" + loadCareerQuizData.value.Count);
+
+					Dictionary<int, CareerLoadData> careerQuizDatas = new Dictionary<int, CareerLoadData>();
+					for (int i = 0; i < loadCareerQuizData.value.Count; i++) {
+						careerQuizDatas.Add(loadCareerQuizData.value[i].type, loadCareerQuizData.value[i]);
+					}
+
+					quizMaker.SetCareerQuizDatas(careerQuizDatas);
 				}
 			}
 		}

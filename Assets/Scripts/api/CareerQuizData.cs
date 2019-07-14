@@ -5,7 +5,7 @@ using UnityEngine;
 namespace QuizManagement.Api
 {
 	[System.Serializable]
-	public class CareerQuiz
+	public class CareerQuizData
     {
 		public List<CareerLoadData> value;
 

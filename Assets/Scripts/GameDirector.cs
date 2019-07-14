@@ -97,25 +97,10 @@ namespace QuizManagement
 			this.selectUIPanel.SetActive(true);
 			this.gameUIPanel.SetActive(false);
 
-			//        this.questionText = GameObject.Find("Question");
-			// クイズ情報ロード
-			quizMaker = new QuizMaker();
-			quizMaker.RankQuizDataLoad();
-
-			// とりあえずデフォルトでレギュラークイズを行う
-//			playQuizType = PlayQuizType.RegularQuiz;
-			GamePlayInfo.PlayQuizType = GamePlayInfo.QuizType.RegularQuiz;
-
 			this.charactorController = this.charactor.GetComponent<CharactorController>(); 
-
 			this.apiController = this.api.GetComponent<ApiController>(); 
+			this.timeLimitCoroutine = timeLimitCheck();
 
-			timeLimitCoroutine = timeLimitCheck();
-
-			StartCoroutine(quizOutputCheck());
-//			this.resultPanel.SetActive(false);
-
-			StartCoroutine(this.apiController.CareerQuizLoad());
 		}
 
 		// Update is called once per frame
@@ -136,20 +121,55 @@ namespace QuizManagement
 			*/
 		}
 
-		public void SelectQuizType(int quizType) {
+		/**
+		 * クイズ種類選択
+		 */
+		public void SelectQuizType(int selectType) {
+			// パネルを切り替え
 			this.selectUIPanel.SetActive(false);
 			this.gameUIPanel.SetActive(true);
 
+			// 選択したクイズ種類を設定
+			if ((int)GamePlayInfo.QuizType.RegularQuiz == selectType) {
+				// レギュラークイズ
+				GamePlayInfo.PlayQuizType = GamePlayInfo.QuizType.RegularQuiz;
+				quizMaker = new RegularQuizMaker();
 
+				// クイズ情報ロード
+				((RegularQuizMaker)quizMaker).QuizDataLoad();
+
+			} else {
+				// 身分クイズ
+				GamePlayInfo.PlayQuizType = GamePlayInfo.QuizType.CareerQuiz;
+				quizMaker = new CareerQuizMaker();
+
+				// クイズ情報ロード
+				StartCoroutine(this.apiController.CareerQuizLoad((CareerQuizMaker)quizMaker));
+			}
+
+			StartCoroutine(quizOutputCheck());
 
 		}
 
 		private IEnumerator quizOutputCheck() {
 
-			// ゲーム画面表示後、問題を出題するまで少し待つ
+			// 演出としてゲーム画面表示後、問題を出題するまで少し待つ
 			if (this.quizOutputStatus == QuizOutputStatus.BeforeQuiz) {
-				yield return new WaitForSeconds(0.8f);
+
+				while (true) {
+					yield return new WaitForSeconds(0.5f);
+
+					if (quizMaker.IsLoadComplete()) {
+						break;
+					}
+				}
+
+				//TODO 初回はクイズスタート！のような文言を出したい
+				yield return new WaitForSeconds(0.5f);
 			}
+
+
+
 
 			Debug.Log("クイズ出題判定");
 			// まだクイズ上限数まで出題していない

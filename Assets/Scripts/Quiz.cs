@@ -19,7 +19,7 @@ namespace QuizManagement
         /**
          * 問題情報の生成
          */
-		public Quiz(string question, string choice1, string choice2, string choice3, string answer) 
+		public Quiz(string question, string choice1, string choice2, string choice3, int answer) 
         {
             Question = question;
 
@@ -30,7 +30,7 @@ namespace QuizManagement
                 {3, choice3}
             };
 
-			Answer = int.Parse(answer);
+			Answer = answer;
         }
     }
 }
