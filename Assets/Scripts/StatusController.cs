@@ -17,9 +17,8 @@ namespace QuizManagement
 		public const int ASHIGARU_KUMIGASHIRA_THRESHOLD = 5;
 
 		public enum Career {
-			大名 = 8,
-			城主 = 7,
-			城代 = 6,
+			大名 = 7,
+			宿老 = 6,
 			家老 = 5,
 			侍大将 = 4,
 			足軽大将 = 3,
@@ -113,9 +112,15 @@ namespace QuizManagement
 			return statusResult;
 			*/
 
-			saveData.SaveStatusInfo(this.nowRankStar, this.nowRank, this.nowRankExp, this.nowCareer, this.nowCareerExp);
-
 			bukupAfterStatus();
+
+			saveData.SaveStatusInfo(this.nowRankStar, 
+				this.nowRank, 
+				this.nowRankExp, 
+				GamePlayInfo.AfterRankExpMeter, 
+				this.nowCareer, 
+				this.nowCareerExp, 
+				GamePlayInfo.AfterCareerExpMeter);
 
 			Debug.LogWarning("ステータス更新完了時");
 			Debug.LogWarning("nowRankStar:" + this.nowRankStar);

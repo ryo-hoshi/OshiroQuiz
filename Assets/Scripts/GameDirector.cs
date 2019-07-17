@@ -16,21 +16,19 @@ namespace QuizManagement
 		private Text questionText;
 		[SerializeField]
 		private Button choice1;
-//		private Text choiceText1;
+
 		[SerializeField]
 		private Button choice2;
-//		private Text choiceText2;
+
 		[SerializeField]
 		private Button choice3;
-//		private Text choiceText3;
+
 		[SerializeField]
 		private GameObject charactor;
 		[SerializeField]
 		private Text numberOfQuestionsText;
 		[SerializeField]
 		private Text timeLimitText;
-//		[SerializeField]
-		//		private GameObject resultPanel;
 
 		[SerializeField]
 		private Text correctAnswersText;
@@ -39,11 +37,8 @@ namespace QuizManagement
 		private Image timeLimitMeter;
 
 		private CharactorController charactorController;
-		//	private const int QUIZ_MAX_NUM = 8;
 		public const int QUIZ_MAX_NUM = 5;
 
-		//	private TextAsset csvFile;
-		private List<string[]> csvDatas = new List<string[]>();
 		private QuizMaker quizMaker;
 		private Quiz currentQuiz;
 
@@ -69,17 +64,13 @@ namespace QuizManagement
 		private GameObject gameUIPanel;
 		[SerializeField]
 		private GameObject selectUIPanel;
+		[SerializeField]
+		private GameObject questionPanel;
+		[SerializeField]
+		private GameObject statusPanel;
+		private StatusPanelController statusPanelController;
 
-//		private PlayQuizType playQuizType;
-
-//		private bool isResultEnd = false;
-/*
-		public enum PlayQuizType
-		{
-			RegularQuiz,
-			CareerQuiz
-		}
-*/
+		// クイズ出題状態の初期化
 		private QuizOutputStatus quizOutputStatus = QuizOutputStatus.BeforeQuiz;
 
 		public enum QuizOutputStatus
@@ -95,30 +86,34 @@ namespace QuizManagement
 		void Start()
 		{
 			this.selectUIPanel.SetActive(true);
+			this.statusPanel.SetActive(true);
 			this.gameUIPanel.SetActive(false);
+			this.questionPanel.SetActive(false);
 
 			this.charactorController = this.charactor.GetComponent<CharactorController>(); 
 			this.apiController = this.api.GetComponent<ApiController>(); 
 			this.timeLimitCoroutine = timeLimitCheck();
 
+			this.statusPanelController = this.statusPanel.GetComponent<StatusPanelController>(); 
+
+			statusOutput();
 		}
 
 		// Update is called once per frame
 		void Update()
 		{
-//			if (this.isQuizEnd == false) {
-			/*
-			if (this.quizOutputStatus != QuizOutputStatus.QuizEnd) {
-				StartCoroutine(quizOutputCheck());
-			}
-			*/
-			/*
-			if (this.isResultEnd && charactorController.IsTransitionPossible()) {
-				if (Input.GetMouseButtonDown(0)) {
-					SceneManager.LoadScene("TitleScene");
-				}
-			}
-			*/
+		}
+
+
+		private void statusOutput() {
+			SaveData saveData = new SaveData();
+			StatusInfo statusInfo = saveData.GetStatusInfo();
+
+			statusPanelController.StatusOutput(statusInfo.RankStar, 
+				statusInfo.Rank, 
+				statusInfo.RankMeter, 
+				statusInfo.Career, 
+				statusInfo.CareerMeter);
 		}
 
 		/**
@@ -127,7 +122,9 @@ namespace QuizManagement
 		public void SelectQuizType(int selectType) {
 			// パネルを切り替え
 			this.selectUIPanel.SetActive(false);
+			this.statusPanel.SetActive(false);
 			this.gameUIPanel.SetActive(true);
+			this.questionPanel.SetActive(true);
 
 			// 選択したクイズ種類を設定
 			if ((int)GamePlayInfo.QuizType.RegularQuiz == selectType) {
@@ -147,10 +144,13 @@ namespace QuizManagement
 				StartCoroutine(this.apiController.CareerQuizLoad((CareerQuizMaker)quizMaker));
 			}
 
+			// 出題状況チェックしてクイズを作成
 			StartCoroutine(quizOutputCheck());
-
 		}
 
+		/**
+		 * クイズ出題状況をチェックして出題可能ならクイズを作成
+		 */
 		private IEnumerator quizOutputCheck() {
 
 			// 演出としてゲーム画面表示後、問題を出題するまで少し待つ
@@ -169,13 +169,10 @@ namespace QuizManagement
 			}
 
 
-
-
 			Debug.Log("クイズ出題判定");
 			// まだクイズ上限数まで出題していない
 			if (this.alreadyQuizNum < QUIZ_MAX_NUM) {
 				// 回答待ち状態ではない
-//				if (this.isAnswerWait == false) 
 				if (this.quizOutputStatus == QuizOutputStatus.BeforeQuiz
 					|| this.quizOutputStatus == QuizOutputStatus.PossibleOutput) {
 
@@ -196,18 +193,7 @@ namespace QuizManagement
 							Debug.Log("回答後のアニメーションが取得できないので頃合いを見て抜ける");
 							yield return new WaitForSeconds(1.5f);
 						}
-						/*
-						while (charactorController.IsAnimation(idleTag) == false) {
-							yield return new WaitForSeconds(0.2f);
-						}
-						*/
-//						// 回答後のアニメーション完了後の余韻
-//						yield return new WaitForSeconds(0.2f);
 					}
-
-					// クイズ出題状態にする
-					//this.isAnswerWait = true;
-//					this.quizOutputStatus = QuizOutputStatus.QuizOutput;
 
 					// クイズ出題
 					this.quizOutput();
@@ -215,30 +201,8 @@ namespace QuizManagement
 			} else {
 				Debug.Log("クイズは終了です！！！");
 				StartCoroutine(quizEnd());
-//				this.isQuizEnd = true;
 				this.quizOutputStatus = QuizOutputStatus.QuizEnd;
 			}
-
-			/*
-			if (this.isAnswerWait == false) 
-			{
-				//				this.isAnswerWait = true;
-				if (this.alreadyQuizNum < QUIZ_MAX_NUM)
-				{
-					this.quizOutput();
-					this.isAnswerWait = true;
-				} else 
-				{
-					Debug.Log("クイズは終了です！！！");
-
-					//					this.changeUi();
-					// TODOゲームを終了してリザルト画面に遷移する
-					// クイズ終了処理
-					StartCoroutine(quizEnd());
-					this.isQuizEnd = true;
-				}
-			}
-			*/
 		}
 
 		/**
@@ -249,7 +213,6 @@ namespace QuizManagement
 			this.currentQuiz = quizMaker.CreateQuiz();
 
 			if (currentQuiz == null) {
-//				UnityEditor.EditorUtility.DisplayDialog("エラー", "クイズの作成に失敗しました", "OK");
 				Debug.Log("クイズの作成に失敗しました！！！");
 				StartCoroutine(quizEnd());
 				return;
@@ -257,9 +220,6 @@ namespace QuizManagement
 			// ボタンの状態を初期化
 			buttonStateChange(0);
 			this.questionText.text = currentQuiz.Question;
-//			this.choiceText1.text = currentQuiz.Choices[1];
-//			this.choiceText2.text = currentQuiz.Choices[2];
-//			this.choiceText3.text = currentQuiz.Choices[3];
 			this.choice1.GetComponentInChildren<Text>().text = currentQuiz.Choices[1];
 			this.choice2.GetComponentInChildren<Text>().text = currentQuiz.Choices[2];
 			this.choice3.GetComponentInChildren<Text>().text = currentQuiz.Choices[3];
@@ -271,7 +231,6 @@ namespace QuizManagement
 			this.charactorController.Wait();
 
 			Debug.Log("クイズ出題！！！");
-//			Debug.Log("回答待ち状態かどうか: " + isAnswerWait);
 			Debug.Log("クイズ出題状況：" + quizOutputStatus.ToString());
 			Debug.Log("クイズ出題数: " + alreadyQuizNum);
 			Debug.Log("クイズ最大数: " + QUIZ_MAX_NUM);
@@ -300,11 +259,9 @@ namespace QuizManagement
 			timeLimitCoroutine = timeLimitCheck();
 
 			Debug.Log("回答ボタン押下！！！");
-//			Debug.Log("回答待ち状態かどうか: " + isAnswerWait);
 			Debug.Log("クイズ出題状況：" + quizOutputStatus.ToString());
 			Debug.Log("クイズ出題数: " + alreadyQuizNum);
 			Debug.Log("クイズ最大数: " + QUIZ_MAX_NUM);
-//			if (this.isAnswerWait && alreadyQuizNum <= QUIZ_MAX_NUM)
 			if (this.quizOutputStatus == QuizOutputStatus.AnswerWait 
 				&& alreadyQuizNum <= QUIZ_MAX_NUM) {
 
@@ -328,7 +285,7 @@ namespace QuizManagement
 					this.charactorController.InCorrectAnswerTrigger();
 
 				}
-//				this.isAnswerWait = false;
+				// 出題状況チェックしてクイズを作成
 				StartCoroutine(quizOutputCheck());
 			}
 		}
@@ -385,50 +342,16 @@ namespace QuizManagement
 		}
 
 		private IEnumerator quizEnd() {
-
-//			charactorController.ResultTrigger();
-//			Debug.Log("結果アニメーション！");
-//			long resultWait = 0.0f;
-			/*
-			while (true) {
-				// 結果アニメーションで待機
-				if (charactorController.IsResultAnimation()) {
-//					Debug.Log("WaitForSecond 0.1");
-//					resultWait += Time.deltaTime;
-//					yield return null;
-					yield return new WaitForSeconds(2.0f);
-					Debug.Log("wwhile 抜ける");
-					break;
-				} else {
-					yield return new WaitForSeconds(0.1f);
-				}
-			}
-			*/
+			
 
 			// ##### クイズ完了後のステータス更新 #####
-//			int correctDiff = (this.correctAnswerNum * 2) - QUIZ_MAX_NUM;
 			StatusController statusController = new StatusController();
-			//StatusController.Result statusResult = statusController.StatusUpdate(correctAnswerNum, playQuizType);
 			statusController.StatusUpdate(correctAnswerNum);
-			/*
-			// ランク上下の時のアニメーション
-//			if (GamePlayInfo.Result.RankUp == statusResult) {
-			if (GamePlayInfo.Result.RankUp == GamePlayInfo.QuizResult) {
-				this.charactorController.CareerUpTrigger();
-
-//			} else if (GamePlayInfo.Result.RankDown == statusResult) {
-			} else if (GamePlayInfo.Result.RankDown == GamePlayInfo.QuizResult) {
-				this.charactorController.CareerDownTrigger();
-			}
-
-//			this.result();
-			this.isResultEnd = true;
-			*/
-//			while (charactorController.IsAnswerAnimation()) {
 
 			// アニメーションが回答後にすぐに切り替わってないかもしれないので少し待つ
 			yield return new WaitForSeconds(0.5f);
 
+			// 回答後のアニメーションが終わるまで待つ
 			string answerTag = CharactorController.AnimationTag.Answer.ToString();
 			if (charactorController.IsAnimation(answerTag)) {
 				yield return new WaitForSeconds(0.2f);
@@ -446,37 +369,5 @@ namespace QuizManagement
 
 			SceneManager.LoadScene("ResultScene");
 		}
-		/*
-		private void result() {
-
-
-			int ptn = (int)UnityEngine.Random.Range(1, 3);
-
-			if (ptn == 1) {
-				charactorController.CareerUpTrigger();
-			} else {
-				charactorController.CareerDownTrigger();
-			}
-
-			this.isResultEnd = true;
-		}
-		*/
-		/*
-		private void changeUi() {
-
-			if (this.questionText.enabled) {
-				
-				this.questionText.enabled = false;
-
-				this.choice1.gameObject.SetActive(false);
-
-				this.choice2.gameObject.SetActive(false);
-
-				this.choice3.gameObject.SetActive(false);
-
-				this.resultPanel.SetActive(true);
-			}
-		}
-		*/
 	}
 }
