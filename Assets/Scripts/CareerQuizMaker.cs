@@ -18,10 +18,11 @@ namespace QuizManagement
 		QuizOutputState quizOutputState = new QuizOutputState();
 
 		// 身分クイズ設定処理（APIから取得した処理）
-		public void SetCareerQuizDatas(Dictionary<int, CareerLoadData> careerQuizDatas) {
+		public void SetCareerQuizDatas(Dictionary<int, CareerLoadData> careerQuizDatas, int[] types) {
+
 			this.careerQuizDatas = careerQuizDatas;
-			// TODO APIの結果からtypeを設定
-			quizOutputState.allQuestionType = new int[]{1,2};
+
+			quizOutputState.allQuestionType = types;
 		}
 
 		/**

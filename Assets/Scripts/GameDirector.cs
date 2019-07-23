@@ -73,9 +73,16 @@ namespace QuizManagement
 		// クイズ出題状態の初期化
 		private QuizOutputStatus quizOutputStatus = QuizOutputStatus.BeforeQuiz;
 
-		public enum QuizOutputStatus
+		private float REACH_WARMUP_TIME = 7.5f;
+
+		private float selectTypeElapsedTime = 0.0f;
+
+		string idleTag = CharactorController.AnimationTag.Idle.ToString();
+
+		private enum QuizOutputStatus
 		{
 			BeforeQuiz,
+			QuizLoad,
 			PossibleOutput,
 //			QuizOutput,
 			AnswerWait,
@@ -102,6 +109,24 @@ namespace QuizManagement
 		// Update is called once per frame
 		void Update()
 		{
+			if (quizOutputStatus == QuizOutputStatus.BeforeQuiz) {
+				
+				if (charactorController.IsAnimation(idleTag)) {
+					this.selectTypeElapsedTime += Time.deltaTime;
+
+					if (this.selectTypeElapsedTime > REACH_WARMUP_TIME) {
+						this.selectTypeElapsedTime = 0.0f;
+
+						int numRandom = (int)UnityEngine.Random.Range(1, 3);
+
+						if (numRandom == 1) {
+							this.charactorController.WarmUp1Trigger();
+						} else {
+							this.charactorController.WarmUp2Trigger();
+						}
+					}
+				}
+			}
 		}
 
 
@@ -126,6 +151,9 @@ namespace QuizManagement
 			this.gameUIPanel.SetActive(true);
 			this.questionPanel.SetActive(true);
 
+			// ロード中状態に変更
+			this.quizOutputStatus = QuizOutputStatus.QuizLoad;
+
 			// 選択したクイズ種類を設定
 			if ((int)GamePlayInfo.QuizType.RegularQuiz == selectType) {
 				// レギュラークイズ
@@ -146,6 +174,8 @@ namespace QuizManagement
 
 			// 出題状況チェックしてクイズを作成
 			StartCoroutine(quizOutputCheck());
+
+			this.charactorController.QuizStartTrigger();
 		}
 
 		/**
@@ -154,7 +184,7 @@ namespace QuizManagement
 		private IEnumerator quizOutputCheck() {
 
 			// 演出としてゲーム画面表示後、問題を出題するまで少し待つ
-			if (this.quizOutputStatus == QuizOutputStatus.BeforeQuiz) {
+			if (this.quizOutputStatus == QuizOutputStatus.QuizLoad) {
 
 				while (true) {
 					yield return new WaitForSeconds(0.5f);
@@ -173,11 +203,10 @@ namespace QuizManagement
 			// まだクイズ上限数まで出題していない
 			if (this.alreadyQuizNum < QUIZ_MAX_NUM) {
 				// 回答待ち状態ではない
-				if (this.quizOutputStatus == QuizOutputStatus.BeforeQuiz
+				if (this.quizOutputStatus == QuizOutputStatus.QuizLoad
 					|| this.quizOutputStatus == QuizOutputStatus.PossibleOutput) {
 
 					if (this.quizOutputStatus == QuizOutputStatus.PossibleOutput) {
-						string idleTag = CharactorController.AnimationTag.Idle.ToString();
 						// アニメーションがアイドル状態になるまで待つ
 
 						// アニメーションが回答後にすぐに切り替わってないかもしれないので少し待つ
@@ -274,7 +303,11 @@ namespace QuizManagement
 				if (choiceNo == currentQuiz.Answer) {
 					Debug.Log("正解しました！");
 
-					this.charactorController.CorrectAnswerTrigger();
+					if (this.alreadyQuizNum == QUIZ_MAX_NUM && this.correctAnswerNum >= 2) {
+						this.charactorController.CorrectAnswerAnotherTrigger();
+					} else {
+						this.charactorController.CorrectAnswerTrigger();
+					}
 
 					this.correctAnswerNum++;
 					this.correctAnswersText.text = "正解数：" + this.correctAnswerNum;
@@ -282,8 +315,11 @@ namespace QuizManagement
 				} else {
 					Debug.Log("不正解です！");
 
-					this.charactorController.InCorrectAnswerTrigger();
-
+					if (this.alreadyQuizNum == QUIZ_MAX_NUM && (this.alreadyQuizNum - this.correctAnswerNum) >= 3) {
+						this.charactorController.InCorrectAnswerAnotherTrigger();
+					} else {
+						this.charactorController.InCorrectAnswerTrigger();
+					}
 				}
 				// 出題状況チェックしてクイズを作成
 				StartCoroutine(quizOutputCheck());

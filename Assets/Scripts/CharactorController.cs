@@ -48,6 +48,13 @@ namespace QuizManagement
 			this.animator.SetTrigger("AnswerTrigger");
 		}
 
+		public void CorrectAnswerAnotherTrigger() {
+			this.animator.SetInteger("CorrectPtn", 2);
+			this.animator.SetInteger("InCorrectPtn", 0);
+
+			this.animator.SetTrigger("AnswerTrigger");
+		}
+
 		public void InCorrectAnswerTrigger() {
 //			this.faceUpdate.OnCallChangeFace("angry");
 
@@ -57,6 +64,28 @@ namespace QuizManagement
 //			this.animator.SetInteger("InCorrectPtn", inCorrectPtn);
 
 			this.animator.SetTrigger("AnswerTrigger");
+		}
+
+		public void InCorrectAnswerAnotherTrigger() {
+
+			this.animator.SetInteger("CorrectPtn", 0);
+			this.animator.SetInteger("InCorrectPtn", 2);
+		
+			this.animator.SetTrigger("AnswerTrigger");
+		}
+
+		public void WarmUp1Trigger() {
+			
+			this.animator.SetTrigger("WarmUp1Trigger");
+		}
+
+		public void WarmUp2Trigger() {
+
+			this.animator.SetTrigger("WarmUp2Trigger");
+		}
+
+		public void QuizStartTrigger() {
+			this.animator.SetTrigger("QuizStartTrigger");
 		}
 
 		/**

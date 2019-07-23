@@ -50,8 +50,8 @@ namespace QuizManagement
 		 */
 		public void StatusOutput(int rankStar, int rank, float rankExpMeter, int careerNum, float careerExpMeter) {
 			this.rankText.text = "お城好きレベル：" + rank;
-			Debug.LogWarning("お城好きレベル経験値：" + rankExpMeter);
-			rankMeter.fillAmount = rankExpMeter;
+			Debug.LogWarning("お城好きレベル経験値メーター：" + rankExpMeter);
+			this.rankMeter.fillAmount = rankExpMeter;
 
 			if (rankStar > 0) {
 				shiroImage.enabled = true;
@@ -62,8 +62,9 @@ namespace QuizManagement
 
 			StatusController.Career career = (StatusController.Career)Enum.ToObject(typeof(StatusController.Career), careerNum);
 			this.careerText.text = "お城好き階級：" + career.ToString();
-			Debug.LogWarning("階級経験値：" + careerExpMeter);
-			careerMeter.fillAmount = careerExpMeter;
+			Debug.LogWarning("お城好き階級：" + career);
+			Debug.LogWarning("階級経験値メーター：" + careerExpMeter);
+			this.careerMeter.fillAmount = careerExpMeter;
 		}
 	}
 }

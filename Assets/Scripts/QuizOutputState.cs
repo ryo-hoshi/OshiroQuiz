@@ -30,7 +30,7 @@ namespace QuizManagement
 			Debug.Log("全クイズ種類(allQuestionType.Length）: "+allQuestionType.Length);
 			Debug.Log("すでに作成した問題の種類数(alreadyQuestionType.Count）: "+alreadyQuestionType.Count);
 			Debug.Log("残りのクイズ種類のリスト数（restTypeList.Count）: "+restTypeList.Count);
-			Debug.Log("残りのクイズ種類のリストインデックスの乱数(index）: "+index);
+			Debug.Log("残りのクイズ種類の中のリストインデックスの乱数(index）: "+index);
 			int nextType = restTypeList[index];
 
 			Debug.Log("使用するクイズ種類(nextType): "+nextType);

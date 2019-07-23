@@ -43,17 +43,29 @@ namespace QuizManagement.Api
 
 				CareerQuizData loadCareerQuizData = JsonUtility.FromJson<CareerQuizData>(text);
 
-				if (loadCareerQuizData == null) {
-					Debug.Log("・レスポンスがNULL");
+				if (loadCareerQuizData == null || loadCareerQuizData.value.Count < GameDirector.QUIZ_MAX_NUM) {
+
+					if (loadCareerQuizData == null) {
+						Debug.Log("・レスポンスがNULL");
+					} else {
+						Debug.Log("・レスポンスのサイズが少ない（サイズ）：" + loadCareerQuizData.value.Count);						
+					}
+
+					// TODO exception
+
 				} else {
 					Debug.Log("・レスポンスのサイズ：" + loadCareerQuizData.value.Count);
+
+					List<int> typeList = new List<int>();
 
 					Dictionary<int, CareerLoadData> careerQuizDatas = new Dictionary<int, CareerLoadData>();
 					for (int i = 0; i < loadCareerQuizData.value.Count; i++) {
 						careerQuizDatas.Add(loadCareerQuizData.value[i].type, loadCareerQuizData.value[i]);
+
+						typeList.Add(loadCareerQuizData.value[i].type);
 					}
 
-					quizMaker.SetCareerQuizDatas(careerQuizDatas);
+					quizMaker.SetCareerQuizDatas(careerQuizDatas, typeList.ToArray());
 				}
 			}
 		}

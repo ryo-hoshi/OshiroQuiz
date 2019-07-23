@@ -14,6 +14,7 @@ namespace QuizManagement
 		private const string quizCareerName = "quiz_career_name";
 		private const string quizCareerExp = "quiz_career_exp";
 		private const string quizCareerMeter = "quiz_career_meter";
+		private const string quizCareerKokudaka = "quiz_career_kokudaka";
 
 		public StatusInfo GetStatusInfo()
 		{
@@ -24,10 +25,11 @@ namespace QuizManagement
 				PlayerPrefs.GetFloat(quizRankMeter, 0.0f),
 				PlayerPrefs.GetInt(quizCareerName, (int)StatusController.Career.足軽),
 				PlayerPrefs.GetInt(quizCareerExp, 0),
-				PlayerPrefs.GetFloat(quizCareerMeter, 0.0f)
+				PlayerPrefs.GetFloat(quizCareerMeter, 0.0f),
+				PlayerPrefs.GetInt(quizCareerKokudaka, 0)
 			);
 		}
-
+		/*
 		public void SaveRankInfo(int rankStar, int rank, int rankExp)
 		{
 			PlayerPrefs.SetInt(quizRankStar, rankStar);
@@ -36,8 +38,9 @@ namespace QuizManagement
 
 			PlayerPrefs.Save();
 		}
+		*/
 
-		public void SaveStatusInfo(int rankStar, int rank, int rankExp, float rankMeter, int career, int careerExp, float careerMeter)
+		public void SaveStatusInfo(int rankStar, int rank, int rankExp, float rankMeter, int career, int careerExp, float careerMeter, int careerKokudaka)
 		{
 			PlayerPrefs.SetInt(quizRankStar, rankStar);
 			PlayerPrefs.SetInt(quizRank, rank);
@@ -46,6 +49,7 @@ namespace QuizManagement
 			PlayerPrefs.SetInt(quizCareerName, career);
 			PlayerPrefs.SetInt(quizCareerExp, careerExp);
 			PlayerPrefs.SetFloat(quizCareerMeter, careerMeter);
+			PlayerPrefs.SetInt(quizCareerKokudaka, careerKokudaka);
 
 			PlayerPrefs.Save();
 		}
@@ -53,7 +57,7 @@ namespace QuizManagement
 		public void ClearStatusInfo()
 		{
 			// TODO 定数から取得
-			SaveStatusInfo(0, 1, 0, 0.0f, (int)StatusController.Career.足軽, 0, 0.0f);
+			SaveStatusInfo(0, 1, 0, 0.0f, (int)StatusController.Career.足軽, 0, 0.0f, 0);
 
 			PlayerPrefs.Save();
 		}

@@ -27,6 +27,10 @@ namespace QuizManagement
 		private InputField rankEdit;
 		[SerializeField]
 		private InputField rankExpEdit;
+		[SerializeField]
+		private InputField careerEdit;
+		[SerializeField]
+		private InputField careerExpEdit;
 
 //		[SerializeField]
 //		private Text testText;
@@ -135,7 +139,18 @@ namespace QuizManagement
 		public void StatusEdit() {
 			SaveData saveData = new SaveData();
 
-			saveData.SaveRankInfo(int.Parse(this.rankStarEdit.text), int.Parse(this.rankEdit.text), int.Parse(this.rankExpEdit.text));
+//			saveData.SaveRankInfo(int.Parse(this.rankStarEdit.text), int.Parse(this.rankEdit.text), int.Parse(this.rankExpEdit.text));
+
+			saveData.SaveStatusInfo(int.Parse(this.rankStarEdit.text), 
+				int.Parse(this.rankEdit.text), 
+				int.Parse(this.rankExpEdit.text),
+				0.0f,
+				int.Parse(this.careerEdit.text), 
+				int.Parse(this.careerExpEdit.text),
+				0.0f,
+				0 // 石高
+			);
+
 
 			outputStatusEdit();
 		}
@@ -147,6 +162,8 @@ namespace QuizManagement
 			this.rankStarEdit.text = statusInfo.RankStar.ToString();
 			this.rankEdit.text = statusInfo.Rank.ToString();
 			this.rankExpEdit.text = statusInfo.RankExp.ToString();
+			this.careerEdit.text = statusInfo.Career.ToString();
+			this.careerExpEdit.text = statusInfo.CareerExp.ToString();
 		}
 	}
 }

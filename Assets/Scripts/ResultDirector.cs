@@ -33,12 +33,17 @@ namespace QuizManagement
 		[SerializeField]
 		private GameObject statusPanel;
 
+		[SerializeField]
+		private Text debugText1;
+		[SerializeField]
+		private Text debugText2;
+
 		private StatusPanelController statusPanelController;
 
 		private SoundController soundController;
 
 		// ちょっとずつメーターを更新するための、一度に更新するメータの割合
-		private float updateStep = 0.03f;
+		private float UPDATE_STEP = 0.03f;
 
 		// Start is called before the first frame update
 		void Start()
@@ -50,16 +55,16 @@ namespace QuizManagement
 			//			GamePlayInfo.QuizResult = GamePlayInfo.Result.RankDown;
 
 			GamePlayInfo.BeforeRankStar = 0;
-			GamePlayInfo.BeforeRank = 1;
+			GamePlayInfo.BeforeRank = 99;
 			GamePlayInfo.BeforeRankExpMeter = 0.3f;
 			GamePlayInfo.BeforeCareer = (int)StatusController.Career.足軽;
-			GamePlayInfo.BeforeCareerExpMeter = 0.5f;
+			GamePlayInfo.BeforeCareerExpMeter = 0.4f;
 
 			GamePlayInfo.AfterRankStar = 1;
-			GamePlayInfo.AfterRank = 2;
-			GamePlayInfo.AfterRankExpMeter = 0.2f;
-			GamePlayInfo.AfterCareer =  (int)StatusController.Career.足軽組頭;
-			GamePlayInfo.AfterCareerExpMeter = 0.3f;
+			GamePlayInfo.AfterRank = 1;
+			GamePlayInfo.AfterRankExpMeter = 0.1f;
+			GamePlayInfo.AfterCareer =  (int)StatusController.Career.足軽;
+			GamePlayInfo.AfterCareerExpMeter = 0.8f;
 			*/
 			/********************************************************************/
 			this.statusPanelController = this.statusPanel.GetComponent<StatusPanelController>(); 
@@ -99,7 +104,7 @@ namespace QuizManagement
 			yield return new WaitForSeconds(0.3f);
 			bool isStatusUpdate = false;
 
-			// ランク(ウデマエ)上下の時のアニメーション
+			// ランクまたは身分が上下の時のアニメーション
 			//			if (GamePlayInfo.Result.RankUp == statusResult) {
 			if (GamePlayInfo.Result.RankUp == GamePlayInfo.QuizResult) {
 
@@ -124,8 +129,10 @@ namespace QuizManagement
 				yield return new WaitForSeconds(1.0f);
 			}
 
+			// TODO 後で消す　デバッグ用
+			outputDebug();
+
 			this.isResultAnimEnd = true;
-			Debug.LogWarning("画面遷移可能！！");
 		}
 
 		/**
@@ -141,9 +148,9 @@ namespace QuizManagement
 					// メーターを満タンまで上げる
 					float reminingUpate = 1.0f - GamePlayInfo.BeforeCareerExpMeter;
 					while (true) {
-						if (reminingUpate - updateStep > 0) {
-							careerMeter.fillAmount += updateStep;
-							reminingUpate -= updateStep;
+						if (reminingUpate - UPDATE_STEP > 0) {
+							careerMeter.fillAmount += UPDATE_STEP;
+							reminingUpate -= UPDATE_STEP;
 						} else {
 							careerMeter.fillAmount += reminingUpate;
 							break;
@@ -166,9 +173,9 @@ namespace QuizManagement
 					// メーターを0まで下げる
 					float reminingUpate = GamePlayInfo.BeforeCareerExpMeter;
 					while (true) {
-						if (reminingUpate - updateStep > 0) {
-							careerMeter.fillAmount -= updateStep;
-							reminingUpate -= updateStep;
+						if (reminingUpate - UPDATE_STEP > 0) {
+							careerMeter.fillAmount -= UPDATE_STEP;
+							reminingUpate -= UPDATE_STEP;
 						} else {
 							careerMeter.fillAmount -= reminingUpate;
 							break;
@@ -182,13 +189,22 @@ namespace QuizManagement
 
 					// 現状維持
 				} else {
-					float reminingUpate = GamePlayInfo.AfterCareerExpMeter - GamePlayInfo.BeforeCareerExpMeter;
+					float updateAmount = GamePlayInfo.AfterCareerExpMeter - GamePlayInfo.BeforeCareerExpMeter;
+					float reminingUpdate = updateAmount < 0 ? -updateAmount : updateAmount;
 					while (true) {
-						if (reminingUpate - updateStep > 0) {
-							careerMeter.fillAmount += updateStep;
-							reminingUpate -= updateStep;
+						if (reminingUpdate - UPDATE_STEP > 0) {
+							if (updateAmount > 0) {
+								careerMeter.fillAmount += UPDATE_STEP;
+							} else {
+								careerMeter.fillAmount -= UPDATE_STEP;
+							}
+							reminingUpdate -= UPDATE_STEP;
 						} else {
-							careerMeter.fillAmount += reminingUpate;
+							if (updateAmount > 0) {
+								careerMeter.fillAmount += UPDATE_STEP;
+							} else {
+								careerMeter.fillAmount -= reminingUpdate;
+							}
 							break;
 						}
 						yield return null;
@@ -204,13 +220,13 @@ namespace QuizManagement
 				|| GamePlayInfo.BeforeRank < GamePlayInfo.AfterRank) {
 
 				// メーターを満タンまで上げる
-				float reminingUpate = 1.0f - GamePlayInfo.BeforeRankExpMeter;
+				float reminingRankUpate = 1.0f - GamePlayInfo.BeforeRankExpMeter;
 				while (true) {
-					if (reminingUpate - updateStep > 0) {
-						rankMeter.fillAmount += updateStep;
-						reminingUpate -= updateStep;
+					if (reminingRankUpate - UPDATE_STEP > 0) {
+						rankMeter.fillAmount += UPDATE_STEP;
+						reminingRankUpate -= UPDATE_STEP;
 					} else {
-						rankMeter.fillAmount += reminingUpate;
+						rankMeter.fillAmount += reminingRankUpate;
 						break;
 					}
 					yield return null;
@@ -226,9 +242,9 @@ namespace QuizManagement
 			} else {
 				float reminingUpate = GamePlayInfo.AfterRankExpMeter - GamePlayInfo.BeforeRankExpMeter;
 				while (true) {
-					if (reminingUpate - updateStep > 0) {
-						rankMeter.fillAmount += updateStep;
-						reminingUpate -= updateStep;
+					if (reminingUpate - UPDATE_STEP > 0) {
+						rankMeter.fillAmount += UPDATE_STEP;
+						reminingUpate -= UPDATE_STEP;
 					} else {
 						rankMeter.fillAmount += reminingUpate;
 						break;
@@ -303,6 +319,15 @@ namespace QuizManagement
 				GamePlayInfo.AfterRankExpMeter, 
 				GamePlayInfo.AfterCareer, 
 				GamePlayInfo.AfterCareerExpMeter);
+		}
+
+		private void outputDebug() {
+
+			SaveData saveData = new SaveData();
+			StatusInfo statusInfo = saveData.GetStatusInfo();
+
+			this.debugText1.text = "ランクM(前)："+GamePlayInfo.BeforeRankExpMeter + "　ランクM(後)："+GamePlayInfo.AfterRankExpMeter + "　ランク経験値："+statusInfo.RankExp;
+			this.debugText2.text = "身分M(前)："+GamePlayInfo.BeforeCareerExpMeter + "　身分M(後)："+GamePlayInfo.AfterCareerExpMeter + "　身分経験値："+statusInfo.CareerExp;
 		}
 	}
 }
