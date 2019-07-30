@@ -17,9 +17,10 @@ namespace QuizManagement
 //		[SerializeField]
 		//		private Text dataClear;
 
-		private float loadGameSceneTime = 1.0f;
-		private int textBlinkSpeed = (int)TextBlinkType.Init;
-		private float time = 0.0f;
+		private float LOAD_GAME_WAIT_TIME_1 = 1.3f;
+		private float LOAD_GAME_WAIT_TIME_2 = 0.3f;
+		//private int textBlinkSpeed = (int)TextBlinkType.Init;
+		//private float time = 0.0f;
 
 		[SerializeField]
 		private InputField rankStarEdit;
@@ -32,13 +33,20 @@ namespace QuizManagement
 		[SerializeField]
 		private InputField careerExpEdit;
 
+		[SerializeField]
+		private Button titleButton;
+		[SerializeField]
+		private Text loadingText;
+
+		private Animator titleAnimator;
 //		[SerializeField]
 //		private Text testText;
-
+		/*
 		enum TextBlinkType {
 			Init = 3,
 			Load = 12,
 		}
+		*/
 
 		// Start is called before the first frame update
 		void Start()
@@ -52,6 +60,7 @@ namespace QuizManagement
 */
 //			int currentExp = careerData.Exp;
 //			this.careerText.text = careerData.Career;
+			this.titleAnimator = titleButton.GetComponent<Animator>();
 			outputStatusEdit();
 
 //			StartCoroutine(GetText());
@@ -105,18 +114,38 @@ namespace QuizManagement
 		private IEnumerator loadGameScene () {
 
 //			this.textBlinkSpeed = (int)TextBlinkType.Load;
+			/*
+			float progressTime = 0.0f;
+			float blinkVal = 0.0f;
 
-//			while (time < loadGameSceneTime) {
-				
+			while (progressTime < LOAD_GAME_SCENE_TIME) {
 
+				var textColor = this.gameStartText.color;
+				blinkVal += Time.deltaTime * 10.0f;
+				textColor.a = Mathf.Sin(blinkVal) * 0.5f *+ 0.5f;
 
-//				color.a = Mathf.Sin(time) * 0.5f + 0.5f;
+//				startText.color.a = Mathf.Sin(progressTime);
+				this.gameStartText.color = textColor;
 
-				//	startText.color.a = Mathf.Sin(time);
+				progressTime += Time.deltaTime;
 
-				yield return new WaitForSeconds(1.0f);
-			//				yield return null;
-//			}
+				yield return null;
+			}
+			*/
+			this.titleAnimator.SetInteger("blinkSts", 1);
+
+			yield return new WaitForSeconds(LOAD_GAME_WAIT_TIME_1);
+
+			var loadingColor = loadingText.color;
+			loadingColor.a = 255;
+			loadingText.color = loadingColor;
+
+			// スタートボタンテキストの点滅を終了する
+			this.titleAnimator.SetInteger("blinkSts", 2);
+
+			yield return new WaitForSeconds(LOAD_GAME_WAIT_TIME_2);
+
+			// ゲームシーンロード
 			SceneManager.LoadScene("GameScene");
 		}
 

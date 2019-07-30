@@ -88,6 +88,22 @@ namespace QuizManagement
 			this.animator.SetTrigger("QuizStartTrigger");
 		}
 
+		public void FaceChange(string str, float wait = 0.0f) {
+
+			if (wait > 0.0f) {
+				StartCoroutine(faceChangeExistWait(str, wait));
+			} else {
+				this.faceUpdate.OnCallChangeFace(str);
+			}
+		}
+
+		private IEnumerator faceChangeExistWait(string str, float wait) {
+
+			yield return new WaitForSeconds(wait);
+
+			this.faceUpdate.OnCallChangeFace(str);
+		}
+
 		/**
 		 * ステータス計算結果アニメーション
 		 */

@@ -73,11 +73,11 @@ namespace QuizManagement
 		// クイズ出題状態の初期化
 		private QuizOutputStatus quizOutputStatus = QuizOutputStatus.BeforeQuiz;
 
-		private float REACH_WARMUP_TIME = 7.5f;
+		private float REACH_WARMUP_TIME = 8.0f;
 
 		private float selectTypeElapsedTime = 0.0f;
 
-		string idleTag = CharactorController.AnimationTag.Idle.ToString();
+		private string idleTag = CharactorController.AnimationTag.Idle.ToString();
 
 		private enum QuizOutputStatus
 		{
@@ -239,6 +239,8 @@ namespace QuizManagement
 	 */
 		private void quizOutput()
 		{
+			this.charactorController.FaceChange("default");
+
 			this.currentQuiz = quizMaker.CreateQuiz();
 
 			if (currentQuiz == null) {
@@ -304,7 +306,9 @@ namespace QuizManagement
 					Debug.Log("正解しました！");
 
 					if (this.alreadyQuizNum == QUIZ_MAX_NUM && this.correctAnswerNum >= 2) {
+						// 最終問題かつ正解が多い場合はアニメーションを変える
 						this.charactorController.CorrectAnswerAnotherTrigger();
+						this.charactorController.FaceChange("smile2");
 					} else {
 						this.charactorController.CorrectAnswerTrigger();
 					}
@@ -316,7 +320,9 @@ namespace QuizManagement
 					Debug.Log("不正解です！");
 
 					if (this.alreadyQuizNum == QUIZ_MAX_NUM && (this.alreadyQuizNum - this.correctAnswerNum) >= 3) {
+						// 最終問題かつ不正解が多い場合はアニメーションを変える
 						this.charactorController.InCorrectAnswerAnotherTrigger();
+						this.charactorController.FaceChange("confuse");
 					} else {
 						this.charactorController.InCorrectAnswerTrigger();
 					}
