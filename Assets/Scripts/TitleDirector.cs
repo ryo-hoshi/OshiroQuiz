@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UniRx.Async;
 //using UnityEditor;
 
 namespace QuizManagement
@@ -17,8 +18,6 @@ namespace QuizManagement
 //		[SerializeField]
 		//		private Text dataClear;
 
-		private float LOAD_GAME_WAIT_TIME_1 = 1.3f;
-		private float LOAD_GAME_WAIT_TIME_2 = 0.3f;
 		//private int textBlinkSpeed = (int)TextBlinkType.Init;
 		//private float time = 0.0f;
 
@@ -33,12 +32,17 @@ namespace QuizManagement
 		[SerializeField]
 		private InputField careerExpEdit;
 
-		[SerializeField]
+        [SerializeField]
+        private Button helpButton;
+
+        [SerializeField]
 		private Button titleButton;
 		[SerializeField]
 		private Text loadingText;
+        //        [SerializeField]
+        //        private HowToPlayController howToPlayPref;
 
-		private Animator titleAnimator;
+        private Animator titleAnimator;
 //		[SerializeField]
 //		private Text testText;
 		/*
@@ -63,8 +67,12 @@ namespace QuizManagement
 			this.titleAnimator = titleButton.GetComponent<Animator>();
 			outputStatusEdit();
 
-//			StartCoroutine(GetText());
-		}
+            //			StartCoroutine(GetText());
+
+            titleButton.onClick.AddListener(() => gameStart());
+
+            helpButton.onClick.AddListener(() => helpOpen());
+        }
 
 		// Update is called once per frame
 		void Update()
@@ -84,7 +92,7 @@ namespace QuizManagement
 			}
 			*/
 		}
-		/*
+        /*
 		IEnumerator GetText() {
 			Debug.Log("API実行");
 			UnityWebRequest request = UnityWebRequest.Get("https://us-central1-oshiroquiz.cloudfunctions.net/hello");
@@ -111,10 +119,43 @@ namespace QuizManagement
 		}
 		*/
 
-		private IEnumerator loadGameScene () {
+        private async UniTask gameStart()
+        {
+            this.titleAnimator.SetTrigger("blinkEnd");
+
+            await UniTask.Delay(650);
+
+            var loadingColor = loadingText.color;
+            loadingColor.a = 255;
+            loadingText.color = loadingColor;
+
+            await UniTask.DelayFrame(1);
+
+
+            // ゲームシーンロード
+            SceneManager.LoadScene("GameScene");
+        }
+
+        private void helpOpen()
+        {
+            var helpWindow = GameObject.FindWithTag("Help");
+
+            if (helpWindow == null) {
+                var canvas = GameObject.Find("Canvas");
+                // await UniTask.Delay(650);
+                var helpPref = (GameObject)Resources.Load("Prefabs/HowToPlay");
+                var help = Instantiate(helpPref);
+                help.tag = "Help";
+                help.transform.SetParent(canvas.transform, false);
+            }
+        }
+
+
+        /*
+        private IEnumerator loadGameScene () {
 
 //			this.textBlinkSpeed = (int)TextBlinkType.Load;
-			/*
+			
 			float progressTime = 0.0f;
 			float blinkVal = 0.0f;
 
@@ -131,25 +172,22 @@ namespace QuizManagement
 
 				yield return null;
 			}
-			*/
-			this.titleAnimator.SetInteger("blinkSts", 1);
 
-			yield return new WaitForSeconds(LOAD_GAME_WAIT_TIME_1);
+			this.titleAnimator.SetTrigger("blinkEnd");
+
+			yield return new WaitForSeconds(1f);
 
 			var loadingColor = loadingText.color;
 			loadingColor.a = 255;
 			loadingText.color = loadingColor;
 
-			// スタートボタンテキストの点滅を終了する
-			this.titleAnimator.SetInteger("blinkSts", 2);
-
-			yield return new WaitForSeconds(LOAD_GAME_WAIT_TIME_2);
 
 			// ゲームシーンロード
 			SceneManager.LoadScene("GameScene");
 		}
+        */
 
-		public void DataClear() {
+        public void DataClear() {
 
 //			if (EditorUtility.DisplayDialog("警告", "データをクリアしますか？", "OK", "CANCEL"))
 			//			{
@@ -158,10 +196,6 @@ namespace QuizManagement
 			Debug.Log("データクリア！");
 			outputStatusEdit();
 			//}
-		}
-
-		public void GameStart() {
-			StartCoroutine(loadGameScene());
 		}
 
 

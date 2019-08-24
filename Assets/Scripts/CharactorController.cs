@@ -17,7 +17,7 @@ namespace QuizManagement
 		}
 
 		// Start is called before the first frame update
-		void Start()
+		void Awake()
 		{
 			this.animator = GetComponent<Animator>();
 			this.faceUpdate = GetComponent<FaceUpdate>(); 
@@ -122,7 +122,7 @@ namespace QuizManagement
 			}
 		}
 
-		/*
+        /*
 		public bool IsAnswerAnimation() {
 			
 			AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
@@ -141,7 +141,16 @@ namespace QuizManagement
 		}
 		*/
 
-		public bool IsAnimation(string animTagName) {
+        /**
+         * キャラクタータップ時のアニメーション（ゲーム開始前のみ）
+         */
+        public void OnCharactortap()
+        {
+            Debug.Log("◆◆◆CharactorController OnCharactortap◆◆◆");
+            this.animator.SetTrigger("WaveHandsTrigger");
+        }
+
+        public bool IsAnimation(string animTagName) {
 			Debug.LogWarning("確認するタグ："+animTagName);
 
 			if (animator.GetCurrentAnimatorStateInfo(0).IsTag(animTagName)) {
@@ -158,7 +167,7 @@ namespace QuizManagement
 			}
 		}
 
-		public void ResultTrigger() {
+        public void ResultTrigger() {
 			this.animator.SetTrigger("ResultTrigger");
 		}
 

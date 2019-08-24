@@ -101,14 +101,16 @@ namespace QuizManagement
 			this.apiController = this.api.GetComponent<ApiController>(); 
 			this.timeLimitCoroutine = timeLimitCheck();
 
-			this.statusPanelController = this.statusPanel.GetComponent<StatusPanelController>(); 
+			this.statusPanelController = this.statusPanel.GetComponent<StatusPanelController>();
 
-			statusOutput();
-		}
+            statusOutput();
 
-		// Update is called once per frame
-		void Update()
+        }
+
+        // Update is called once per frame
+        void Update()
 		{
+            // クイズ開始前に放置していたときの暇そうなアニメーション
 			if (quizOutputStatus == QuizOutputStatus.BeforeQuiz) {
 				
 				if (charactorController.IsAnimation(idleTag)) {
