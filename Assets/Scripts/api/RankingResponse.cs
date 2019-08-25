@@ -9,7 +9,7 @@ namespace QuizManagement.Api
 
 		public int careerPoint;
 
-		public int shiro;
+//		public int shiro;
 
 		public int rank;
     }

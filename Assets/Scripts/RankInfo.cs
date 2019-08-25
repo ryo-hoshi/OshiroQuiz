@@ -8,6 +8,6 @@ namespace QuizManagement
 
 		public int Rank {get; private set;}
 
-		public int Star {get; private set;}
+//		public int Star {get; private set;}
     }
 }

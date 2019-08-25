@@ -17,11 +17,11 @@ namespace QuizManagement
 		private Image rankMeter;
 		[SerializeField]
 		private Image careerMeter;
-		[SerializeField]
-		private Image shiroImage;
+        //		[SerializeField]
+        //		private Image shiroImage;
 
-		// Start is called before the first frame update
-		void Start()
+        // Start is called before the first frame update
+        void Start()
 		{
 			/************************** デバッグ用 ******************************/
 			/*
@@ -42,26 +42,36 @@ namespace QuizManagement
 			GamePlayInfo.AfterCareerExpMeter = 0.3f;
 			*/
 			/********************************************************************/
-			shiroImage.enabled = false;
+//			shiroImage.enabled = false;
 	}
 
-		/**
+        /**
 		 * ステータス表示
 		 */
-		public void StatusOutput(int rankStar, int rank, float rankExpMeter, int careerNum, float careerExpMeter) {
-			this.rankText.text = "お城好きレベル：" + rank;
+        //		public void StatusOutput(int rankStar, int rank, float rankExpMeter, int careerNum, float careerExpMeter) {
+        public void StatusOutput(int rank, float rankExpMeter, int careerNum, float careerExpMeter, int careerKokudaka)
+        {
+            this.rankText.text = "お城好きレベル：" + rank;
 			Debug.LogWarning("お城好きレベル経験値メーター：" + rankExpMeter);
 			this.rankMeter.fillAmount = rankExpMeter;
 
-			if (rankStar > 0) {
+            /*
+            if (rankStar > 0) {
 				shiroImage.enabled = true;
 				Color viewColor = shiroImage.color;
 				viewColor.a = 255f;
 				shiroImage.color = viewColor;
 			}
+            */
 
 			StatusController.Career career = (StatusController.Career)Enum.ToObject(typeof(StatusController.Career), careerNum);
-			this.careerText.text = "お城好き階級：" + career.ToString();
+            if (careerKokudaka > 0 && StatusController.Career.大名 == career)
+            {
+                this.careerText.text = "お城好き階級：" + career.ToString() + "  " + careerKokudaka + "万石";
+            }
+            else {
+                this.careerText.text = "お城好き階級：" + career.ToString();
+            }
 			Debug.LogWarning("お城好き階級：" + career);
 			Debug.LogWarning("階級経験値メーター：" + careerExpMeter);
 			this.careerMeter.fillAmount = careerExpMeter;

@@ -24,9 +24,9 @@ namespace QuizManagement
 		private Image rankMeter;
 		[SerializeField]
 		private Image careerMeter;
-		[SerializeField]
-		private Image shiroImage;
-		[SerializeField]
+        //		[SerializeField]
+        //		private Image shiroImage;
+        [SerializeField]
 		private GameObject rankUpParticle;
 		[SerializeField]
 		private GameObject sound;
@@ -214,10 +214,10 @@ namespace QuizManagement
 				yield return new WaitForSeconds(1.0f);
 			}
 
-			// *************************** ランクステータス更新 ***************************
-			// ランクアップしたとき
-			if (GamePlayInfo.BeforeRankStar < GamePlayInfo.AfterRankStar
-				|| GamePlayInfo.BeforeRank < GamePlayInfo.AfterRank) {
+            // *************************** ランクステータス更新 ***************************
+            // ランクアップしたとき
+            //			if (GamePlayInfo.BeforeRankStar < GamePlayInfo.AfterRankStar
+            if (GamePlayInfo.BeforeRank < GamePlayInfo.AfterRank) {
 
 				// メーターを満タンまで上げる
 				float reminingRankUpate = 1.0f - GamePlayInfo.BeforeRankExpMeter;
@@ -273,7 +273,7 @@ namespace QuizManagement
 		 * 更新前のステータス表示
 		 */
 		private void beforeStatusOutput() {
-			/*
+            /*
 			this.rankText.text = "お城好きレベル " + GamePlayInfo.BeforeRank;
 			Debug.LogWarning("お城好きレベル経験値　前："+GamePlayInfo.BeforeRankExpMeter);
 			rankMeter.fillAmount = GamePlayInfo.BeforeRankExpMeter;
@@ -290,15 +290,16 @@ namespace QuizManagement
 			Debug.LogWarning("身分経験値　後："+GamePlayInfo.BeforeCareerExpMeter);
 			careerMeter.fillAmount = GamePlayInfo.BeforeCareerExpMeter;
 			*/
-			statusPanelController.StatusOutput(GamePlayInfo.BeforeRankStar, 
-				GamePlayInfo.BeforeRank, 
+            //			statusPanelController.StatusOutput(GamePlayInfo.BeforeRankStar, 
+            statusPanelController.StatusOutput(GamePlayInfo.BeforeRank, 
 				GamePlayInfo.BeforeRankExpMeter, 
 				GamePlayInfo.BeforeCareer, 
-				GamePlayInfo.BeforeCareerExpMeter);
+				GamePlayInfo.BeforeCareerExpMeter,
+                GamePlayInfo.BeforeCareerKokudaka);
 		}
 
 		private void AfterStatusOutput() {
-			/*
+            /*
 			this.rankText.text = "お城好きレベル " + GamePlayInfo.AfterRank;
 			Debug.LogWarning("お城好きレベル経験値　前："+GamePlayInfo.AfterRankExpMeter);
 			rankMeter.fillAmount = GamePlayInfo.AfterRankExpMeter;
@@ -314,11 +315,12 @@ namespace QuizManagement
 			this.careerText.text = "身分 " + career.ToString();
 			careerMeter.fillAmount = GamePlayInfo.AfterCareerExpMeter;
 			*/
-			statusPanelController.StatusOutput(GamePlayInfo.AfterRankStar, 
-				GamePlayInfo.AfterRank, 
+            //			statusPanelController.StatusOutput(GamePlayInfo.AfterRankStar, 
+            statusPanelController.StatusOutput(GamePlayInfo.AfterRank, 
 				GamePlayInfo.AfterRankExpMeter, 
 				GamePlayInfo.AfterCareer, 
-				GamePlayInfo.AfterCareerExpMeter);
+				GamePlayInfo.AfterCareerExpMeter,
+                GamePlayInfo.AfterCareerKokudaka);
 		}
 
 		private void outputDebug() {

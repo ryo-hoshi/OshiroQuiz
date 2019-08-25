@@ -48,10 +48,10 @@ namespace QuizManagement
 		*/
 
 		private const int RANK_CALC_INIT = 5;
-		private const int RANK_CALC_STAR_ADD = 15;
-		private const int RANK_CALC_STEP = 7;
+//		private const int RANK_CALC_STAR_ADD = 15;
+		private const int RANK_EXP_UP_STEP = 6;
 
-		private int nowRankStar;
+//		private int nowRankStar;
 		private int nowRank;
 		private int nowRankExp;
 
@@ -64,7 +64,7 @@ namespace QuizManagement
 		private float nowRankMeter;
 		private float nowCareerMeter;
 
-		private int nowCarrerkokudaka;
+		private int nowCareerkokudaka;
 
 		SaveData saveData = new SaveData();
 
@@ -75,17 +75,17 @@ namespace QuizManagement
 
 			StatusInfo statusInfo = saveData.GetStatusInfo();
 
-			this.nowRankStar = statusInfo.RankStar;
+//			this.nowRankStar = statusInfo.RankStar;
 			this.nowRank = statusInfo.Rank;
 			this.nowRankExp = statusInfo.RankExp;
 			this.nowRankMeter = statusInfo.RankMeter;
 			this.nowCareer = statusInfo.Career;
 			this.nowCareerExp = statusInfo.CareerExp;
 			this.nowCareerMeter = statusInfo.CareerMeter;
-			this.nowCarrerkokudaka = statusInfo.CareerKokudaka;
+			this.nowCareerkokudaka = statusInfo.CareerKokudaka;
 
 			Debug.LogWarning("現在のステータス情報ロード直後");
-			Debug.LogWarning("nowRankStar:" + this.nowRankStar);
+//			Debug.LogWarning("nowRankStar:" + this.nowRankStar);
 			Debug.LogWarning("nowRank:" + this.nowRank);
 			Debug.LogWarning("nowRankExp:" + this.nowRankExp);
 			Debug.LogWarning("RankExpMeterの値（バックアップ前）:" + statusInfo.RankMeter);
@@ -100,8 +100,8 @@ namespace QuizManagement
 			// ステータス情報を取得
 			this.loadStatus();
 
-			// リザルト画面でのステータス更新演出用の退避
-			this.backupBeforeStatus();
+            // リザルト画面でのステータス更新演出用のステータス退避
+            this.backupBeforeStatus();
 
 			// 次のランクアップに必要な経験値（ステータス更新前の経験値のメーター算出用）
 			this.nextRankUpExp = this.calcNextRankUpExp();
@@ -116,10 +116,13 @@ namespace QuizManagement
 			// 階級挑戦クイズの場合は身分情報を更新
 //			if (playQuizType == GameDirector.PlayQuizType.CareerQuiz) {
 			if (GamePlayInfo.PlayQuizType == GamePlayInfo.QuizType.CareerQuiz) {
-				int correctDiff = (correctNum * 2) - GameDirector.QUIZ_MAX_NUM;
-				//careerResult = careerUpdate(correctDiff);
 
-				this.careerUpdate(correctDiff);
+                //careerResult = careerUpdate(correctDiff);
+
+                // 正解不正解の差
+                int correctDiff = (correctNum * 2) - GameDirector.QUIZ_MAX_NUM;
+
+                this.careerUpdate(correctDiff);
 			}
 			/*
 			if (Result.RankDown == careerResult) {
@@ -135,17 +138,17 @@ namespace QuizManagement
 
 			this.backupAfterStatus();
 
-			saveData.SaveStatusInfo(this.nowRankStar, 
-				this.nowRank, 
+            //			saveData.SaveStatusInfo(this.nowRankStar, 
+            saveData.SaveStatusInfo(this.nowRank, 
 				this.nowRankExp, 
 				GamePlayInfo.AfterRankExpMeter, 
 				this.nowCareer, 
 				this.nowCareerExp, 
 				GamePlayInfo.AfterCareerExpMeter,
-				this.nowCarrerkokudaka);
+				this.nowCareerkokudaka);
 
 			Debug.LogWarning("ステータス更新完了時");
-			Debug.LogWarning("nowRankStar:" + this.nowRankStar);
+//			Debug.LogWarning("nowRankStar:" + this.nowRankStar);
 			Debug.LogWarning("nowRank:" + this.nowRank);
 			Debug.LogWarning("nowRankExp:" + this.nowRankExp);
 			Debug.LogWarning("RankExpMeterの値（バックアップ後）:" + GamePlayInfo.AfterRankExpMeter);
@@ -163,14 +166,14 @@ namespace QuizManagement
 			// ランクアップ
 			if (this.nextRankUpExp <= rankExpSum) {
 
-				if (this.nowRank < 99) {
+//				if (this.nowRank < 99) {
 					this.nowRank++;
-				} else {
-					this.nowRankStar++;
-					this.nowRank = 1;
-				}
+                //				} else {
+                //this.nowRankStar++;
+                //this.nowRank = 1;
+                //}
 
-				this.nowRankExp = rankExpSum - this.nextRankUpExp;
+                this.nowRankExp = rankExpSum - this.nextRankUpExp;
 //				rankResult = Result.RankUp;
 				GamePlayInfo.QuizResult = GamePlayInfo.Result.RankUp;
 
@@ -185,14 +188,15 @@ namespace QuizManagement
 			// ランク経験値メーターの更新
 			this.nowRankMeter = (float)Math.Round((float)this.nowRankExp / this.nextRankUpExp, 2, MidpointRounding.AwayFromZero);
 
-//			return rankResult;
-		}
+            //			return rankResult;
+        }
 
-		/**
-		 * キャリア情報更新
-		 */
+        /// <summary>キャリア情報更新
+        /// <param name="correctDiff">正解不正解の差</param>  
+        /// </summary>
 		private void careerUpdate(int correctDiff) {
-			/*
+
+            /*
 			int nextCarrerUpExp = 0;
 			// 現在の身分が大名未満の場合
 			if (this.nowCareer < (int)Career.大名) {
@@ -202,9 +206,18 @@ namespace QuizManagement
 			}
 			*/
 
-//			Result careerResult;
-			// 現在の経験値と今回獲得分の合計(0より小さくはならないように)
-			this.nowCareerExp = this.nowCareerExp + correctDiff;
+            //			Result careerResult;
+
+            // 石高の更新用
+            int nextCareerKokudaka = 0;
+            if (this.nowCareer == (int)Career.大名)
+            {
+                nextCareerKokudaka = this.nowCareerkokudaka;
+            }
+
+
+            // 現在の身分経験値と今回獲得分を合計(0より小さくはならないように)
+            this.nowCareerExp = this.nowCareerExp + correctDiff;
 			if ( this.nowCareerExp < 0) {
 				this.nowCareerExp = 0;
 			}
@@ -215,11 +228,14 @@ namespace QuizManagement
 			if (DAIMYOU_THRESHOLD < this.nowCareerExp) {
 				nextCareer = (int)Career.大名;
 
-			} else if (SYUKUROU_THRESHOLD < this.nowCareerExp) {
+                // 石高の更新
+                nextCareerKokudaka += careerExpUpdateAmount(correctDiff);
+                
+            } else if (SYUKUROU_THRESHOLD < this.nowCareerExp) {
 				nextCareer = (int)Career.宿老;
 				nextCarrerUpExp = nextCareerUpExps[(int)Career.宿老];
-				 
-			} else if (KAROU_THRESHOLD < this.nowCareerExp) {
+                
+            } else if (KAROU_THRESHOLD < this.nowCareerExp) {
 				nextCareer = (int)Career.家老;
 				nextCarrerUpExp = nextCareerUpExps[(int)Career.家老];
 
@@ -250,19 +266,24 @@ namespace QuizManagement
 					// 身分が下がった時
 				} else {
 					GamePlayInfo.QuizResult = GamePlayInfo.Result.RankDown;
-				}
+                    // 身分が下がったら絶対に大名ではないので石高を念のため0に初期化する
+                    nextCareerKokudaka = 0;
+                }
 			}
 
-			// 身分の経験値メーターを更新
-			// 大名は身分が最大なのでMAXのまま
-			if (this.nowCareer == (int)Career.大名) {
+            // 石高更新
+            this.nowCareerkokudaka = nextCareerKokudaka;
+
+            // 身分の経験値メーターを更新
+            // 大名は身分が最大なのでMAXのまま
+            if (this.nowCareer == (int)Career.大名) {
 				this.nowCareerMeter = 1.0f;
 
-				// 
 			} else {
 				int nowPoint = 0;
 				int nextPoint = 0;
 
+                // 身分が一つでも上がっている場合
 				if (this.nowCareer > (int)Career.足軽) {
 					// 前回身分が上がった時の経験値からの差分を取得
 					int prevCareerUpExp = nextCareerUpExps[nowCareer - 1];
@@ -283,29 +304,55 @@ namespace QuizManagement
 //			return careerResult;
 		}
 
-		private void backupBeforeStatus() {
-			GamePlayInfo.BeforeRankStar = this.nowRankStar;
+        /// <summary>キャリア石高更新値計算
+        /// <param name="correctDiff">正解不正解の差</param>
+        /// </summary>
+		private int careerExpUpdateAmount(int correctDiff)
+        {
+            int updateAmount = Math.Abs(correctDiff);
+
+            // 更新値が1と3の場合は値を散らすために確率で+1する
+            if (updateAmount < GameDirector.QUIZ_MAX_NUM) {
+                updateAmount += (int)UnityEngine.Random.Range(0, 2);
+            }
+            
+            if (correctDiff < 0) {
+                updateAmount *= -1;
+            }
+
+            return updateAmount;
+        }
+
+        /// <summary>キャリア石高更新値計算
+        /// </summary>
+        private void backupBeforeStatus() {
+//			GamePlayInfo.BeforeRankStar = this.nowRankStar;
 			GamePlayInfo.BeforeRank = this.nowRank;
 			//GamePlayInfo.BeforeRankExpMeter = (float)Math.Round((float)this.nowRankExp / this.nextRankUpExp, 2, MidpointRounding.AwayFromZero);
 			GamePlayInfo.BeforeRankExpMeter = this.nowRankMeter;
 			GamePlayInfo.BeforeCareer = this.nowCareer;
 //			GamePlayInfo.BeforeCareerExpMeter = (float)Math.Round((float)this.nowCareerExp / this.nextCarrerUpExp, 2, MidpointRounding.AwayFromZero);
 			GamePlayInfo.BeforeCareerExpMeter = this.nowCareerMeter;
-		}
+            GamePlayInfo.BeforeCareerKokudaka = this.nowCareerkokudaka;
+        }
 
 		private void backupAfterStatus() {
-			GamePlayInfo.AfterRankStar = this.nowRankStar;
+//			GamePlayInfo.AfterRankStar = this.nowRankStar;
 			GamePlayInfo.AfterRank = this.nowRank;
 //			GamePlayInfo.AfterRankExpMeter = (float)Math.Round((float)this.nowRankExp / this.nextRankUpExp, 2, MidpointRounding.AwayFromZero);
 			GamePlayInfo.AfterRankExpMeter = this.nowRankMeter;
 			GamePlayInfo.AfterCareer = this.nowCareer;
 //			GamePlayInfo.AfterCareerExpMeter = (float)Math.Round((float)this.nowCareerExp / this.nextCarrerUpExp, 2, MidpointRounding.AwayFromZero);
 			GamePlayInfo.AfterCareerExpMeter = this.nowCareerMeter;
-		}
+            GamePlayInfo.AfterCareerKokudaka = this.nowCareerkokudaka;
+        }
 
+        /// <summary>次のランクアップに必要な経験値
+        /// </summary>
 		private int calcNextRankUpExp() {
-			return RANK_CALC_INIT + (this.nowRankStar * RANK_CALC_STAR_ADD) + (this.nowRank / RANK_CALC_STEP);
-		}
+            //			return RANK_CALC_INIT + (this.nowRankStar * RANK_CALC_STAR_ADD) + (this.nowRank / RANK_EXP_UP_STEP);
+            return RANK_CALC_INIT + (this.nowRank / RANK_EXP_UP_STEP);
+        }
 
 
 

@@ -4,8 +4,10 @@ namespace QuizManagement
 {
 	public class StatusInfo
     {
-		public StatusInfo(int rankStar, int rank, int rankExp, float rankMeter, int career, int careerExp, float careerMeter, int careerKokudaka) {
-			RankStar = rankStar;
+        //		public StatusInfo(int rankStar, int rank, int rankExp, float rankMeter, int career, int careerExp, float careerMeter, int careerKokudaka) {
+        public StatusInfo(int rank, int rankExp, float rankMeter, int career, int careerExp, float careerMeter, int careerKokudaka)
+        {
+         //   RankStar = rankStar;
 			Rank = rank;
 			RankExp = rankExp;
 			RankMeter = rankMeter;
@@ -15,7 +17,7 @@ namespace QuizManagement
 			CareerKokudaka = careerKokudaka;
 		}
 
-		public int RankStar {get; private set;}
+//		public int RankStar {get; private set;}
 
 		public int Rank {get; private set;}
 

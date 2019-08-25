@@ -10,20 +10,20 @@ namespace QuizManagement
 {
 	public class TitleDirector : MonoBehaviour
 	{
-//		[SerializeField]
-//		private Text careerText;
-//		[SerializeField]
-//		private Text startText;
+        //		[SerializeField]
+        //		private Text careerText;
+        //		[SerializeField]
+        //		private Text startText;
 
-//		[SerializeField]
-		//		private Text dataClear;
+        //		[SerializeField]
+        //		private Text dataClear;
 
-		//private int textBlinkSpeed = (int)TextBlinkType.Init;
-		//private float time = 0.0f;
+        //private int textBlinkSpeed = (int)TextBlinkType.Init;
+        //private float time = 0.0f;
 
-		[SerializeField]
-		private InputField rankStarEdit;
-		[SerializeField]
+        //		[SerializeField]
+        //		private InputField rankStarEdit;
+        [SerializeField]
 		private InputField rankEdit;
 		[SerializeField]
 		private InputField rankExpEdit;
@@ -204,8 +204,7 @@ namespace QuizManagement
 
 //			saveData.SaveRankInfo(int.Parse(this.rankStarEdit.text), int.Parse(this.rankEdit.text), int.Parse(this.rankExpEdit.text));
 
-			saveData.SaveStatusInfo(int.Parse(this.rankStarEdit.text), 
-				int.Parse(this.rankEdit.text), 
+			saveData.SaveStatusInfo(int.Parse(this.rankEdit.text), 
 				int.Parse(this.rankExpEdit.text),
 				0.0f,
 				int.Parse(this.careerEdit.text), 
@@ -222,7 +221,7 @@ namespace QuizManagement
 			SaveData saveData = new SaveData();
 			StatusInfo statusInfo = saveData.GetStatusInfo();
 
-			this.rankStarEdit.text = statusInfo.RankStar.ToString();
+//			this.rankStarEdit.text = statusInfo.RankStar.ToString();
 			this.rankEdit.text = statusInfo.Rank.ToString();
 			this.rankExpEdit.text = statusInfo.RankExp.ToString();
 			this.careerEdit.text = statusInfo.Career.ToString();
