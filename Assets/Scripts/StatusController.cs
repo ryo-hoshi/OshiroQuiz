@@ -49,7 +49,7 @@ namespace QuizManagement
 
 		private const int RANK_CALC_INIT = 5;
 //		private const int RANK_CALC_STAR_ADD = 15;
-		private const int RANK_EXP_UP_STEP = 6;
+		private const int RANK_EXP_UP_STEP = 5;
 
 //		private int nowRankStar;
 		private int nowRank;
@@ -64,7 +64,7 @@ namespace QuizManagement
 		private float nowRankMeter;
 		private float nowCareerMeter;
 
-		private int nowCareerkokudaka;
+		private int nowCastleDominance;
 
 		SaveData saveData = new SaveData();
 
@@ -82,7 +82,7 @@ namespace QuizManagement
 			this.nowCareer = statusInfo.Career;
 			this.nowCareerExp = statusInfo.CareerExp;
 			this.nowCareerMeter = statusInfo.CareerMeter;
-			this.nowCareerkokudaka = statusInfo.CareerKokudaka;
+			this.nowCastleDominance = statusInfo.CastleDominance;
 
 			Debug.LogWarning("現在のステータス情報ロード直後");
 //			Debug.LogWarning("nowRankStar:" + this.nowRankStar);
@@ -105,6 +105,7 @@ namespace QuizManagement
 
 			// 次のランクアップに必要な経験値（ステータス更新前の経験値のメーター算出用）
 			this.nextRankUpExp = this.calcNextRankUpExp();
+            Debug.LogWarning("次のランクアップに必要な経験値：" + this.nextRankUpExp);
 
 //			Result statusResult;
 //			Result careerResult = Result.STAY;
@@ -145,7 +146,7 @@ namespace QuizManagement
 				this.nowCareer, 
 				this.nowCareerExp, 
 				GamePlayInfo.AfterCareerExpMeter,
-				this.nowCareerkokudaka);
+				this.nowCastleDominance);
 
 			Debug.LogWarning("ステータス更新完了時");
 //			Debug.LogWarning("nowRankStar:" + this.nowRankStar);
@@ -207,54 +208,92 @@ namespace QuizManagement
 			*/
 
             //			Result careerResult;
+            // 計算後の身分、身分経験値、城支配数
+            int nextCareer = 0;
+            int nextCarrerUpExp = 0;
+            int nextCastleDominance = 0;
 
-            // 石高の更新用
-            int nextCareerKokudaka = 0;
+            // 計算前が大名の場合は城支配数を加算する
             if (this.nowCareer == (int)Career.大名)
             {
-                nextCareerKokudaka = this.nowCareerkokudaka;
+                // 現在の城支配数にクイズ結果の値を加算
+                nextCastleDominance = this.nowCastleDominance + castleDominanceUpdateAmount(correctDiff);
+
+                // 城支配数がなくなったときは身分を落とす
+                if (nextCastleDominance < 1)
+                {
+                    // 身分
+                    nextCareer = (int)Career.宿老;
+                    // 身分が上がるために必要な経験値
+                    nextCarrerUpExp = nextCareerUpExps[(int)Career.宿老];
+                    // 身分が上がるために必要な経験値から少し減らした状態を設定（好成績を残せばすぐに上がれるくらい）
+                    this.nowCareerExp = nextCareerUpExps[(int)Career.宿老] - 4;
+                    nextCastleDominance = 0;
+                }
+                else
+                {
+                    nextCareer = (int)Career.大名;
+                    // 大名中は身分経験値は使用しないが、便宜上閾値の経験値を設定しておく
+                    this.nowCareerExp = DAIMYOU_THRESHOLD;
+                }
             }
+            else
+            {
+                // 計算前が大名ではない場合は身分経験値を加算する
 
+                // 現在の身分経験値と今回獲得分を合計(0より小さくはならないように)
+                this.nowCareerExp = this.nowCareerExp + correctDiff;
+                if (this.nowCareerExp < 0)
+                {
+                    this.nowCareerExp = 0;
+                }
 
-            // 現在の身分経験値と今回獲得分を合計(0より小さくはならないように)
-            this.nowCareerExp = this.nowCareerExp + correctDiff;
-			if ( this.nowCareerExp < 0) {
-				this.nowCareerExp = 0;
-			}
+                // このケースは宿老から大名に上がった場合のみのはず
+                if (DAIMYOU_THRESHOLD < this.nowCareerExp)
+                {
+                    nextCareer = (int)Career.大名;
+                    // 大名中は身分経験値は使用しないが、便宜上閾値の経験値を設定しておく
+                    this.nowCareerExp = DAIMYOU_THRESHOLD;
+                    // 大名に上がったときは城支配数は1からスタートする
+                    nextCastleDominance = 1;
 
-			int nextCareer;
-			int nextCarrerUpExp = 0;
+                }
+                else if (SYUKUROU_THRESHOLD < this.nowCareerExp)
+                {
+                    nextCareer = (int)Career.宿老;
+                    nextCarrerUpExp = nextCareerUpExps[(int)Career.宿老];
 
-			if (DAIMYOU_THRESHOLD < this.nowCareerExp) {
-				nextCareer = (int)Career.大名;
+                }
+                else if (KAROU_THRESHOLD < this.nowCareerExp)
+                {
+                    nextCareer = (int)Career.家老;
+                    nextCarrerUpExp = nextCareerUpExps[(int)Career.家老];
 
-                // 石高の更新
-                nextCareerKokudaka += careerExpUpdateAmount(correctDiff);
-                
-            } else if (SYUKUROU_THRESHOLD < this.nowCareerExp) {
-				nextCareer = (int)Career.宿老;
-				nextCarrerUpExp = nextCareerUpExps[(int)Career.宿老];
-                
-            } else if (KAROU_THRESHOLD < this.nowCareerExp) {
-				nextCareer = (int)Career.家老;
-				nextCarrerUpExp = nextCareerUpExps[(int)Career.家老];
+                }
+                else if (SAMURAI_DAISYOU_THRESHOLD < this.nowCareerExp)
+                {
+                    nextCareer = (int)Career.侍大将;
+                    nextCarrerUpExp = nextCareerUpExps[(int)Career.侍大将];
 
-			} else if (SAMURAI_DAISYOU_THRESHOLD < this.nowCareerExp) {
-				nextCareer = (int)Career.侍大将;
-				nextCarrerUpExp = nextCareerUpExps[(int)Career.侍大将];
+                }
+                else if (ASHIGARU_DAISYOU_THRESHOLD < this.nowCareerExp)
+                {
+                    nextCareer = (int)Career.足軽大将;
+                    nextCarrerUpExp = nextCareerUpExps[(int)Career.足軽大将];
 
-			} else if (ASHIGARU_DAISYOU_THRESHOLD < this.nowCareerExp) {
-				nextCareer = (int)Career.足軽大将;
-				nextCarrerUpExp = nextCareerUpExps[(int)Career.足軽大将];
+                }
+                else if (ASHIGARU_KUMIGASHIRA_THRESHOLD < this.nowCareerExp)
+                {
+                    nextCareer = (int)Career.足軽組頭;
+                    nextCarrerUpExp = nextCareerUpExps[(int)Career.足軽組頭];
 
-			} else if (ASHIGARU_KUMIGASHIRA_THRESHOLD < this.nowCareerExp) {
-				nextCareer = (int)Career.足軽組頭;
-				nextCarrerUpExp = nextCareerUpExps[(int)Career.足軽組頭];
-
-			} else {
-				nextCareer = (int)Career.足軽;
-				nextCarrerUpExp = nextCareerUpExps[(int)Career.足軽];
-			}
+                }
+                else
+                {
+                    nextCareer = (int)Career.足軽;
+                    nextCarrerUpExp = nextCareerUpExps[(int)Career.足軽];
+                }
+            }
 
 			// 身分が上下した場合はランクの計算結果でのアニメーション設定を上書きする
 			if (nextCareer != this.nowCareer) {
@@ -266,16 +305,14 @@ namespace QuizManagement
 					// 身分が下がった時
 				} else {
 					GamePlayInfo.QuizResult = GamePlayInfo.Result.RankDown;
-                    // 身分が下がったら絶対に大名ではないので石高を念のため0に初期化する
-                    nextCareerKokudaka = 0;
                 }
 			}
 
-            // 石高更新
-            this.nowCareerkokudaka = nextCareerKokudaka;
+            // 城支配数更新
+            this.nowCastleDominance = nextCastleDominance;
 
             // 身分の経験値メーターを更新
-            // 大名は身分が最大なのでMAXのまま
+            // 大名は身分が最大なのでメーターはMAXを設定しておく
             if (this.nowCareer == (int)Career.大名) {
 				this.nowCareerMeter = 1.0f;
 
@@ -283,17 +320,21 @@ namespace QuizManagement
 				int nowPoint = 0;
 				int nextPoint = 0;
 
-                // 身分が一つでも上がっている場合
+                // 身分が開始時より一つでも上がっている場合
 				if (this.nowCareer > (int)Career.足軽) {
-					// 前回身分が上がった時の経験値からの差分を取得
+					// 今の身分に上がる時の閾値だった経験値を取得
 					int prevCareerUpExp = nextCareerUpExps[nowCareer - 1];
+                    // 今の身分に上がるときの閾値からの差分を取り、現在身分内の経験値を取得
+                    // クイズ前
 					nowPoint = this.nowCareerExp - prevCareerUpExp;
+                    // クイズ後
 					nextPoint = nextCarrerUpExp - prevCareerUpExp;
 
 				} else {
 					nowPoint = this.nowCareerExp;
 					nextPoint = nextCarrerUpExp;
 				}
+                // 次に経験値が上がるためのMAX値からのパーセントを取得
 				this.nowCareerMeter = (float)Math.Round((float)nowPoint / nextPoint, 2, MidpointRounding.AwayFromZero);
 			}
 				
@@ -304,10 +345,10 @@ namespace QuizManagement
 //			return careerResult;
 		}
 
-        /// <summary>キャリア石高更新値計算
+        /// <summary>城支配数の更新値を計算
         /// <param name="correctDiff">正解不正解の差</param>
         /// </summary>
-		private int careerExpUpdateAmount(int correctDiff)
+		private int castleDominanceUpdateAmount(int correctDiff)
         {
             int updateAmount = Math.Abs(correctDiff);
 
@@ -323,7 +364,7 @@ namespace QuizManagement
             return updateAmount;
         }
 
-        /// <summary>キャリア石高更新値計算
+        /// <summary>城支配数更新値計算
         /// </summary>
         private void backupBeforeStatus() {
 //			GamePlayInfo.BeforeRankStar = this.nowRankStar;
@@ -333,7 +374,7 @@ namespace QuizManagement
 			GamePlayInfo.BeforeCareer = this.nowCareer;
 //			GamePlayInfo.BeforeCareerExpMeter = (float)Math.Round((float)this.nowCareerExp / this.nextCarrerUpExp, 2, MidpointRounding.AwayFromZero);
 			GamePlayInfo.BeforeCareerExpMeter = this.nowCareerMeter;
-            GamePlayInfo.BeforeCareerKokudaka = this.nowCareerkokudaka;
+            GamePlayInfo.BeforeCastleDominance = this.nowCastleDominance;
         }
 
 		private void backupAfterStatus() {
@@ -344,7 +385,7 @@ namespace QuizManagement
 			GamePlayInfo.AfterCareer = this.nowCareer;
 //			GamePlayInfo.AfterCareerExpMeter = (float)Math.Round((float)this.nowCareerExp / this.nextCarrerUpExp, 2, MidpointRounding.AwayFromZero);
 			GamePlayInfo.AfterCareerExpMeter = this.nowCareerMeter;
-            GamePlayInfo.AfterCareerKokudaka = this.nowCareerkokudaka;
+            GamePlayInfo.AfterCastleDominance = this.nowCastleDominance;
         }
 
         /// <summary>次のランクアップに必要な経験値

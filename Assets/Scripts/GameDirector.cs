@@ -141,7 +141,7 @@ namespace QuizManagement
 				statusInfo.RankMeter, 
 				statusInfo.Career, 
 				statusInfo.CareerMeter,
-                statusInfo.CareerKokudaka);
+                statusInfo.CastleDominance);
 		}
 
 		/**

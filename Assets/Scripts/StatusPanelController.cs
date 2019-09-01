@@ -17,6 +17,8 @@ namespace QuizManagement
 		private Image rankMeter;
 		[SerializeField]
 		private Image careerMeter;
+        [SerializeField]
+        private Text castleDominance;
         //		[SerializeField]
         //		private Image shiroImage;
 
@@ -49,7 +51,7 @@ namespace QuizManagement
 		 * ステータス表示
 		 */
         //		public void StatusOutput(int rankStar, int rank, float rankExpMeter, int careerNum, float careerExpMeter) {
-        public void StatusOutput(int rank, float rankExpMeter, int careerNum, float careerExpMeter, int careerKokudaka)
+        public void StatusOutput(int rank, float rankExpMeter, int careerNum, float careerExpMeter, int castleDominance)
         {
             this.rankText.text = "お城好きレベル：" + rank;
 			Debug.LogWarning("お城好きレベル経験値メーター：" + rankExpMeter);
@@ -65,16 +67,25 @@ namespace QuizManagement
             */
 
 			StatusController.Career career = (StatusController.Career)Enum.ToObject(typeof(StatusController.Career), careerNum);
-            if (careerKokudaka > 0 && StatusController.Career.大名 == career)
+            if (castleDominance > 0 && StatusController.Career.大名 == career)
             {
-                this.careerText.text = "お城好き階級：" + career.ToString() + "  " + careerKokudaka + "万石";
+                this.castleDominance.text = "城支配数：" + castleDominance;
             }
             else {
-                this.careerText.text = "お城好き階級：" + career.ToString();
+                this.castleDominance.text = "";
             }
-			Debug.LogWarning("お城好き階級：" + career);
+            this.careerText.text = "お城好き階級：" + career.ToString();
+            Debug.LogWarning("お城好き階級：" + career);
 			Debug.LogWarning("階級経験値メーター：" + careerExpMeter);
 			this.careerMeter.fillAmount = careerExpMeter;
 		}
-	}
+
+        /**
+		 * 城支配数表示
+		 */
+        public void CastleDominanceOutput(int castleDominance)
+        {
+            this.castleDominance.text = "城支配数：" + castleDominance;
+        }
+    }
 }

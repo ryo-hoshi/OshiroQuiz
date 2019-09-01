@@ -24,6 +24,8 @@ namespace QuizManagement
         //		[SerializeField]
         //		private InputField rankStarEdit;
         [SerializeField]
+        private InputField CastleDominanceEdit;
+        [SerializeField]
 		private InputField rankEdit;
 		[SerializeField]
 		private InputField rankExpEdit;
@@ -210,8 +212,8 @@ namespace QuizManagement
 				int.Parse(this.careerEdit.text), 
 				int.Parse(this.careerExpEdit.text),
 				0.0f,
-				0 // 石高
-			);
+                int.Parse(this.CastleDominanceEdit.text) // 城支配数
+            );
 
 
 			outputStatusEdit();
@@ -221,8 +223,9 @@ namespace QuizManagement
 			SaveData saveData = new SaveData();
 			StatusInfo statusInfo = saveData.GetStatusInfo();
 
-//			this.rankStarEdit.text = statusInfo.RankStar.ToString();
-			this.rankEdit.text = statusInfo.Rank.ToString();
+            //			this.rankStarEdit.text = statusInfo.RankStar.ToString();
+            this.CastleDominanceEdit.text = statusInfo.CastleDominance.ToString();
+            this.rankEdit.text = statusInfo.Rank.ToString();
 			this.rankExpEdit.text = statusInfo.RankExp.ToString();
 			this.careerEdit.text = statusInfo.Career.ToString();
 			this.careerExpEdit.text = statusInfo.CareerExp.ToString();

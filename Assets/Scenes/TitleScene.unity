@@ -351,7 +351,7 @@ GameObject:
   - component: {fileID: 144831167}
   - component: {fileID: 144831166}
   m_Layer: 5
-  m_Name: RankStar
+  m_Name: CastleDominance
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -409,7 +409,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: "\u57CE"
+  m_Text: "\u57CE\u652F\u914D"
 --- !u!222 &144831167
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1250,7 +1250,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac29d5875d2d1734d94e42a20b28e44e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rankStarEdit: {fileID: 1376934055}
+  CastleDominanceEdit: {fileID: 1376934055}
   rankEdit: {fileID: 1972018135}
   rankExpEdit: {fileID: 1962077370}
   careerEdit: {fileID: 1958989357}
@@ -2510,7 +2510,7 @@ GameObject:
   - component: {fileID: 1376934056}
   - component: {fileID: 1376934055}
   m_Layer: 5
-  m_Name: RankStar_edit
+  m_Name: CastleDominance_edit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

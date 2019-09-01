@@ -13,14 +13,14 @@ namespace QuizManagement
 		public static  float BeforeRankExpMeter;
 		public static  int BeforeCareer;
 		public static  float BeforeCareerExpMeter;
-        public static  int BeforeCareerKokudaka;
+        public static  int BeforeCastleDominance;
 
         //		public static  int AfterRankStar;
         public static  int AfterRank;
 		public static  float AfterRankExpMeter;
 		public static  int AfterCareer;
 		public static  float AfterCareerExpMeter;
-        public static int AfterCareerKokudaka;
+        public static int AfterCastleDominance;
 
         public enum Result
 		{

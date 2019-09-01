@@ -253,6 +253,7 @@ namespace QuizManagement
 				}
 			}
 
+            // 変更後のステータス表示
 			if (GamePlayInfo.Result.RankUp == GamePlayInfo.QuizResult) {
 
 				// メーターが満タンになった時のエフェクト
@@ -266,7 +267,11 @@ namespace QuizManagement
 			} else if (GamePlayInfo.Result.RankDown == GamePlayInfo.QuizResult) {
 				yield return new WaitForSeconds(0.8f);
 				AfterStatusOutput();
-			}
+
+			} else if (GamePlayInfo.AfterCareer == (int)StatusController.Career.大名)
+            {
+                statusPanelController.CastleDominanceOutput(GamePlayInfo.AfterCastleDominance);
+            }
 		}
 
 		/**
@@ -295,7 +300,7 @@ namespace QuizManagement
 				GamePlayInfo.BeforeRankExpMeter, 
 				GamePlayInfo.BeforeCareer, 
 				GamePlayInfo.BeforeCareerExpMeter,
-                GamePlayInfo.BeforeCareerKokudaka);
+                GamePlayInfo.BeforeCastleDominance);
 		}
 
 		private void AfterStatusOutput() {
@@ -320,7 +325,8 @@ namespace QuizManagement
 				GamePlayInfo.AfterRankExpMeter, 
 				GamePlayInfo.AfterCareer, 
 				GamePlayInfo.AfterCareerExpMeter,
-                GamePlayInfo.AfterCareerKokudaka);
+                GamePlayInfo.AfterCastleDominance);
+            Debug.LogWarning("城支配数更新値：" + GamePlayInfo.AfterCastleDominance);
 		}
 
 		private void outputDebug() {
