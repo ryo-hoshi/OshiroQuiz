@@ -8,6 +8,7 @@ namespace QuizManagement
 
 	public class StatusController
 	{
+        // 該当の身分になるために必要な経験値
 		private const int DAIMYOU_THRESHOLD = 51;
 		private const int SYUKUROU_THRESHOLD = 40;
 		private const int KAROU_THRESHOLD = 30;
@@ -36,30 +37,15 @@ namespace QuizManagement
 			{(int)Career.足軽, ASHIGARU_KUMIGASHIRA_THRESHOLD}
 		};
 
-		/*
-		public const string DAIMYOU = "大名";
-		public const string JYOUSYU = "城主";
-		public const string JYOUDAI = "城代";
-		public const string KAROU = "家老";
-		public const string SAMURAI_DAISYOU = "侍大将";
-		public const string ASHIGARU_DAISYOU = "足軽大将";
-		public const string ASHIGARU_KUMIGASHIRA = "足軽組頭";
-		public const string ASHIGARU = "足軽";
-		*/
-
 		private const int RANK_CALC_INIT = 5;
-//		private const int RANK_CALC_STAR_ADD = 15;
 		private const int RANK_EXP_UP_STEP = 5;
 
-//		private int nowRankStar;
 		private int nowRank;
 		private int nowRankExp;
 
 		private int nowCareer;
 		private int nowCareerExp;
-
 		private int nextRankUpExp;
-		//private int nextCarrerUpExp;
 
 		private float nowRankMeter;
 		private float nowCareerMeter;
@@ -75,7 +61,6 @@ namespace QuizManagement
 
 			StatusInfo statusInfo = saveData.GetStatusInfo();
 
-//			this.nowRankStar = statusInfo.RankStar;
 			this.nowRank = statusInfo.Rank;
 			this.nowRankExp = statusInfo.RankExp;
 			this.nowRankMeter = statusInfo.RankMeter;
@@ -85,7 +70,6 @@ namespace QuizManagement
 			this.nowCastleDominance = statusInfo.CastleDominance;
 
 			Debug.LogWarning("現在のステータス情報ロード直後");
-//			Debug.LogWarning("nowRankStar:" + this.nowRankStar);
 			Debug.LogWarning("nowRank:" + this.nowRank);
 			Debug.LogWarning("nowRankExp:" + this.nowRankExp);
 			Debug.LogWarning("RankExpMeterの値（バックアップ前）:" + statusInfo.RankMeter);
@@ -94,8 +78,6 @@ namespace QuizManagement
 			Debug.LogWarning("CareerExpMeterの値（バックアップ前）:" + statusInfo.CareerMeter);
 		}
 
-
-//		public Result StatusUpdate(int correctNum, GameDirector.PlayQuizType playQuizType) {
 		public void StatusUpdate(int correctNum) {
 			// ステータス情報を取得
 			this.loadStatus();
@@ -107,15 +89,11 @@ namespace QuizManagement
 			this.nextRankUpExp = this.calcNextRankUpExp();
             Debug.LogWarning("次のランクアップに必要な経験値：" + this.nextRankUpExp);
 
-//			Result statusResult;
-//			Result careerResult = Result.STAY;
 
 			// ランク情報更新
-//			Result rankResult = rankUpdate(correctNum);
 			this.rankUpdate(correctNum);
 
 			// 階級挑戦クイズの場合は身分情報を更新
-//			if (playQuizType == GameDirector.PlayQuizType.CareerQuiz) {
 			if (GamePlayInfo.PlayQuizType == GamePlayInfo.QuizType.CareerQuiz) {
 
                 //careerResult = careerUpdate(correctDiff);
@@ -125,21 +103,9 @@ namespace QuizManagement
 
                 this.careerUpdate(correctDiff);
 			}
-			/*
-			if (Result.RankDown == careerResult) {
-				statusResult = Result.RankDown;
-			} else if (Result.RankUp == careerResult || Result.RankUp == rankResult) {
-				statusResult = Result.RankUp;
-			} else {
-				statusResult = Result.STAY;
-			}
-
-			return statusResult;
-			*/
 
 			this.backupAfterStatus();
 
-            //			saveData.SaveStatusInfo(this.nowRankStar, 
             saveData.SaveStatusInfo(this.nowRank, 
 				this.nowRankExp, 
 				GamePlayInfo.AfterRankExpMeter, 
@@ -149,7 +115,6 @@ namespace QuizManagement
 				this.nowCastleDominance);
 
 			Debug.LogWarning("ステータス更新完了時");
-//			Debug.LogWarning("nowRankStar:" + this.nowRankStar);
 			Debug.LogWarning("nowRank:" + this.nowRank);
 			Debug.LogWarning("nowRankExp:" + this.nowRankExp);
 			Debug.LogWarning("RankExpMeterの値（バックアップ後）:" + GamePlayInfo.AfterRankExpMeter);
@@ -159,7 +124,6 @@ namespace QuizManagement
 		}
 
 		private void rankUpdate(int correctNum) {
-//			Result rankResult;
 
 			// 現在の経験値と今回獲得分の合計
 			int rankExpSum = this.nowRankExp + correctNum;
@@ -167,15 +131,9 @@ namespace QuizManagement
 			// ランクアップ
 			if (this.nextRankUpExp <= rankExpSum) {
 
-//				if (this.nowRank < 99) {
-					this.nowRank++;
-                //				} else {
-                //this.nowRankStar++;
-                //this.nowRank = 1;
-                //}
+				this.nowRank++;
 
                 this.nowRankExp = rankExpSum - this.nextRankUpExp;
-//				rankResult = Result.RankUp;
 				GamePlayInfo.QuizResult = GamePlayInfo.Result.RankUp;
 
 				// 次のランクアップに必要な経験値を更新（ランクアップ後の経験値のメーター算出用）
@@ -183,13 +141,11 @@ namespace QuizManagement
 
 			} else {
 				this.nowRankExp = rankExpSum;
-//				rankResult = Result.STAY;
 				GamePlayInfo.QuizResult = GamePlayInfo.Result.STAY;
 			}
 			// ランク経験値メーターの更新
 			this.nowRankMeter = (float)Math.Round((float)this.nowRankExp / this.nextRankUpExp, 2, MidpointRounding.AwayFromZero);
 
-            //			return rankResult;
         }
 
         /// <summary>キャリア情報更新
@@ -197,17 +153,6 @@ namespace QuizManagement
         /// </summary>
 		private void careerUpdate(int correctDiff) {
 
-            /*
-			int nextCarrerUpExp = 0;
-			// 現在の身分が大名未満の場合
-			if (this.nowCareer < (int)Career.大名) {
-				nextCarrerUpExp = this.calcNextCareerUpExp();
-
-
-			}
-			*/
-
-            //			Result careerResult;
             // 計算後の身分、身分経験値、城支配数
             int nextCareer = 0;
             int nextCarrerUpExp = 0;
@@ -341,8 +286,6 @@ namespace QuizManagement
 			Debug.Log("career: " + this.nowCareer);
 			Debug.Log("nowCareerExp: " + this.nowCareerExp);
 
-//			careerResult = Result.STAY;
-//			return careerResult;
 		}
 
         /// <summary>城支配数の更新値を計算
@@ -367,23 +310,17 @@ namespace QuizManagement
         /// <summary>城支配数更新値計算
         /// </summary>
         private void backupBeforeStatus() {
-//			GamePlayInfo.BeforeRankStar = this.nowRankStar;
 			GamePlayInfo.BeforeRank = this.nowRank;
-			//GamePlayInfo.BeforeRankExpMeter = (float)Math.Round((float)this.nowRankExp / this.nextRankUpExp, 2, MidpointRounding.AwayFromZero);
 			GamePlayInfo.BeforeRankExpMeter = this.nowRankMeter;
 			GamePlayInfo.BeforeCareer = this.nowCareer;
-//			GamePlayInfo.BeforeCareerExpMeter = (float)Math.Round((float)this.nowCareerExp / this.nextCarrerUpExp, 2, MidpointRounding.AwayFromZero);
 			GamePlayInfo.BeforeCareerExpMeter = this.nowCareerMeter;
             GamePlayInfo.BeforeCastleDominance = this.nowCastleDominance;
         }
 
 		private void backupAfterStatus() {
-//			GamePlayInfo.AfterRankStar = this.nowRankStar;
 			GamePlayInfo.AfterRank = this.nowRank;
-//			GamePlayInfo.AfterRankExpMeter = (float)Math.Round((float)this.nowRankExp / this.nextRankUpExp, 2, MidpointRounding.AwayFromZero);
 			GamePlayInfo.AfterRankExpMeter = this.nowRankMeter;
 			GamePlayInfo.AfterCareer = this.nowCareer;
-//			GamePlayInfo.AfterCareerExpMeter = (float)Math.Round((float)this.nowCareerExp / this.nextCarrerUpExp, 2, MidpointRounding.AwayFromZero);
 			GamePlayInfo.AfterCareerExpMeter = this.nowCareerMeter;
             GamePlayInfo.AfterCastleDominance = this.nowCastleDominance;
         }
@@ -391,32 +328,7 @@ namespace QuizManagement
         /// <summary>次のランクアップに必要な経験値
         /// </summary>
 		private int calcNextRankUpExp() {
-            //			return RANK_CALC_INIT + (this.nowRankStar * RANK_CALC_STAR_ADD) + (this.nowRank / RANK_EXP_UP_STEP);
             return RANK_CALC_INIT + (this.nowRank / RANK_EXP_UP_STEP);
         }
-
-
-
-		/*
-		public enum Result
-		{
-			RankUp,
-			RankDown,
-			STAY,
-		}
-		*/
-		/*
-		public class CareerData
-		{
-			public string Career {get; private set;}
-			public int Exp {get; private set;}
-
-			public CareerData(string career, int exp)
-			{
-				Career = career;
-				Exp = exp;
-			}
-		}
-		*/
 	}
 }

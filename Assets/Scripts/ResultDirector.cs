@@ -24,8 +24,6 @@ namespace QuizManagement
 		private Image rankMeter;
 		[SerializeField]
 		private Image careerMeter;
-        //		[SerializeField]
-        //		private Image shiroImage;
         [SerializeField]
 		private GameObject rankUpParticle;
 		[SerializeField]
@@ -95,7 +93,6 @@ namespace QuizManagement
 			yield return new WaitForSeconds(0.5f);
 
 			this.charactorController.ResultTrigger();
-			//			long resultWait = 0.0f;
 
 			// ステータス更新演出
 			yield return StartCoroutine(statusUpdate());
@@ -105,7 +102,6 @@ namespace QuizManagement
 			bool isStatusUpdate = false;
 
 			// ランクまたは身分が上下の時のアニメーション
-			//			if (GamePlayInfo.Result.RankUp == statusResult) {
 			if (GamePlayInfo.Result.RankUp == GamePlayInfo.QuizResult) {
 
 				soundController.RankUp();
@@ -113,7 +109,6 @@ namespace QuizManagement
 				this.charactorController.RankUpTrigger();
 				isStatusUpdate = true;
 
-				//			} else if (GamePlayInfo.Result.RankDown == statusResult) {
 			} else if (GamePlayInfo.Result.RankDown == GamePlayInfo.QuizResult) {
 
 				soundController.RankDown();
@@ -216,7 +211,6 @@ namespace QuizManagement
 
             // *************************** ランクステータス更新 ***************************
             // ランクアップしたとき
-            //			if (GamePlayInfo.BeforeRankStar < GamePlayInfo.AfterRankStar
             if (GamePlayInfo.BeforeRank < GamePlayInfo.AfterRank) {
 
 				// メーターを満タンまで上げる
@@ -278,24 +272,7 @@ namespace QuizManagement
 		 * 更新前のステータス表示
 		 */
 		private void beforeStatusOutput() {
-            /*
-			this.rankText.text = "お城好きレベル " + GamePlayInfo.BeforeRank;
-			Debug.LogWarning("お城好きレベル経験値　前："+GamePlayInfo.BeforeRankExpMeter);
-			rankMeter.fillAmount = GamePlayInfo.BeforeRankExpMeter;
 
-			if (GamePlayInfo.BeforeRankStar > 0) {
-				shiroImage.enabled = true;
-				Color viewColor = shiroImage.color;
-				viewColor.a = 255f;
-				shiroImage.color = viewColor;
-			}
-
-			StatusController.Career career = (StatusController.Career)Enum.ToObject(typeof(StatusController.Career), GamePlayInfo.BeforeCareer);
-			this.careerText.text = "身分 " + career.ToString();
-			Debug.LogWarning("身分経験値　後："+GamePlayInfo.BeforeCareerExpMeter);
-			careerMeter.fillAmount = GamePlayInfo.BeforeCareerExpMeter;
-			*/
-            //			statusPanelController.StatusOutput(GamePlayInfo.BeforeRankStar, 
             statusPanelController.StatusOutput(GamePlayInfo.BeforeRank, 
 				GamePlayInfo.BeforeRankExpMeter, 
 				GamePlayInfo.BeforeCareer, 
@@ -304,23 +281,7 @@ namespace QuizManagement
 		}
 
 		private void AfterStatusOutput() {
-            /*
-			this.rankText.text = "お城好きレベル " + GamePlayInfo.AfterRank;
-			Debug.LogWarning("お城好きレベル経験値　前："+GamePlayInfo.AfterRankExpMeter);
-			rankMeter.fillAmount = GamePlayInfo.AfterRankExpMeter;
 
-			if (GamePlayInfo.AfterRankStar > 0) {
-				shiroImage.enabled = true;
-				Color viewColor = shiroImage.color;
-				viewColor.a = 255f;
-				shiroImage.color = viewColor;
-			}
-
-			StatusController.Career career = (StatusController.Career)Enum.ToObject(typeof(StatusController.Career), GamePlayInfo.AfterCareer);
-			this.careerText.text = "身分 " + career.ToString();
-			careerMeter.fillAmount = GamePlayInfo.AfterCareerExpMeter;
-			*/
-            //			statusPanelController.StatusOutput(GamePlayInfo.AfterRankStar, 
             statusPanelController.StatusOutput(GamePlayInfo.AfterRank, 
 				GamePlayInfo.AfterRankExpMeter, 
 				GamePlayInfo.AfterCareer, 

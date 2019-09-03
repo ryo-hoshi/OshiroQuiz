@@ -6,7 +6,6 @@ namespace QuizManagement
 {
 	public class SaveData
 	{
-//		private const string quizRankStar = "quiz_rank_star";
 		private const string quizRank = "quiz_rank";
 		private const string quizRankExp = "quiz_rank_exp";
 		private const string quizRankMeter = "quiz_rank_meter";
@@ -19,7 +18,6 @@ namespace QuizManagement
 		public StatusInfo GetStatusInfo()
 		{
 			return new StatusInfo(
-//				PlayerPrefs.GetInt(quizRankStar, 0),
 				PlayerPrefs.GetInt(quizRank, 1),
 				PlayerPrefs.GetInt(quizRankExp, 0),
 				PlayerPrefs.GetFloat(quizRankMeter, 0.0f),
@@ -29,21 +27,9 @@ namespace QuizManagement
 				PlayerPrefs.GetInt(quizCastleDominance, 0)
 			);
 		}
-        /*
-		public void SaveRankInfo(int rankStar, int rank, int rankExp)
-		{
-			PlayerPrefs.SetInt(quizRankStar, rankStar);
-			PlayerPrefs.SetInt(quizRank, rank);
-			PlayerPrefs.SetInt(quizRankExp, rankExp);
 
-			PlayerPrefs.Save();
-		}
-		*/
-
-        //		public void SaveStatusInfo(int rankStar, int rank, int rankExp, float rankMeter, int career, int careerExp, float careerMeter, int castleDominance)
         public void SaveStatusInfo(int rank, int rankExp, float rankMeter, int career, int careerExp, float careerMeter, int castleDominance)
         {
-//			PlayerPrefs.SetInt(quizRankStar, rankStar);
 			PlayerPrefs.SetInt(quizRank, rank);
 			PlayerPrefs.SetInt(quizRankExp, rankExp);
 			PlayerPrefs.SetFloat(quizRankMeter, rankMeter);
@@ -62,22 +48,5 @@ namespace QuizManagement
 
 			PlayerPrefs.Save();
 		}
-
-		/*
-		public void SaveCareerData(string career, int exp)
-		{
-			PlayerPrefs.SetString(quizCareerName, career);
-			PlayerPrefs.SetInt(quizCareerExp, exp);
-
-			PlayerPrefs.Save();
-		}
-		*/
-
-		/*
-		public UdemaeInfo GetUdemaeInfo()
-		{
-
-		}
-		*/
 	}
 }

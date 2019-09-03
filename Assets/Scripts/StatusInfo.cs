@@ -4,10 +4,8 @@ namespace QuizManagement
 {
 	public class StatusInfo
     {
-        //		public StatusInfo(int rankStar, int rank, int rankExp, float rankMeter, int career, int careerExp, float careerMeter, int castleDominance) {
         public StatusInfo(int rank, int rankExp, float rankMeter, int career, int careerExp, float careerMeter, int castleDominance)
         {
-         //   RankStar = rankStar;
 			Rank = rank;
 			RankExp = rankExp;
 			RankMeter = rankMeter;
@@ -16,8 +14,6 @@ namespace QuizManagement
 			CareerMeter = careerMeter;
 			CastleDominance = castleDominance;
 		}
-
-//		public int RankStar {get; private set;}
 
 		public int Rank {get; private set;}
 
@@ -32,17 +28,5 @@ namespace QuizManagement
 		public float CareerMeter {get; private set;}
 
 		public int CastleDominance {get; private set;}
-
-		/*
-		public static GamePlayInfo.Result updateResult = StatusController.Result.STAY;
-
-		public static GamePlayInfo.Result getResult() {
-			return updateResult;
-		}
-
-		public static void setResult(StatusController.Result result) {
-			updateResult = result;
-		}
-		*/
     }
 }

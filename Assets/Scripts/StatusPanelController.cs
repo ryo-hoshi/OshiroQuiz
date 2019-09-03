@@ -19,8 +19,6 @@ namespace QuizManagement
 		private Image careerMeter;
         [SerializeField]
         private Text castleDominance;
-        //		[SerializeField]
-        //		private Image shiroImage;
 
         // Start is called before the first frame update
         void Start()
@@ -50,21 +48,11 @@ namespace QuizManagement
         /**
 		 * ステータス表示
 		 */
-        //		public void StatusOutput(int rankStar, int rank, float rankExpMeter, int careerNum, float careerExpMeter) {
         public void StatusOutput(int rank, float rankExpMeter, int careerNum, float careerExpMeter, int castleDominance)
         {
             this.rankText.text = "お城好きレベル：" + rank;
 			Debug.LogWarning("お城好きレベル経験値メーター：" + rankExpMeter);
 			this.rankMeter.fillAmount = rankExpMeter;
-
-            /*
-            if (rankStar > 0) {
-				shiroImage.enabled = true;
-				Color viewColor = shiroImage.color;
-				viewColor.a = 255f;
-				shiroImage.color = viewColor;
-			}
-            */
 
 			StatusController.Career career = (StatusController.Career)Enum.ToObject(typeof(StatusController.Career), careerNum);
             if (castleDominance > 0 && StatusController.Career.大名 == career)

@@ -21,8 +21,6 @@ namespace QuizManagement
         //private int textBlinkSpeed = (int)TextBlinkType.Init;
         //private float time = 0.0f;
 
-        //		[SerializeField]
-        //		private InputField rankStarEdit;
         [SerializeField]
         private InputField CastleDominanceEdit;
         [SerializeField]
@@ -204,8 +202,6 @@ namespace QuizManagement
 		public void StatusEdit() {
 			SaveData saveData = new SaveData();
 
-//			saveData.SaveRankInfo(int.Parse(this.rankStarEdit.text), int.Parse(this.rankEdit.text), int.Parse(this.rankExpEdit.text));
-
 			saveData.SaveStatusInfo(int.Parse(this.rankEdit.text), 
 				int.Parse(this.rankExpEdit.text),
 				0.0f,
@@ -223,7 +219,6 @@ namespace QuizManagement
 			SaveData saveData = new SaveData();
 			StatusInfo statusInfo = saveData.GetStatusInfo();
 
-            //			this.rankStarEdit.text = statusInfo.RankStar.ToString();
             this.CastleDominanceEdit.text = statusInfo.CastleDominance.ToString();
             this.rankEdit.text = statusInfo.Rank.ToString();
 			this.rankExpEdit.text = statusInfo.RankExp.ToString();

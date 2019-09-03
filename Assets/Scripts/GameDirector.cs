@@ -136,7 +136,6 @@ namespace QuizManagement
 			SaveData saveData = new SaveData();
 			StatusInfo statusInfo = saveData.GetStatusInfo();
 
-            //			statusPanelController.StatusOutput(statusInfo.RankStar, 
             statusPanelController.StatusOutput(statusInfo.Rank, 
 				statusInfo.RankMeter, 
 				statusInfo.Career, 
