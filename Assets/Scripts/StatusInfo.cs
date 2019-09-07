@@ -4,7 +4,8 @@ namespace QuizManagement
 {
 	public class StatusInfo
     {
-        public StatusInfo(int rank, int rankExp, float rankMeter, int career, int careerExp, float careerMeter, int castleDominance)
+        public StatusInfo(int rank, int rankExp, float rankMeter, 
+            int career, int careerExp, float careerMeter, int castleDominance, int daimyouClass)
         {
 			Rank = rank;
 			RankExp = rankExp;
@@ -13,7 +14,8 @@ namespace QuizManagement
 			CareerExp = careerExp;
 			CareerMeter = careerMeter;
 			CastleDominance = castleDominance;
-		}
+            DaimyouClass = daimyouClass;
+        }
 
 		public int Rank {get; private set;}
 
@@ -28,5 +30,7 @@ namespace QuizManagement
 		public float CareerMeter {get; private set;}
 
 		public int CastleDominance {get; private set;}
+
+        public int DaimyouClass {get; private set; }
     }
 }

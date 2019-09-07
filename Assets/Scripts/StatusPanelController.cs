@@ -54,17 +54,17 @@ namespace QuizManagement
 			Debug.LogWarning("お城好きレベル経験値メーター：" + rankExpMeter);
 			this.rankMeter.fillAmount = rankExpMeter;
 
-			StatusController.Career career = (StatusController.Career)Enum.ToObject(typeof(StatusController.Career), careerNum);
-            if (castleDominance > 0 && StatusController.Career.大名 == career)
+            StatusCalcBasis.Career career = StatusCalcBasis.CareerFromNum(careerNum);
+            if (castleDominance > 0 && StatusCalcBasis.Career.大名 == career)
             {
-                this.castleDominance.text = "城支配数：" + castleDominance;
+                this.CastleDominanceOutput(castleDominance);
             }
             else {
                 this.castleDominance.text = "";
             }
-            this.careerText.text = "お城好き階級：" + career.ToString();
-            Debug.LogWarning("お城好き階級：" + career);
-			Debug.LogWarning("階級経験値メーター：" + careerExpMeter);
+            this.careerText.text = "お城好き階級:" + career.ToString();
+            Debug.LogWarning("お城好き階級:" + career);
+			Debug.LogWarning("階級経験値メーター:" + careerExpMeter);
 			this.careerMeter.fillAmount = careerExpMeter;
 		}
 
@@ -73,7 +73,9 @@ namespace QuizManagement
 		 */
         public void CastleDominanceOutput(int castleDominance)
         {
-            this.castleDominance.text = "城支配数：" + castleDominance;
+            StatusCalcBasis.DaimyouClass daimyouClass = StatusCalcBasis.DaimyouClassFromCastleDominance(castleDominance);
+            
+            this.castleDominance.text = "城支配数:" + castleDominance + "  " + daimyouClass.ToString() + "レベル";
         }
     }
 }

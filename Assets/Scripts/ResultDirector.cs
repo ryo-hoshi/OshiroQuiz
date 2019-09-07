@@ -139,7 +139,7 @@ namespace QuizManagement
 			if (GamePlayInfo.PlayQuizType == GamePlayInfo.QuizType.CareerQuiz) {
 				
 				// 身分が上がった時
-				if ((int)GamePlayInfo.BeforeCareer < (int)GamePlayInfo.AfterCareer) {
+				if (GamePlayInfo.BeforeCareer < GamePlayInfo.AfterCareer) {
 					// メーターを満タンまで上げる
 					float reminingUpate = 1.0f - GamePlayInfo.BeforeCareerExpMeter;
 					while (true) {
@@ -164,7 +164,7 @@ namespace QuizManagement
 					*/
 
 					// 身分が下がった時
-				} else if ((int)GamePlayInfo.BeforeCareer > (int)GamePlayInfo.AfterCareer) {
+				} else if (GamePlayInfo.BeforeCareer > GamePlayInfo.AfterCareer) {
 					// メーターを0まで下げる
 					float reminingUpate = GamePlayInfo.BeforeCareerExpMeter;
 					while (true) {
@@ -262,7 +262,7 @@ namespace QuizManagement
 				yield return new WaitForSeconds(0.8f);
 				AfterStatusOutput();
 
-			} else if (GamePlayInfo.AfterCareer == (int)StatusController.Career.大名)
+			} else if (GamePlayInfo.AfterCareer == (int)StatusCalcBasis.Career.大名)
             {
                 statusPanelController.CastleDominanceOutput(GamePlayInfo.AfterCastleDominance);
             }
