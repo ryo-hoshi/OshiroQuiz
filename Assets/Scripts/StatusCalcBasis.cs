@@ -153,6 +153,9 @@ namespace QuizManagement
         /// </summary>
 		public static int CalcNextRankUpExp(int rank)
         {
+            Debug.Log("次のランクアップに必要な経験値："+ RANK_CALC_INIT + (rank / RANK_EXP_UP_STEP));
+            Debug.Log("rank："+ rank);
+            Debug.Log("次のランクアップに必要な経験値：");
             return RANK_CALC_INIT + (rank / RANK_EXP_UP_STEP);
         }
 
@@ -161,6 +164,7 @@ namespace QuizManagement
         /// </summary>
         public static float CalcMeter(int nowValue, int nextStateUpValue)
         {
+            Debug.Log("CalcMeter値："+ (float)Math.Round((float)nowValue / nextStateUpValue, 2, MidpointRounding.AwayFromZero));
             return (float)Math.Round((float)nowValue / nextStateUpValue, 2, MidpointRounding.AwayFromZero);
         }
 

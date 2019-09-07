@@ -202,12 +202,26 @@ namespace QuizManagement
 		public void StatusEdit() {
 			SaveData saveData = new SaveData();
 
-			saveData.SaveStatusInfo(int.Parse(this.rankEdit.text), 
+            int careerNum = (int)StatusCalcBasis.CareerFromCareerExp(int.Parse(this.careerExpEdit.text));
+
+            int careerExp = int.Parse(this.careerExpEdit.text);
+            int nextCareerUpExp = StatusCalcBasis.NextCareerUpExps[careerNum];
+
+            if (careerNum > (int)StatusCalcBasis.Career.足軽)
+            {
+                int prevCareerExp = StatusCalcBasis.NextCareerUpExps[careerNum - 1];
+                careerExp -= prevCareerExp;
+                nextCareerUpExp -= prevCareerExp;
+            }
+
+            Debug.Log("ランクデバッグ値："+ this.rankEdit.text);
+
+            saveData.SaveStatusInfo(int.Parse(this.rankEdit.text), 
 				int.Parse(this.rankExpEdit.text),
-				0.0f,
-                (int)StatusCalcBasis.CareerFromCareerExp(int.Parse(this.careerExpEdit.text)),
+                StatusCalcBasis.CalcMeter(int.Parse(this.rankExpEdit.text), StatusCalcBasis.CalcNextRankUpExp(int.Parse(this.rankEdit.text))),
+                careerNum,
 				int.Parse(this.careerExpEdit.text),
-				0.0f,
+                StatusCalcBasis.CalcMeter(careerExp, nextCareerUpExp),
                 int.Parse(this.CastleDominanceEdit.text), // 城支配数
                 (int)StatusCalcBasis.DaimyouClassFromCastleDominance(int.Parse(this.CastleDominanceEdit.text))
             );
