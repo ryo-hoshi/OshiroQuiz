@@ -50,7 +50,7 @@ namespace QuizManagement
 		 */
         public void StatusOutput(int rank, float rankExpMeter, int careerNum, float careerExpMeter, int castleDominance)
         {
-            this.rankText.text = "お城好きレベル：" + rank;
+            this.rankText.text = "お城好きレベル　" + rank;
 			Debug.LogWarning("お城好きレベル経験値メーター：" + rankExpMeter);
 			this.rankMeter.fillAmount = rankExpMeter;
 
@@ -62,7 +62,7 @@ namespace QuizManagement
             else {
                 this.castleDominance.text = "";
             }
-            this.careerText.text = "お城好き階級:" + career.ToString();
+            this.careerText.text = "お城好き階級　" + career.ToString();
             Debug.LogWarning("お城好き階級:" + career);
 			Debug.LogWarning("階級経験値メーター:" + careerExpMeter);
 			this.careerMeter.fillAmount = careerExpMeter;

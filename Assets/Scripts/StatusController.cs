@@ -105,6 +105,13 @@ namespace QuizManagement
             this.afterRank = nextRank;
             // ランク更新後の経験値メーターを作成
             this.afterRankMeter = StatusCalcBasis.CalcMeter(this.afterRankExp, nextRankUpExp);
+
+            // 身分情報は変更がないので計算前の値をそのまま設定する
+            this.afterCareer = this.beforeCareer;
+            this.afterCareerExp = this.beforeCareerExp;
+            this.afterCareerMeter = this.beforeCareerMeter;
+            this.afterCastleDominance = this.beforeCastleDominance;
+            this.afterDaimyouClass = this.beforeDaimyouClass;
         }
 
         /// <summary>キャリア情報更新
@@ -247,7 +254,6 @@ namespace QuizManagement
                 // 大名中は身分経験値は使用しないが、便宜上大名に上がった時の閾値の経験値を設定しておく
                 this.afterCareerExp = StatusCalcBasis.NextCareerUpExps[this.afterCareer];
 
-                //                this.afterCareerExp = CareerStatusBasis.NextCareerUpExps[(int)CareerStatusBasis.Career.宿老]; 
                 // 大名に上がったときは城支配数は1からスタートする
                 this.afterCastleDominance = 1;
                 // 大名格を設定（デフォルト値だが念のため）

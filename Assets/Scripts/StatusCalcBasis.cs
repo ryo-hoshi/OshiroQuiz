@@ -13,9 +13,9 @@ namespace QuizManagement
         private const int RANK_EXP_UP_STEP = 5;
 
         // 該当の身分になるために必要な経験値
-        private const int DAIMYOU_THRESHOLD = 51;
-		private const int SYUKUROU_THRESHOLD = 40;
-		private const int KAROU_THRESHOLD = 30;
+        private const int DAIMYOU_THRESHOLD = 60;
+		private const int SYUKUROU_THRESHOLD = 44;
+		private const int KAROU_THRESHOLD = 31;
 		private const int SAMURAI_DAISYOU_THRESHOLD = 21;
 		private const int ASHIGARU_DAISYOU_THRESHOLD = 13;
 		private const int ASHIGARU_KUMIGASHIRA_THRESHOLD = 6;

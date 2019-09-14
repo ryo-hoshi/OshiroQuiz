@@ -259,7 +259,7 @@ namespace QuizManagement
 
 			this.alreadyQuizNum++;
 
-			this.numberOfQuestionsText.text = "出題数：" + alreadyQuizNum + " / " + QUIZ_MAX_NUM;
+			this.numberOfQuestionsText.text = "出題数　" + alreadyQuizNum + " / " + QUIZ_MAX_NUM;
 
 			this.charactorController.Wait();
 
@@ -316,7 +316,7 @@ namespace QuizManagement
 					}
 
 					this.correctAnswerNum++;
-					this.correctAnswersText.text = "正解数：" + this.correctAnswerNum;
+					this.correctAnswersText.text = "正解数　" + this.correctAnswerNum;
 
 				} else {
 					Debug.Log("不正解です！");
