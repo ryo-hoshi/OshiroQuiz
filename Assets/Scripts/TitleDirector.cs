@@ -223,7 +223,7 @@ namespace QuizManagement
 				int.Parse(this.careerExpEdit.text),
                 StatusCalcBasis.CalcMeter(careerExp, nextCareerUpExp),
                 int.Parse(this.CastleDominanceEdit.text), // 城支配数
-                (int)StatusCalcBasis.DaimyouClassFromCastleDominance(int.Parse(this.CastleDominanceEdit.text))
+                (int)StatusCalcBasis.DaimyouClassFromCastleNum(int.Parse(this.CastleDominanceEdit.text))
             );
 
 
