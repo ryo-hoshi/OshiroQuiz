@@ -68,14 +68,47 @@ namespace QuizManagement
 			this.careerMeter.fillAmount = careerExpMeter;
 		}
 
-        /**
-		 * 城支配数表示
-		 */
-        public void CastleDominanceOutput(int castleDominance)
+		/// <summary>城支配数と大名格表示
+		/// <param name="castleNum">城支配数</param>
+        /// </summary>
+        public void CastleDominanceOutput(int castleNum)
         {
-            StatusCalcBasis.DaimyouClass daimyouClass = StatusCalcBasis.DaimyouClassFromCastleDominance(castleDominance);
+            StatusCalcBasis.DaimyouClass daimyouClass = StatusCalcBasis.DaimyouClassFromCastleNum(castleNum);
             
-            this.castleDominance.text = "城支配数:" + castleDominance + "  " + daimyouClass.ToString() + "レベル";
+            this.castleDominance.text = "城支配数:" + castleNum + "  " + daimyouClass.ToString() + "レベル";
         }
+
+		/// <summary>城支配数と大名格表示
+		/// <param name="castleNum">城支配数</param>
+        /// </summary>
+        public void CastleDominanceOutput(int castleNum, string daimyouClass)
+        {            
+            this.castleDominance.text = "城支配数:" + castleNum + "  " + daimyouClass + "レベル";
+        }
+
+		/// <summary>更新対象のメーター値取得
+		/// <param name="quizType">クイズ種別</param>
+        /// <returns>メーター表示割合</returns>
+        /// </summary>
+		public float getFillAmount(GamePlayInfo.QuizType quizType)
+		{
+			return (GamePlayInfo.QuizType.CareerQuiz == quizType) ? careerMeter.fillAmount : rankMeter.fillAmount;
+		}
+
+		/// <summary>更新対象のメーター値設定
+		/// <param name="quizType">クイズ種別</param>
+		/// <param name="fillAmount">メーター表示割合</param>
+        /// </summary>
+		public void setFillAmount(GamePlayInfo.QuizType quizType, float fillAmount)
+		{
+			if (GamePlayInfo.QuizType.CareerQuiz == quizType)
+			{
+				careerMeter.fillAmount = fillAmount;
+			}
+			else
+			{
+				rankMeter.fillAmount = fillAmount;
+			}
+		}
     }
 }

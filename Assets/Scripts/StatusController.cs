@@ -210,7 +210,7 @@ namespace QuizManagement
             // 城支配数更新
             this.afterCastleDominance = nextCastleDominance;
             // 大名格更新
-            this.afterDaimyouClass = (int)StatusCalcBasis.DaimyouClassFromCastleDominance(this.afterCastleDominance);
+            this.afterDaimyouClass = (int)StatusCalcBasis.DaimyouClassFromCastleNum(this.afterCastleDominance);
         }
 
         /// <summary>城支配数の更新値を計算
@@ -257,7 +257,7 @@ namespace QuizManagement
                 // 大名に上がったときは城支配数は1からスタートする
                 this.afterCastleDominance = 1;
                 // 大名格を設定（デフォルト値だが念のため）
-                this.afterDaimyouClass = (int)StatusCalcBasis.DaimyouClassFromCastleDominance(this.afterCastleDominance);
+                this.afterDaimyouClass = (int)StatusCalcBasis.DaimyouClassFromCastleNum(this.afterCastleDominance);
             }
         }
         

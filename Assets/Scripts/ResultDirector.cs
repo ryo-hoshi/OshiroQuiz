@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UniRx.Async;
 using System;
 
 namespace QuizManagement
@@ -10,8 +11,6 @@ namespace QuizManagement
 	public class ResultDirector : MonoBehaviour
 	{
 		[SerializeField]
-		private GameObject charactor;
-
 		private CharactorController charactorController;
 
 		private bool isResultAnimEnd = false;
@@ -20,31 +19,29 @@ namespace QuizManagement
 		private Text rankText;
 		[SerializeField]
 		private Text careerText;
-		[SerializeField]
-		private Image rankMeter;
-		[SerializeField]
-		private Image careerMeter;
+		// [SerializeField]
+		// private Image rankMeter;
+		// [SerializeField]
+		// private Image careerMeter;
         [SerializeField]
-		private GameObject rankUpParticle;
-		[SerializeField]
-		private GameObject sound;
-		[SerializeField]
-		private GameObject statusPanel;
+		private Particle burstParticle;
 
 		[SerializeField]
 		private Text debugText1;
 		[SerializeField]
 		private Text debugText2;
-
+		[SerializeField]
 		private StatusPanelController statusPanelController;
-
+		[SerializeField]
 		private SoundController soundController;
 
 		// ちょっとずつメーターを更新するための、一度に更新するメータの割合
-		private float UPDATE_STEP = 0.03f;
+		private const float Fill_AMOUNT_UPDATE_STEP = 0.02f;
+		private const float Fill_AMOUNT_MAX = 1.0f;
+		private const float Fill_AMOUNT_MIN = 0.0f;
 
 		// Start is called before the first frame update
-		void Start()
+		async UniTask Start()
 		{
 			/************************** デバッグ用 ******************************/
 			/*
@@ -65,18 +62,14 @@ namespace QuizManagement
 			GamePlayInfo.AfterCareerExpMeter = 0.8f;
 			*/
 			/********************************************************************/
-			this.statusPanelController = this.statusPanel.GetComponent<StatusPanelController>(); 
 
-			this.charactorController = this.charactor.GetComponent<CharactorController>();
 			string charactorExist = this.charactorController == null ? "null" : "nullじゃない";
 			Debug.LogWarning("結果画面のキャラクター取得：" + charactorExist);
 			beforeStatusOutput();
 
-			soundController = sound.GetComponent<SoundController>();
+			await resultAnimation();
 
-			StartCoroutine(resultAnimation());
-
-	}
+		}
 
 		// Update is called once per frame
 		void Update()
@@ -87,31 +80,31 @@ namespace QuizManagement
 		}
 
 
-		private IEnumerator resultAnimation() {
+		private async UniTask resultAnimation() {
 
 			// 画面ロード直後からアニメーション開始までの時間
-			yield return new WaitForSeconds(0.5f);
+			await UniTask.Delay(500);
 
 			this.charactorController.ResultTrigger();
 
 			// ステータス更新演出
-			yield return StartCoroutine(statusUpdate());
+			await statusDisplayUpdate();
 
-
-			yield return new WaitForSeconds(0.3f);
+			await UniTask.Delay(300);
 			bool isStatusUpdate = false;
 
-			// ランクまたは身分が上下の時のアニメーション
+			// ランクまたは身分(大名格)が上がった時のキャラクターのアニメーション
 			if (GamePlayInfo.Result.RankUp == GamePlayInfo.QuizResult) {
 
-				soundController.RankUp();
+				this.soundController.RankUp();
 
 				this.charactorController.RankUpTrigger();
 				isStatusUpdate = true;
 
+			// 身分(大名格)が下がった時のキャラクターのアニメーション
 			} else if (GamePlayInfo.Result.RankDown == GamePlayInfo.QuizResult) {
 
-				soundController.RankDown();
+				this.soundController.RankDown();
 
 				this.charactorController.RankDownTrigger();
 				isStatusUpdate = true;
@@ -121,7 +114,7 @@ namespace QuizManagement
 			// ステータス更新のアニメーションが終わるまで待つ
 			// TTODO ちゃんとアニメーションの完了をチェックする
 			if (isStatusUpdate) {
-				yield return new WaitForSeconds(1.0f);
+				await UniTask.Delay(1000);
 			}
 
 			// TODO 後で消す　デバッグ用
@@ -133,139 +126,229 @@ namespace QuizManagement
 		/**
 		 * Rank、身分の経験値表示を更新
 		 */
-		private IEnumerator statusUpdate() {
-			// *************************** 身分ステータス更新 ***************************
-			bool isCareerUpdate = false;
+		private async UniTask  statusDisplayUpdate() {
+			// 経験値メーターを増減させる演出
+			// ランクや身分が上下する場合はメーターをいったん空かMAXで止める
+
+			// ************ 身分表示更新演出 ************
+			// bool isCareerUpdate = false;
 			if (GamePlayInfo.PlayQuizType == GamePlayInfo.QuizType.CareerQuiz) {
-				
-				// 身分が上がった時
-				if (GamePlayInfo.BeforeCareer < GamePlayInfo.AfterCareer) {
-					// メーターを満タンまで上げる
-					float reminingUpate = 1.0f - GamePlayInfo.BeforeCareerExpMeter;
-					while (true) {
-						if (reminingUpate - UPDATE_STEP > 0) {
-							careerMeter.fillAmount += UPDATE_STEP;
-							reminingUpate -= UPDATE_STEP;
-						} else {
-							careerMeter.fillAmount += reminingUpate;
-							break;
-						}
-						yield return null;
-					}
 
-					// TODO 身分上がるときのサウンド
-
-					isCareerUpdate = true;
-					/*
-					// メーターが満タンになった時のエフェクト
-					GameObject particle = Instantiate(rankUpParticle) as GameObject;
-					particle.transform.position = new Vector3(0.0f, 1.0f, -0.5f);
-					particle.GetComponent<ParticleSystem>().Play();
-					*/
-
-					// 身分が下がった時
-				} else if (GamePlayInfo.BeforeCareer > GamePlayInfo.AfterCareer) {
-					// メーターを0まで下げる
-					float reminingUpate = GamePlayInfo.BeforeCareerExpMeter;
-					while (true) {
-						if (reminingUpate - UPDATE_STEP > 0) {
-							careerMeter.fillAmount -= UPDATE_STEP;
-							reminingUpate -= UPDATE_STEP;
-						} else {
-							careerMeter.fillAmount -= reminingUpate;
-							break;
-						}
-						yield return null;
-					}
-					// TODO ランク落ちるときのサウンド
-
-					isCareerUpdate = true;
-
-
-					// 現状維持
-				} else {
-					float updateAmount = GamePlayInfo.AfterCareerExpMeter - GamePlayInfo.BeforeCareerExpMeter;
-					float reminingUpdate = updateAmount < 0 ? -updateAmount : updateAmount;
-					while (true) {
-						if (reminingUpdate - UPDATE_STEP > 0) {
-							if (updateAmount > 0) {
-								careerMeter.fillAmount += UPDATE_STEP;
-							} else {
-								careerMeter.fillAmount -= UPDATE_STEP;
-							}
-							reminingUpdate -= UPDATE_STEP;
-						} else {
-							if (updateAmount > 0) {
-								careerMeter.fillAmount += UPDATE_STEP;
-							} else {
-								careerMeter.fillAmount -= reminingUpdate;
-							}
-							break;
-						}
-						yield return null;
-					}
+				if (GamePlayInfo.BeforeCareer == (int)StatusCalcBasis.Career.大名)
+				{
+					// 城支配数の更新
+					await castleDominanceDisplayUpdate();
 				}
+				else
+				{
+					// 身分表示更新
+					await careerDisplayUpdate();
+				}
+
 				// 身分とランクのメーター更新の間の待ち
-				yield return new WaitForSeconds(1.0f);
+				await UniTask.Delay(1000);
 			}
 
-            // *************************** ランクステータス更新 ***************************
-            // ランクアップしたとき
+            // ************ ランク表示更新演出 ************
+			await rankDisplayUpdate();
+
+            // ************ エフェクト表示と最終的なステータス表示 ************
+			if (GamePlayInfo.Result.RankUp == GamePlayInfo.QuizResult
+			 || GamePlayInfo.Result.RankDown == GamePlayInfo.QuizResult)
+			{
+				if (GamePlayInfo.Result.RankUp == GamePlayInfo.QuizResult)
+				{
+					var particle = Instantiate(this.burstParticle);
+					particle.transform.position = new Vector3(0.0f, 1.0f, -0.5f);
+					particle.GetComponent<ParticleSystem>().Play();
+				}
+
+				await UniTask.Delay(800);
+				AfterStatusOutput();
+			}
+			// else if (GamePlayInfo.Result.RankDown == GamePlayInfo.QuizResult)
+			// {
+			// 	await UniTask.Delay(800);
+			// 	AfterStatusOutput();
+			// }
+			// ステータス表示更新で行う
+			// else if (GamePlayInfo.AfterCareer == (int)StatusCalcBasis.Career.大名)
+            // {
+            //     statusPanelController.CastleDominanceOutput(GamePlayInfo.AfterCastleDominance);
+            // }
+		}
+
+        /// <summary>身分表示更新
+        /// </summary>
+		private async UniTask  careerDisplayUpdate() {
+			// 身分が上がった時
+			if (GamePlayInfo.BeforeCareer < GamePlayInfo.AfterCareer) {
+				// メーターを満タンまで上げる
+				await meterIncrease(GamePlayInfo.QuizType.CareerQuiz, Fill_AMOUNT_MAX);
+
+				if (GamePlayInfo.AfterCareer == (int)StatusCalcBasis.Career.大名)
+				{
+					// TODO 大名に上がった場合　メーターの色を変える
+				}
+
+				// TODO 身分上がるときのサウンド
+
+				// 身分が下がった時
+			} else if (GamePlayInfo.BeforeCareer > GamePlayInfo.AfterCareer) {
+				// メーターを0まで下げる
+				await meterIncrease(GamePlayInfo.QuizType.CareerQuiz, Fill_AMOUNT_MAX);
+
+				// TODO 身分落ちるときのサウンド
+
+				// 身分の変化なし
+			} else {
+				// メーターが増える場合
+				if (GamePlayInfo.BeforeCareerExpMeter < GamePlayInfo.AfterCareerExpMeter)
+				{
+					await meterIncrease(GamePlayInfo.QuizType.CareerQuiz, GamePlayInfo.AfterCareerExpMeter);
+				}
+				else if (GamePlayInfo.BeforeCareerExpMeter > GamePlayInfo.AfterCareerExpMeter)
+				{
+					await meterDecrease(GamePlayInfo.QuizType.CareerQuiz, GamePlayInfo.AfterCareerExpMeter);
+				}
+			}
+		}
+
+        /// <summary>ランク表示更新
+        /// </summary>
+		private async UniTask rankDisplayUpdate()
+		{
+    		// ランクアップしたとき
             if (GamePlayInfo.BeforeRank < GamePlayInfo.AfterRank) {
 
 				// メーターを満タンまで上げる
-				float reminingRankUpate = 1.0f - GamePlayInfo.BeforeRankExpMeter;
-				while (true) {
-					if (reminingRankUpate - UPDATE_STEP > 0) {
-						rankMeter.fillAmount += UPDATE_STEP;
-						reminingRankUpate -= UPDATE_STEP;
-					} else {
-						rankMeter.fillAmount += reminingRankUpate;
-						break;
-					}
-					yield return null;
-				}
-				/*
-				// メーターが満タンになった時のエフェクト
-				GameObject particle = Instantiate(rankUpParticle) as GameObject;
-				particle.transform.position = new Vector3(0.0f, 1.0f, -0.5f);
-				particle.GetComponent<ParticleSystem>().Play();
-				*/
+				await meterIncrease(GamePlayInfo.QuizType.RegularQuiz, Fill_AMOUNT_MAX);
 
 				// ランク維持
 			} else {
-				float reminingUpate = GamePlayInfo.AfterRankExpMeter - GamePlayInfo.BeforeRankExpMeter;
-				while (true) {
-					if (reminingUpate - UPDATE_STEP > 0) {
-						rankMeter.fillAmount += UPDATE_STEP;
-						reminingUpate -= UPDATE_STEP;
-					} else {
-						rankMeter.fillAmount += reminingUpate;
-						break;
-					}
-					yield return null;
+				// ランクは減らないので経験値が増えた場合のみメーターを増やす
+				if (GamePlayInfo.BeforeRankExpMeter < GamePlayInfo.AfterRankExpMeter)
+				{
+					await meterIncrease(GamePlayInfo.QuizType.RegularQuiz, GamePlayInfo.AfterRankExpMeter);
 				}
 			}
+		}
 
-            // 変更後のステータス表示
-			if (GamePlayInfo.Result.RankUp == GamePlayInfo.QuizResult) {
+		/// <summary>メーターの値を増やす
+		/// <param name="quizType">クイズ種別</param>
+		/// <param name="upperLimit">メーターを増やす上限</param>
+        /// </summary>
+		private async UniTask meterIncrease(GamePlayInfo.QuizType quizType, float upperLimit)
+		{
+			float nextAmount = Fill_AMOUNT_MIN;
+			while (nextAmount < upperLimit) {
+				nextAmount = Mathf.Min(upperLimit, statusPanelController.getFillAmount(quizType) + Fill_AMOUNT_UPDATE_STEP);
+				statusPanelController.setFillAmount(quizType, nextAmount);
+				await UniTask.DelayFrame(1);
+			}
+		}
 
-				// メーターが満タンになった時のエフェクト
-				GameObject particle = Instantiate(rankUpParticle) as GameObject;
-				particle.transform.position = new Vector3(0.0f, 1.0f, -0.5f);
-				particle.GetComponent<ParticleSystem>().Play();
+		/// <summary>メーターの値を減らす
+		/// <param name="quizType">クイズ種別</param>
+		/// <param name="upperLimit">メーターを減らす下限</param>
+        /// </summary>
+		private async UniTask meterDecrease(GamePlayInfo.QuizType quizType, float lowerLimit)
+		{
+			float nextAmount = Fill_AMOUNT_MAX;
+			while (nextAmount > lowerLimit) {
+				nextAmount = Mathf.Max(lowerLimit, statusPanelController.getFillAmount(quizType) - Fill_AMOUNT_UPDATE_STEP);
+				statusPanelController.setFillAmount(quizType, nextAmount);
+				await UniTask.DelayFrame(1);
+			}
+		}
 
-				yield return new WaitForSeconds(0.8f);
-				AfterStatusOutput();
 
-			} else if (GamePlayInfo.Result.RankDown == GamePlayInfo.QuizResult) {
-				yield return new WaitForSeconds(0.8f);
-				AfterStatusOutput();
+		/// <summary>城支配数の更新
+        /// </summary>
+		private async UniTask castleDominanceDisplayUpdate()
+		{
+			int beforeCastleNum = GamePlayInfo.BeforeCastleDominance;
+			string beforeDaimyouClass = StatusCalcBasis.DaimyouClassFromCastleNum(beforeCastleNum).ToString();
 
-			} else if (GamePlayInfo.AfterCareer == (int)StatusCalcBasis.Career.大名)
-            {
-                statusPanelController.CastleDominanceOutput(GamePlayInfo.AfterCastleDominance);
-            }
+			int afterCastleNum = GamePlayInfo.AfterCastleDominance;
+			string afterDaimyouClass = StatusCalcBasis.DaimyouClassFromCastleNum(afterCastleNum).ToString();
+
+//			StatusCalcBasis.DaimyouClass afterDaimyouClass = StatusCalcBasis.DaimyouClassFromCastleNum(afterNum);
+//			StatusCalcBasis.DaimyouClass nextDaimyouClass = StatusCalcBasis.DaimyouClassFromCastleNum(beforeNum);
+
+			// TODO UniTaskの中でUIを操作してもよいのか？
+
+			// 上昇時
+			if (beforeCastleNum < afterCastleNum)
+			{
+				// TODO 支配数増加時の音を鳴らす
+
+				for (int i = beforeCastleNum + 1; i <= afterCastleNum; i++)
+				{
+					statusPanelController.CastleDominanceOutput(i, beforeDaimyouClass);
+
+					await UniTask.Delay(400);
+				}
+
+				// TODO 支配数増加時の音を止める
+
+				// 大名格が上がった場合
+				if (!beforeDaimyouClass.Equals(afterDaimyouClass))
+				{
+					// TODO 大名格が上がった時の音を鳴らす
+
+					// TODO メーターの色を変える
+				}
+			}
+			else 
+			{
+				// TODO 支配数減少時の音を鳴らす
+
+				for (int i = beforeCastleNum - 1; i >= afterCastleNum; i--)
+				{
+					statusPanelController.CastleDominanceOutput(i, beforeDaimyouClass);
+
+					await UniTask.Delay(400);
+				}
+
+				// TODO 支配数減少時の音を止める
+
+				// 大名格が下がった場合
+				if (!beforeDaimyouClass.Equals(afterDaimyouClass) || GamePlayInfo.AfterCastleDominance == 0)
+				{
+					// TODO 大名格が下がった時の音を鳴らす
+
+					// TODO メーターを割って色を変える
+
+
+
+				}
+			}
+		}
+
+		/// <summary>城支配数を増やす
+		/// <param name="startCastleNum">クイズ種別</param>
+		/// <param name="upperLimit">城支配数を増やす上限</param>
+        /// </summary>
+		private async UniTask castleDominanceIncrease(int startCastleNum, int upperLimit)
+		{
+		
+		}
+
+		/// <summary>城支配数を減らす
+		/// <param name="startCastleNum">クイズ種別</param>
+		/// <param name="lowerLimit">城支配数を減らす上限</param>
+		/// </summary>
+		private async UniTask castleDominanceDecrease(int startCastleNum, int lowerLimit)
+		{
+		
+		}
+
+		/// <summary>メーターの色を変える
+		/// </summary>
+		private void setMeterColor(StatusCalcBasis.DaimyouClass daimyouClass) {
+
+
 		}
 
 		/**

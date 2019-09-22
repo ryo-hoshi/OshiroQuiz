@@ -113,7 +113,7 @@ namespace QuizManagement
         /// <summary>城支配数に対応する大名格を取得する
         /// <param name="castleDominance">城支配数</param>
         /// </summary>
-        public static DaimyouClass DaimyouClassFromCastleDominance(int castleDominance)
+        public static DaimyouClass DaimyouClassFromCastleNum(int castleDominance)
         {
             if (REIWA_BAKUFU_THRESHOLD <= castleDominance)
             {
