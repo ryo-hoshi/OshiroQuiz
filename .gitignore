@@ -38,3 +38,11 @@ Thumbs.db
 bk/
 export/
 Assets/Resources/
+Assets/Plugins/Editor/VSCode.cs.meta
+Assets/Plugins/Editor/VSCode.cs
+.vs/OshiroQuiz/v15/Server/sqlite3/storage.ide-wal
+.vs/OshiroQuiz/v15/Server/sqlite3/storage.ide-shm
+.vs/OshiroQuiz/v15/Server/sqlite3/db.lock
+.vs/OshiroQuiz/v15/Server/sqlite3/storage.ide
+.vscode/settings.json
+Assets/Plugins/Editor.meta
