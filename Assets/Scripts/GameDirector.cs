@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System.IO;
-using System;
-using System.Text.RegularExpressions;
+using Common;
 using UnityEngine.SceneManagement;
 using QuizManagement.Api;
 
@@ -23,8 +21,14 @@ namespace QuizManagement
 		[SerializeField]
 		private Button choice3;
 
-		[SerializeField]
-		private GameObject charactor;
+        [SerializeField]
+        private Button regularQuizButton;
+
+        [SerializeField]
+		private Button careerQuizButton;
+
+		// [SerializeField]
+		// private GameObject charactor;
 		[SerializeField]
 		private Text numberOfQuestionsText;
 		[SerializeField]
@@ -35,7 +39,8 @@ namespace QuizManagement
 
 		[SerializeField]
 		private Image timeLimitMeter;
-
+		
+		[SerializeField]
 		private CharactorController charactorController;
 		public const int QUIZ_MAX_NUM = 5;
 
@@ -43,14 +48,14 @@ namespace QuizManagement
 		private Quiz currentQuiz;
 
 		// クイズの回答待ちかどうか
-		private bool isAnswerWait = false;
+		// private bool isAnswerWait = false;
 
 		// 出題済クイズ数
 		private int alreadyQuizNum = 0;
 
 		private int correctAnswerNum = 0;
 
-		private bool isQuizEnd = false;
+		// private bool isQuizEnd = false;
 
 		private const int TIME_OVER = 9;
 
@@ -66,8 +71,8 @@ namespace QuizManagement
 		private GameObject selectUIPanel;
 		[SerializeField]
 		private GameObject questionPanel;
+
 		[SerializeField]
-		private GameObject statusPanel;
 		private StatusPanelController statusPanelController;
 
 		// クイズ出題状態の初期化
@@ -93,15 +98,19 @@ namespace QuizManagement
 		void Start()
 		{
 			this.selectUIPanel.SetActive(true);
-			this.statusPanel.SetActive(true);
+			// this.statusPanel.SetActive(true);
+			this.statusPanelController.DisplayChange(true);
 			this.gameUIPanel.SetActive(false);
 			this.questionPanel.SetActive(false);
 
-			this.charactorController = this.charactor.GetComponent<CharactorController>(); 
-			this.apiController = this.api.GetComponent<ApiController>(); 
+			// this.charactorController = this.charactor.GetComponent<CharactorController>(); 
+			this.apiController = this.api.GetComponent<ApiController>();
+			// TODO Unitaskに置き換える
 			this.timeLimitCoroutine = timeLimitCheck();
 
-			this.statusPanelController = this.statusPanel.GetComponent<StatusPanelController>();
+			// TODO リスナーの解除もやる
+            regularQuizButton.onClick.AddListener(() => SelectQuizType((int)GamePlayInfo.QuizType.RegularQuiz));
+            careerQuizButton.onClick.AddListener(() => SelectQuizType((int)GamePlayInfo.QuizType.CareerQuiz));
 
             statusOutput();
 
@@ -136,20 +145,26 @@ namespace QuizManagement
 			SaveData saveData = new SaveData();
 			StatusInfo statusInfo = saveData.GetStatusInfo();
 
+			Debug.Log("■■■statusInfo.DaimyouClass:"+statusInfo.DaimyouClass);
+
             statusPanelController.StatusOutput(statusInfo.Rank, 
 				statusInfo.RankMeter, 
 				statusInfo.Career, 
 				statusInfo.CareerMeter,
-                statusInfo.CastleDominance);
+                statusInfo.CastleDominance,
+				statusInfo.DaimyouClass);
 		}
 
 		/**
 		 * クイズ種類選択
 		 */
-		public void SelectQuizType(int selectType) {
+		private void SelectQuizType(int selectType) {
+			SoundController.instance.Tap1();
+
 			// パネルを切り替え
 			this.selectUIPanel.SetActive(false);
-			this.statusPanel.SetActive(false);
+			// this.statusPanel.SetActive(false);
+			this.statusPanelController.DisplayChange(false);
 			this.gameUIPanel.SetActive(true);
 			this.questionPanel.SetActive(true);
 

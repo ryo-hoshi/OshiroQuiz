@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UniRx.Async;
-using System;
+using Common;
 
 namespace QuizManagement
 {
@@ -32,8 +32,6 @@ namespace QuizManagement
 		private Text debugText2;
 		[SerializeField]
 		private StatusPanelController statusPanelController;
-		[SerializeField]
-		private SoundController soundController;
 
 		// ちょっとずつメーターを更新するための、一度に更新するメータの割合
 		private const float Fill_AMOUNT_UPDATE_STEP = 0.02f;
@@ -82,10 +80,10 @@ namespace QuizManagement
 
 		private async UniTask resultAnimation() {
 
-			// 画面ロード直後からアニメーション開始までの時間
-			await UniTask.Delay(500);
-
 			this.charactorController.ResultTrigger();
+
+			// 画面ロード直後からアニメーション開始までの時間
+			await UniTask.Delay(1000);
 
 			// ステータス更新演出
 			await statusDisplayUpdate();
@@ -96,7 +94,7 @@ namespace QuizManagement
 			// ランクまたは身分(大名格)が上がった時のキャラクターのアニメーション
 			if (GamePlayInfo.Result.RankUp == GamePlayInfo.QuizResult) {
 
-				this.soundController.RankUp();
+				SoundController.instance.RankUp();
 
 				this.charactorController.RankUpTrigger();
 				isStatusUpdate = true;
@@ -104,7 +102,7 @@ namespace QuizManagement
 			// 身分(大名格)が下がった時のキャラクターのアニメーション
 			} else if (GamePlayInfo.Result.RankDown == GamePlayInfo.QuizResult) {
 
-				this.soundController.RankDown();
+				SoundController.instance.RankDown();
 
 				this.charactorController.RankDownTrigger();
 				isStatusUpdate = true;
@@ -164,7 +162,12 @@ namespace QuizManagement
 				}
 
 				await UniTask.Delay(800);
+
+				// ランクや身分などに上下があった時の最終的なステータス
 				AfterStatusOutput();
+
+				// メーターが割れた演出を戻す（今割れているかどうか気にせず固定で指定）
+				statusPanelController.setCareerCrack(false);
 			}
 			// else if (GamePlayInfo.Result.RankDown == GamePlayInfo.QuizResult)
 			// {
@@ -183,6 +186,10 @@ namespace QuizManagement
 		private async UniTask  careerDisplayUpdate() {
 			// 身分が上がった時
 			if (GamePlayInfo.BeforeCareer < GamePlayInfo.AfterCareer) {
+
+				// メーターアップ時のサウンド
+				SoundController.instance.MeterUp();
+
 				// メーターを満タンまで上げる
 				await meterIncrease(GamePlayInfo.QuizType.CareerQuiz, Fill_AMOUNT_MAX);
 
@@ -191,24 +198,42 @@ namespace QuizManagement
 					// TODO 大名に上がった場合　メーターの色を変える
 				}
 
-				// TODO 身分上がるときのサウンド
+				// // TODO 身分上がるときのサウンド
+				// SoundController.instance.RankUp();
 
 				// 身分が下がった時
 			} else if (GamePlayInfo.BeforeCareer > GamePlayInfo.AfterCareer) {
-				// メーターを0まで下げる
-				await meterIncrease(GamePlayInfo.QuizType.CareerQuiz, Fill_AMOUNT_MAX);
 
-				// TODO 身分落ちるときのサウンド
+				// メーターダウン時のサウンド
+				// SoundController.instance.MeterDown();
+				// いったんメーターアップと共通にしてみる
+				SoundController.instance.MeterUp();
+
+				// メーターを0まで下げる
+				await meterDecrease(GamePlayInfo.QuizType.CareerQuiz, Fill_AMOUNT_MIN);
+
+				// // TODO 身分落ちるときのサウンド
+				// SoundController.instance.RankDown();
 
 				// 身分の変化なし
 			} else {
 				// メーターが増える場合
 				if (GamePlayInfo.BeforeCareerExpMeter < GamePlayInfo.AfterCareerExpMeter)
 				{
+					// メーターアップ時のサウンド
+					SoundController.instance.MeterUp();
+					await UniTask.Delay(300);
+
 					await meterIncrease(GamePlayInfo.QuizType.CareerQuiz, GamePlayInfo.AfterCareerExpMeter);
 				}
 				else if (GamePlayInfo.BeforeCareerExpMeter > GamePlayInfo.AfterCareerExpMeter)
 				{
+					// メーターダウン時のサウンド
+					// SoundController.instance.MeterDown();
+					// いったんメーターアップと共通にしてみる
+					SoundController.instance.MeterUp();
+					await UniTask.Delay(300);
+
 					await meterDecrease(GamePlayInfo.QuizType.CareerQuiz, GamePlayInfo.AfterCareerExpMeter);
 				}
 			}
@@ -282,12 +307,15 @@ namespace QuizManagement
 			if (beforeCastleNum < afterCastleNum)
 			{
 				// TODO 支配数増加時の音を鳴らす
+				SoundController.instance.MeterUp();
 
-				for (int i = beforeCastleNum + 1; i <= afterCastleNum; i++)
+				await UniTask.Delay(300);
+
+				for (int castleNum = beforeCastleNum + 1; castleNum <= afterCastleNum; castleNum++)
 				{
-					statusPanelController.CastleDominanceOutput(i, beforeDaimyouClass);
+					statusPanelController.CastleDominanceOutput(castleNum, beforeDaimyouClass);
 
-					await UniTask.Delay(400);
+					await UniTask.Delay(300);
 				}
 
 				// TODO 支配数増加時の音を止める
@@ -295,20 +323,22 @@ namespace QuizManagement
 				// 大名格が上がった場合
 				if (!beforeDaimyouClass.Equals(afterDaimyouClass))
 				{
-					// TODO 大名格が上がった時の音を鳴らす
-
-					// TODO メーターの色を変える
+					// // TODO 大名格が上がった時の音を鳴らす
+					// SoundController.instance.MeterUp();
 				}
 			}
 			else 
 			{
 				// TODO 支配数減少時の音を鳴らす
+				SoundController.instance.MeterDown();
 
-				for (int i = beforeCastleNum - 1; i >= afterCastleNum; i--)
+				await UniTask.Delay(300);
+
+				for (int castleNum = beforeCastleNum - 1; castleNum >= afterCastleNum; castleNum--)
 				{
-					statusPanelController.CastleDominanceOutput(i, beforeDaimyouClass);
+					statusPanelController.CastleDominanceOutput(castleNum, beforeDaimyouClass);
 
-					await UniTask.Delay(400);
+					await UniTask.Delay(300);
 				}
 
 				// TODO 支配数減少時の音を止める
@@ -316,12 +346,15 @@ namespace QuizManagement
 				// 大名格が下がった場合
 				if (!beforeDaimyouClass.Equals(afterDaimyouClass) || GamePlayInfo.AfterCastleDominance == 0)
 				{
+					await UniTask.Delay(500);
+					
 					// TODO 大名格が下がった時の音を鳴らす
+					SoundController.instance.MeterCrack();
 
-					// TODO メーターを割って色を変える
+					// メーターが割れた演出
+					statusPanelController.setCareerCrack(true);
 
-
-
+					await UniTask.Delay(600);
 				}
 			}
 		}
@@ -344,23 +377,20 @@ namespace QuizManagement
 		
 		}
 
-		/// <summary>メーターの色を変える
-		/// </summary>
-		private void setMeterColor(StatusCalcBasis.DaimyouClass daimyouClass) {
 
-
-		}
 
 		/**
 		 * 更新前のステータス表示
 		 */
 		private void beforeStatusOutput() {
+			Debug.Log("■■■GamePlayInfo.BeforeDaimyouClass:"+GamePlayInfo.BeforeDaimyouClass);
 
             statusPanelController.StatusOutput(GamePlayInfo.BeforeRank, 
 				GamePlayInfo.BeforeRankExpMeter, 
 				GamePlayInfo.BeforeCareer, 
 				GamePlayInfo.BeforeCareerExpMeter,
-                GamePlayInfo.BeforeCastleDominance);
+                GamePlayInfo.BeforeCastleDominance,
+				GamePlayInfo.BeforeDaimyouClass);
 		}
 
 		private void AfterStatusOutput() {
@@ -369,7 +399,8 @@ namespace QuizManagement
 				GamePlayInfo.AfterRankExpMeter, 
 				GamePlayInfo.AfterCareer, 
 				GamePlayInfo.AfterCareerExpMeter,
-                GamePlayInfo.AfterCastleDominance);
+                GamePlayInfo.AfterCastleDominance,
+				GamePlayInfo.AfterDaimyouClass);
             Debug.LogWarning("城支配数更新値：" + GamePlayInfo.AfterCastleDominance);
 		}
 

@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System.Linq;
+using Common;
 
 
 namespace QuizManagement
@@ -298,11 +298,13 @@ namespace QuizManagement
             GamePlayInfo.BeforeCareer = this.beforeCareer;
             GamePlayInfo.BeforeCareerExpMeter = this.beforeCareerMeter;
             GamePlayInfo.BeforeCastleDominance = this.beforeCastleDominance;
+            GamePlayInfo.BeforeDaimyouClass = this.beforeDaimyouClass;
             GamePlayInfo.AfterRank = this.afterRank;
             GamePlayInfo.AfterRankExpMeter = this.afterRankMeter;
             GamePlayInfo.AfterCareer = this.afterCareer;
             GamePlayInfo.AfterCareerExpMeter = this.afterCareerMeter;
             GamePlayInfo.AfterCastleDominance = this.afterCastleDominance;
+            GamePlayInfo.AfterDaimyouClass = this.afterDaimyouClass;
         }
 	}
 }

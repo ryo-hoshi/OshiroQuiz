@@ -112,18 +112,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!114 &15532843 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3568928640829929529, guid: bf905391e70674240b8634a35616e1fc,
-    type: 3}
-  m_PrefabInstance: {fileID: 3568928640832879378}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &52304295
 GameObject:
   m_ObjectHideFlags: 0
@@ -203,18 +191,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 52304295}
   m_CullTransparentMesh: 0
---- !u!114 &78683385 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3568928640894707691, guid: bf905391e70674240b8634a35616e1fc,
-    type: 3}
-  m_PrefabInstance: {fileID: 3568928640832879378}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &294753759 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 400000, guid: 713ccdba7a92725428570ec12c8ac217,
@@ -253,8 +229,6 @@ MonoBehaviour:
   charactorController: {fileID: 2003395679}
   rankText: {fileID: 1460956351}
   careerText: {fileID: 1637592789}
-  rankMeter: {fileID: 15532843}
-  careerMeter: {fileID: 78683385}
   burstParticle: {fileID: 1158381606762926244, guid: 697157877d14c98459c65be1f132b338,
     type: 3}
   debugText1: {fileID: 52304297}
@@ -637,7 +611,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1880466370
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -650,8 +624,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20b8949b3e057ee44a5caf887a67f622, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rankUpSound: {fileID: 8300000, guid: 2bb55c7ae9c13d946ae4dbe138d16aa7, type: 3}
-  rankDownSound: {fileID: 8300000, guid: c8c0c5e4ae50e234090dc66b498016fe, type: 3}
+  rankUp: {fileID: 0}
+  rankDown: {fileID: 0}
+  meterUp: {fileID: 0}
+  meterDown: {fileID: 0}
+  meterCrack: {fileID: 0}
+  tap1: {fileID: 0}
+  tap2: {fileID: 0}
 --- !u!4 &1880466371
 Transform:
   m_ObjectHideFlags: 0

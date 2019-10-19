@@ -53,6 +53,7 @@ namespace QuizManagement
 
         public enum DaimyouClass
         {
+            その他 = 99,
             令和幕府 = 8,
             天下人 = 7,
             上洛 = 6,
@@ -63,18 +64,32 @@ namespace QuizManagement
             滅亡危機 = 1,
         }
 
-        public Dictionary<int, int> NextDaimyouClassUpCastles = new Dictionary<int, int>()
+        // public Dictionary<int, int> NextDaimyouClassUpCastles = new Dictionary<int, int>()
+        // {
+        //     {(int)DaimyouClass.天下人, REIWA_BAKUFU_THRESHOLD},
+        //     {(int)DaimyouClass.上洛, TENGABITO_THRESHOLD},
+        //     {(int)DaimyouClass.地方統一, JYOURAKU_THRESHOLD},
+        //     {(int)DaimyouClass.名門大名, CHIHOU_TOUITSU_THRESHOLD},
+        //     {(int)DaimyouClass.一国統一, MEIMON_DAIMYOU_THRESHOLD},
+        //     {(int)DaimyouClass.小大名, IKKOKU_TOUITSU_THRESHOLD},
+        //     {(int)DaimyouClass.滅亡危機, SYOU_DAIMYOU_THRESHOLD}
+        // };
+        
+        /// <summary>身分が大名の時のメーターの色
+        /// </summary>
+        public static Dictionary<int, string> DaimyouClassColor = new Dictionary<int, string>()
         {
-            {(int)DaimyouClass.天下人, REIWA_BAKUFU_THRESHOLD},
-            {(int)DaimyouClass.上洛, TENGABITO_THRESHOLD},
-            {(int)DaimyouClass.地方統一, JYOURAKU_THRESHOLD},
-            {(int)DaimyouClass.名門大名, CHIHOU_TOUITSU_THRESHOLD},
-            {(int)DaimyouClass.一国統一, MEIMON_DAIMYOU_THRESHOLD},
-            {(int)DaimyouClass.小大名, IKKOKU_TOUITSU_THRESHOLD},
-            {(int)DaimyouClass.滅亡危機, SYOU_DAIMYOU_THRESHOLD}
+            {(int)DaimyouClass.令和幕府, "#9400d3"},
+            {(int)DaimyouClass.天下人, "#da70d6"},
+            {(int)DaimyouClass.上洛, "#0000ff"},
+            {(int)DaimyouClass.地方統一, "#4169e1"},
+            {(int)DaimyouClass.名門大名, "#ff0000"},
+            {(int)DaimyouClass.一国統一, "#ff4500"},
+            {(int)DaimyouClass.小大名, "#ffff00"},
+            {(int)DaimyouClass.滅亡危機, "#f0e68c"},
+            {(int)DaimyouClass.その他, "#00ff7f"}
         };
-        
-        
+
         /// <summary>身分経験値に対応する身分を取得する
         /// <param name="careerExp">身分経験値</param>
         /// </summary>
@@ -173,6 +188,34 @@ namespace QuizManagement
         public static Career CareerFromNum(int careerNum)
         {
             return (Career)Enum.ToObject(typeof(Career), careerNum);
+        }
+
+        /// <summary>大名格の数値から大名格のEnum値を取得
+        /// </summary>
+        public static DaimyouClass DaimyouClassFromNum(int daimyouClassNum)
+        {
+            return (DaimyouClass)Enum.ToObject(typeof(DaimyouClass), daimyouClassNum);
+        }
+
+        /// <summary>身分と大名格から身分メーターの色を取得する
+        /// </summary>
+        public static Color CareerMeterColorCode(int career, int daimyouClass)
+        {
+
+            int daimyouClassNum = career < (int)Career.大名 ? (int)DaimyouClass.その他 : daimyouClass;
+
+            string colorCode = DaimyouClassColor[daimyouClassNum];
+
+			Color meterColor;
+			if (ColorUtility.TryParseHtmlString(colorCode, out meterColor))
+            {
+                return meterColor;
+            }
+            else
+            {
+                // 万が一取得できなかった時のデフォルト値
+                return Color.magenta;
+            }
         }
     }
 }

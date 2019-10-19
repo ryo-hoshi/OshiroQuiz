@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UniRx.Async;
+using Common;
 //using UnityEditor;
 
 namespace QuizManagement
@@ -122,6 +123,8 @@ namespace QuizManagement
         private async UniTask gameStart()
         {
             this.titleAnimator.SetTrigger("blinkEnd");
+
+			SoundController.instance.TapStart();
 
             await UniTask.Delay(650);
 
