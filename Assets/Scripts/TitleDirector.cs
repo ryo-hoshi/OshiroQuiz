@@ -40,8 +40,8 @@ namespace QuizManagement
 		private Button titleButton;
 		[SerializeField]
 		private Text loadingText;
-        //        [SerializeField]
-        //        private HowToPlayController howToPlayPref;
+		[SerializeField]
+		private HowToPlayController howToPlayPref;
 
         private Animator titleAnimator;
 //		[SerializeField]
@@ -145,9 +145,7 @@ namespace QuizManagement
 
             if (helpWindow == null) {
                 var canvas = GameObject.Find("Canvas");
-                // await UniTask.Delay(650);
-                var helpPref = (GameObject)Resources.Load("Prefabs/HowToPlay");
-                var help = Instantiate(helpPref);
+				var help = Instantiate(this.howToPlayPref);
                 help.tag = "Help";
                 help.transform.SetParent(canvas.transform, false);
             }
