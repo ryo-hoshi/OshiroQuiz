@@ -4,7 +4,7 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Help
+  - Modal
   layers:
   - Default
   - TransparentFX

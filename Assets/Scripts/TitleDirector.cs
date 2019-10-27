@@ -1,11 +1,9 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using Common;
+using QuizCollections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UniRx.Async;
-using Common;
-//using UnityEditor;
 
 namespace QuizManagement
 {
@@ -35,13 +33,17 @@ namespace QuizManagement
 
         [SerializeField]
         private Button helpButton;
+		[SerializeField]
+        private Button configButton;
 
         [SerializeField]
 		private Button titleButton;
 		[SerializeField]
 		private Text loadingText;
 		[SerializeField]
-		private HowToPlayController howToPlayPref;
+		private HowToPlayController howToPlayPrefab;
+		[SerializeField]
+		private ConfigController configPrefab;
 
         private Animator titleAnimator;
 //		[SerializeField]
@@ -73,6 +75,8 @@ namespace QuizManagement
             titleButton.onClick.AddListener(() => gameStart());
 
             helpButton.onClick.AddListener(() => helpOpen());
+
+			configButton.onClick.AddListener(() => configOpen());
         }
 
 		// Update is called once per frame
@@ -141,16 +145,27 @@ namespace QuizManagement
 
         private void helpOpen()
         {
-            var helpWindow = GameObject.FindWithTag("Help");
+            var modalWindow = GameObject.FindWithTag("Modal");
 
-            if (helpWindow == null) {
+            if (modalWindow == null) {
                 var canvas = GameObject.Find("Canvas");
-				var help = Instantiate(this.howToPlayPref);
-                help.tag = "Help";
+				var help = Instantiate(this.howToPlayPrefab);
+                help.tag = "Modal";
                 help.transform.SetParent(canvas.transform, false);
             }
         }
 
+        private void configOpen()
+        {
+            var modalWindow = GameObject.FindWithTag("Modal");
+
+            if (modalWindow == null) {
+                var canvas = GameObject.Find("Canvas");
+				var config = Instantiate(this.configPrefab);
+                config.tag = "Modal";
+                config.transform.SetParent(canvas.transform, false);
+            }
+        }
 
         /*
         private IEnumerator loadGameScene () {
