@@ -27,6 +27,9 @@ namespace QuizManagement
         [SerializeField]
 		private Button careerQuizButton;
 
+		[SerializeField]
+		private Button titleButton;
+
 		// [SerializeField]
 		// private GameObject charactor;
 		[SerializeField]
@@ -111,6 +114,7 @@ namespace QuizManagement
 			// TODO リスナーの解除もやる
             regularQuizButton.onClick.AddListener(() => SelectQuizType((int)GamePlayInfo.QuizType.RegularQuiz));
             careerQuizButton.onClick.AddListener(() => SelectQuizType((int)GamePlayInfo.QuizType.CareerQuiz));
+			titleButton.onClick.AddListener(() => GoTitle());
 
             statusOutput();
 
@@ -193,6 +197,13 @@ namespace QuizManagement
 			StartCoroutine(quizOutputCheck());
 
 			this.charactorController.QuizStartTrigger();
+		}
+
+        /// <summary>タイトルに戻る
+        /// </summary>
+		private void GoTitle() {
+			// タイトルシーンロード
+            SceneManager.LoadScene("TitleScene");
 		}
 
 		/**
