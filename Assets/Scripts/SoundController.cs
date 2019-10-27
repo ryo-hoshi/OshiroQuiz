@@ -124,12 +124,30 @@ namespace Common
 
 		public void SetAudioMixerVolume(float masterVolume, float seVolume, float voiceVolume)
 		{
-			bool masterBool = audioMixer.SetFloat(ExposedParameters.MasterVolume.ToString(), masterVolume);
-			Debug.Log("!!!!!!!!!!masterGroup.name[]:"+ExposedParameters.MasterVolume.ToString()+"["+masterVolume+"]["+masterBool+"]");
-			bool seBool = audioMixer.SetFloat(ExposedParameters.SeVolume.ToString(), seVolume);
-			Debug.Log("!!!!!!!!!!seGroup.name[]:"+ExposedParameters.SeVolume.ToString()+"["+seVolume+"]["+seBool+"]");
-			bool voiceBool = audioMixer.SetFloat(ExposedParameters.VoiceVolume.ToString(), voiceVolume);
-			Debug.Log("!!!!!!!!!!voiceGroup.name[]:"+ExposedParameters.VoiceVolume.ToString()+"["+voiceVolume+"]["+voiceBool+"]");
+			Debug.Log("!!!!!!!!!!パラメータ:["+masterVolume+"]["+seVolume+"]["+voiceVolume+"]");
+
+			bool masterBool = audioMixer.SetFloat(ExposedParameters.MasterVolume.ToString(), convertAudioMixerValue(masterVolume));
+			bool seBool = audioMixer.SetFloat(ExposedParameters.SeVolume.ToString(), convertAudioMixerValue(seVolume));
+			bool voiceBool = audioMixer.SetFloat(ExposedParameters.VoiceVolume.ToString(), convertAudioMixerValue(voiceVolume));
+		}
+
+		private float convertAudioMixerValue(float value)
+		{
+			float thresholdVal = 20.0f;
+
+			if (value > -thresholdVal)
+			{
+				return value;
+			}
+			else
+			{
+				float convertvalue = value + thresholdVal;
+				convertvalue*= 6;
+				convertvalue-= thresholdVal;
+
+				return convertvalue;
+			}
+
 		}
 	}
 }
