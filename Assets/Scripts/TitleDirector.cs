@@ -128,7 +128,7 @@ namespace QuizManagement
         {
             this.titleAnimator.SetTrigger("blinkEnd");
 
-			SoundController.instance.TapStart();
+			SoundController.instance.TapToStart();
 
             await UniTask.Delay(650);
 
@@ -152,6 +152,8 @@ namespace QuizManagement
 				var help = Instantiate(this.howToPlayPrefab);
                 help.tag = "Modal";
                 help.transform.SetParent(canvas.transform, false);
+
+				SoundController.instance.Option();
             }
         }
 
@@ -164,6 +166,8 @@ namespace QuizManagement
 				var config = Instantiate(this.configPrefab);
                 config.tag = "Modal";
                 config.transform.SetParent(canvas.transform, false);
+
+				SoundController.instance.Option();
             }
         }
 

@@ -163,7 +163,7 @@ namespace QuizManagement
 		 * クイズ種類選択
 		 */
 		private void SelectQuizType(int selectType) {
-			SoundController.instance.Tap1();
+			SoundController.instance.QuizStart();
 
 			// パネルを切り替え
 			this.selectUIPanel.SetActive(false);
@@ -202,6 +202,7 @@ namespace QuizManagement
         /// <summary>タイトルに戻る
         /// </summary>
 		private void GoTitle() {
+			SoundController.instance.Option();
 			// タイトルシーンロード
             SceneManager.LoadScene("TitleScene");
 		}
@@ -309,6 +310,8 @@ namespace QuizManagement
 		{
 			Debug.Log("回答時間制限オーバー");
 			if (choiceNo == TIME_OVER) {
+				SoundController.instance.InCorrectAnswer();
+				
 				this.charactorController.InCorrectAnswerTrigger();
 			} else {
 				StopCoroutine(timeLimitCoroutine);
@@ -334,10 +337,13 @@ namespace QuizManagement
 					Debug.Log("正解しました！");
 
 					if (this.alreadyQuizNum == QUIZ_MAX_NUM && this.correctAnswerNum >= 2) {
-						// 最終問題かつ正解が多い場合はアニメーションを変える
+						// 最終問題かつ正解が多い場合はアニメーションと音声を変える
+						SoundController.instance.QuizStart();
+						
 						this.charactorController.CorrectAnswerAnotherTrigger();
 						this.charactorController.FaceChange("smile2");
 					} else {
+						SoundController.instance.CorrectAnswer();
 						this.charactorController.CorrectAnswerTrigger();
 					}
 
@@ -346,6 +352,7 @@ namespace QuizManagement
 
 				} else {
 					Debug.Log("不正解です！");
+					SoundController.instance.InCorrectAnswer();
 
 					if (this.alreadyQuizNum == QUIZ_MAX_NUM && (this.alreadyQuizNum - this.correctAnswerNum) >= 3) {
 						// 最終問題かつ不正解が多い場合はアニメーションを変える

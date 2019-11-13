@@ -1,24 +1,29 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class HowToPlayController : MonoBehaviour
+namespace Common
 {
-    [SerializeField]
-    private Button closeButton;
-
-    // Start is called before the first frame update
-    void Start()
+    public class HowToPlayController : MonoBehaviour
     {
-        closeButton.onClick.AddListener(() => close());
-    }
+        [SerializeField]
+        private Button closeButton;
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+        // Start is called before the first frame update
+        void Start()
+        {
+            closeButton.onClick.AddListener(() => close());
+        }
 
-    private void close() {
-        Destroy(gameObject);
+        // Update is called once per frame
+        void Update()
+        {
+            
+        }
+
+        private void close() {
+            SoundController.instance.Cancel();
+
+            Destroy(gameObject);
+        }
     }
 }

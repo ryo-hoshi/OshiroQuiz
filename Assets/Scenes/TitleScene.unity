@@ -3076,10 +3076,16 @@ MonoBehaviour:
   rankDown: {fileID: 8300000, guid: c8c0c5e4ae50e234090dc66b498016fe, type: 3}
   meterUp: {fileID: 8300000, guid: 5e82574dbdf3e4743961ab8e8c936055, type: 3}
   meterDown: {fileID: 8300000, guid: e0de06604afe3af42a2d36b0176673da, type: 3}
-  meterCrack: {fileID: 8300000, guid: 93cc5a80fc517764ba352770e9a20148, type: 3}
-  tap1: {fileID: 8300000, guid: 91dc0ae983803794d9d93d7b6ae8a3de, type: 3}
-  tap2: {fileID: 8300000, guid: f734d66c550d51a4a98c19bf0363a358, type: 3}
-  tapStart: {fileID: 8300000, guid: 04074cb3e82128640a781e881d4e6156, type: 3}
+  meterCrack: {fileID: 8300000, guid: f7888af9d6eae6b4998c71230d11ae63, type: 3}
+  quizStart: {fileID: 8300000, guid: 8b7209295e23833419d35f4fad194c73, type: 3}
+  decision: {fileID: 8300000, guid: 131cfe01ee2dfed4d88c898cce0ac2eb, type: 3}
+  cancel: {fileID: 8300000, guid: 053ad5a26cc27dc4f95e052859892c0e, type: 3}
+  option: {fileID: 8300000, guid: ee6f6196176bcb04680cc6d9a42bb8e5, type: 3}
+  tapToStart: {fileID: 8300000, guid: 8d1059c6ae7b7c34ea09de24ad2b7319, type: 3}
+  correctAnswer: {fileID: 8300000, guid: 1243cb65e13631a47bd49ff3b55e134c, type: 3}
+  inCorrectAnswer: {fileID: 8300000, guid: ade4d5bc484f33f4c91e516a9452a1d4, type: 3}
+  fireworks1: {fileID: 8300000, guid: b34e822dee6afb64499a8c33b3645173, type: 3}
+  fireworks2: {fileID: 8300000, guid: b25652b9640e50446aeb81ed9555e879, type: 3}
   masterGroup: {fileID: 24300002, guid: d990b88310e85084886d3c4b2eab45cd, type: 2}
   seGroup: {fileID: 243520946369730496, guid: d990b88310e85084886d3c4b2eab45cd, type: 2}
   voiceGroup: {fileID: 243099750509134592, guid: d990b88310e85084886d3c4b2eab45cd,

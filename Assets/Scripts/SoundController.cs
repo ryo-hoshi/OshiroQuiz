@@ -24,11 +24,23 @@ namespace Common
 		[SerializeField]
 		private AudioClip meterCrack;
 		[SerializeField]
-		private AudioClip tap1;
+		private AudioClip quizStart;
 		[SerializeField]
-		private AudioClip tap2;
+		private AudioClip decision;
 		[SerializeField]
-		private AudioClip tapStart;
+		private AudioClip cancel;
+		[SerializeField]
+		private AudioClip option;
+		[SerializeField]
+		private AudioClip tapToStart;
+		[SerializeField]
+		private AudioClip correctAnswer;
+		[SerializeField]
+		private AudioClip inCorrectAnswer;
+		[SerializeField]
+		private AudioClip fireworks1;
+		[SerializeField]
+		private AudioClip fireworks2;
 
 		[SerializeField]
 		private AudioMixerGroup masterGroup;
@@ -96,17 +108,27 @@ namespace Common
 			audioSource.PlayOneShot(meterCrack);
 		}
 
-		public void Tap1() {
+		public void QuizStart() {
 			audioSource.outputAudioMixerGroup = seGroup;
-			audioSource.PlayOneShot(tap1);
+			audioSource.PlayOneShot(quizStart);
 		}
 
-		public void Tap2() {
+		public void Decision() {
 			audioSource.outputAudioMixerGroup = seGroup;
-			audioSource.PlayOneShot(tap2);
+			audioSource.PlayOneShot(decision);
 		}
 		
-		public void TapStart() {
+		public void Cancel() {
+			audioSource.outputAudioMixerGroup = seGroup;
+			audioSource.PlayOneShot(cancel);
+		}
+		
+		public void Option() {
+			audioSource.outputAudioMixerGroup = seGroup;
+			audioSource.PlayOneShot(option);
+		}
+		
+		public void TapToStart() {
 			audioSource.outputAudioMixerGroup = seGroup;
 
 			float masterVol;
@@ -119,9 +141,29 @@ namespace Common
 			bool voiceBool = audioMixer.GetFloat(ExposedParameters.VoiceVolume.ToString(), out voiceVol);
 			Debug.Log("!!!!!!!!!!voiceGroup.name[]:"+ExposedParameters.VoiceVolume.ToString()+"["+voiceVol+"]["+voiceBool+"]");
 
-			audioSource.PlayOneShot(tapStart);
+			audioSource.PlayOneShot(tapToStart);
 		}
-
+		
+		public void CorrectAnswer() {
+			audioSource.outputAudioMixerGroup = seGroup;
+			audioSource.PlayOneShot(correctAnswer);
+		}
+		
+		public void InCorrectAnswer() {
+			audioSource.outputAudioMixerGroup = seGroup;
+			audioSource.PlayOneShot(inCorrectAnswer);
+		}
+		
+		public void Fireworks1() {
+			audioSource.outputAudioMixerGroup = seGroup;
+			audioSource.PlayOneShot(fireworks1);
+		}
+		
+		public void Fireworks2() {
+			audioSource.outputAudioMixerGroup = seGroup;
+			audioSource.PlayOneShot(fireworks2);
+		}
+		
 		public void SetAudioMixerVolume(float masterVolume, float seVolume, float voiceVolume)
 		{
 			Debug.Log("!!!!!!!!!!パラメータ:["+masterVolume+"]["+seVolume+"]["+voiceVolume+"]");

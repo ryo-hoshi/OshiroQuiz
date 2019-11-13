@@ -155,12 +155,21 @@ namespace QuizManagement
 			{
 				if (GamePlayInfo.Result.RankUp == GamePlayInfo.QuizResult)
 				{
+					SoundController.instance.Fireworks1();
+					
 					var particle = Instantiate(this.burstParticle);
 					particle.transform.position = new Vector3(0.0f, 1.0f, -0.5f);
 					particle.GetComponent<ParticleSystem>().Play();
+
+					await UniTask.Delay(1000);
+
+					SoundController.instance.Fireworks2();
+				}
+				else
+				{
+					await UniTask.Delay(800);
 				}
 
-				await UniTask.Delay(800);
 
 				// ランクや身分などに上下があった時の最終的なステータス
 				AfterStatusOutput();
