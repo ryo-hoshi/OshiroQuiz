@@ -32,11 +32,6 @@ namespace QuizManagement
 		[SerializeField]
 		private StatusPanelController statusPanelController;
 
-		// ちょっとずつメーターを更新するための、一度に更新するメータの割合
-		private const float Fill_AMOUNT_UPDATE_STEP = 0.02f;
-		private const float Fill_AMOUNT_MAX = 1.0f;
-		private const float Fill_AMOUNT_MIN = 0.0f;
-
 		// Start is called before the first frame update
 		async UniTask Start()
 		{
@@ -84,6 +79,9 @@ namespace QuizManagement
 			// 画面ロード直後からアニメーション開始までの時間
 			await UniTask.Delay(1000);
 
+			// 更新時の効果音（結果に関係なく一旦共通にする）
+			SoundController.instance.MeterUp();
+			
 			// ステータス更新演出
 			await statusDisplayUpdate();
 
@@ -92,7 +90,7 @@ namespace QuizManagement
 
 			// ランクまたは身分(大名格)が上がった時のキャラクターのアニメーション
 			if (GamePlayInfo.Result.RankUp == GamePlayInfo.QuizResult) {
-
+				// 喜ぶ声の再生
 				SoundController.instance.RankUp();
 
 				this.charactorController.RankUpTrigger();
@@ -100,7 +98,7 @@ namespace QuizManagement
 
 			// 身分(大名格)が下がった時のキャラクターのアニメーション
 			} else if (GamePlayInfo.Result.RankDown == GamePlayInfo.QuizResult) {
-
+				// 悲しむ声の再生
 				SoundController.instance.RankDown();
 
 				this.charactorController.RankDownTrigger();
@@ -129,7 +127,9 @@ namespace QuizManagement
 
 			// ************ 身分表示更新演出 ************
 			// bool isCareerUpdate = false;
-			if (GamePlayInfo.PlayQuizType == GamePlayInfo.QuizType.CareerQuiz) {
+			// 上げられる身分の上限かつ経験値メーターも上限に達している場合は対象外にする
+			if (GamePlayInfo.PlayQuizType == GamePlayInfo.QuizType.CareerQuiz
+				&& !OshiroUtil.IsCareerLimit(GamePlayInfo.BeforeCareer, GamePlayInfo.BeforeCareerExpMeter)) {
 
 				if (GamePlayInfo.BeforeCareer == (int)StatusCalcBasis.Career.大名)
 				{
@@ -149,10 +149,11 @@ namespace QuizManagement
             // ************ ランク表示更新演出 ************
 			await rankDisplayUpdate();
 
-            // ************ エフェクト表示と最終的なステータス表示 ************
+            // ************ ランクや身分上下時のエフェクト表示と最終的なステータス表示 ************
 			if (GamePlayInfo.Result.RankUp == GamePlayInfo.QuizResult
 			 || GamePlayInfo.Result.RankDown == GamePlayInfo.QuizResult)
 			{
+				// ランクまたは身分が上がった場合の花火の演出
 				if (GamePlayInfo.Result.RankUp == GamePlayInfo.QuizResult)
 				{
 					SoundController.instance.Fireworks1();
@@ -195,16 +196,22 @@ namespace QuizManagement
 			// 身分が上がった時
 			if (GamePlayInfo.BeforeCareer < GamePlayInfo.AfterCareer) {
 
-				// メーターアップ時のサウンド
-				SoundController.instance.MeterUp();
+				// // メーターアップ時のサウンド
+				// SoundController.instance.MeterUp();
 
-				// メーターを満タンまで上げる
-				await meterIncrease(GamePlayInfo.QuizType.CareerQuiz, Fill_AMOUNT_MAX);
+				// メーターを満タンまで上た後、0に戻す
+				await meterIncrease(GamePlayInfo.QuizType.CareerQuiz, StatusPanel.Fill_AMOUNT_MAX);
+				await UniTask.Delay(100);
+				statusPanelController.setFillAmount(GamePlayInfo.QuizType.CareerQuiz, StatusPanel.Fill_AMOUNT_MIN);
 
 				if (GamePlayInfo.AfterCareer == (int)StatusCalcBasis.Career.大名)
 				{
 					// TODO 大名に上がった場合　メーターの色を変える
 				}
+
+				// メーターを一旦止めた所から最終的な値まで上げる
+				await UniTask.Delay(200);
+				await meterIncrease(GamePlayInfo.QuizType.CareerQuiz, GamePlayInfo.AfterCareerExpMeter);
 
 				// // TODO 身分上がるときのサウンド
 				// SoundController.instance.RankUp();
@@ -214,11 +221,17 @@ namespace QuizManagement
 
 				// メーターダウン時のサウンド
 				// SoundController.instance.MeterDown();
-				// いったんメーターアップと共通にしてみる
-				SoundController.instance.MeterUp();
+				// // いったんメーターアップと共通にしてみる
+				// SoundController.instance.MeterUp();
 
-				// メーターを0まで下げる
-				await meterDecrease(GamePlayInfo.QuizType.CareerQuiz, Fill_AMOUNT_MIN);
+				// メーターを0まで下げた後、MAXに戻す
+				await meterDecrease(GamePlayInfo.QuizType.CareerQuiz, StatusPanel.Fill_AMOUNT_MIN);
+				await UniTask.Delay(100);
+				statusPanelController.setFillAmount(GamePlayInfo.QuizType.CareerQuiz, StatusPanel.Fill_AMOUNT_MAX);
+
+				// メーターを一旦止めた所から最終的な値まで下げる
+				await UniTask.Delay(200);
+				await meterDecrease(GamePlayInfo.QuizType.CareerQuiz, GamePlayInfo.AfterCareerExpMeter);
 
 				// // TODO 身分落ちるときのサウンド
 				// SoundController.instance.RankDown();
@@ -228,21 +241,21 @@ namespace QuizManagement
 				// メーターが増える場合
 				if (GamePlayInfo.BeforeCareerExpMeter < GamePlayInfo.AfterCareerExpMeter)
 				{
-					// メーターアップ時のサウンド
-					SoundController.instance.MeterUp();
+					// // メーターアップ時のサウンド
+					// SoundController.instance.MeterUp();
 					await UniTask.Delay(300);
 
-					await meterIncrease(GamePlayInfo.QuizType.CareerQuiz, GamePlayInfo.AfterCareerExpMeter);
+					meterIncrease(GamePlayInfo.QuizType.CareerQuiz, GamePlayInfo.AfterCareerExpMeter).Forget();
 				}
 				else if (GamePlayInfo.BeforeCareerExpMeter > GamePlayInfo.AfterCareerExpMeter)
 				{
 					// メーターダウン時のサウンド
 					// SoundController.instance.MeterDown();
-					// いったんメーターアップと共通にしてみる
-					SoundController.instance.MeterUp();
+					// // いったんメーターアップと共通にしてみる
+					// SoundController.instance.MeterUp();
 					await UniTask.Delay(300);
 
-					await meterDecrease(GamePlayInfo.QuizType.CareerQuiz, GamePlayInfo.AfterCareerExpMeter);
+					meterDecrease(GamePlayInfo.QuizType.CareerQuiz, GamePlayInfo.AfterCareerExpMeter).Forget();
 				}
 			}
 		}
@@ -254,8 +267,14 @@ namespace QuizManagement
     		// ランクアップしたとき
             if (GamePlayInfo.BeforeRank < GamePlayInfo.AfterRank) {
 
-				// メーターを満タンまで上げる
-				await meterIncrease(GamePlayInfo.QuizType.RegularQuiz, Fill_AMOUNT_MAX);
+				// メーターを満タンまで上げた後、0に戻す
+				await meterIncrease(GamePlayInfo.QuizType.RegularQuiz, StatusPanel.Fill_AMOUNT_MAX);
+				await UniTask.Delay(100);
+				statusPanelController.setFillAmount(GamePlayInfo.QuizType.RegularQuiz, StatusPanel.Fill_AMOUNT_MIN);
+
+				// メーターを一旦止めた所から最終的な値まで上げる
+				await UniTask.Delay(300);
+				meterIncrease(GamePlayInfo.QuizType.RegularQuiz, GamePlayInfo.AfterRankExpMeter).Forget();
 
 				// ランク維持
 			} else {
@@ -273,9 +292,9 @@ namespace QuizManagement
         /// </summary>
 		private async UniTask meterIncrease(GamePlayInfo.QuizType quizType, float upperLimit)
 		{
-			float nextAmount = Fill_AMOUNT_MIN;
+			float nextAmount = StatusPanel.Fill_AMOUNT_MIN;
 			while (nextAmount < upperLimit) {
-				nextAmount = Mathf.Min(upperLimit, statusPanelController.getFillAmount(quizType) + Fill_AMOUNT_UPDATE_STEP);
+				nextAmount = Mathf.Min(upperLimit, statusPanelController.getFillAmount(quizType) + StatusPanel.Fill_AMOUNT_UPDATE_STEP);
 				statusPanelController.setFillAmount(quizType, nextAmount);
 				await UniTask.DelayFrame(1);
 			}
@@ -287,9 +306,9 @@ namespace QuizManagement
         /// </summary>
 		private async UniTask meterDecrease(GamePlayInfo.QuizType quizType, float lowerLimit)
 		{
-			float nextAmount = Fill_AMOUNT_MAX;
+			float nextAmount = StatusPanel.Fill_AMOUNT_MAX;
 			while (nextAmount > lowerLimit) {
-				nextAmount = Mathf.Max(lowerLimit, statusPanelController.getFillAmount(quizType) - Fill_AMOUNT_UPDATE_STEP);
+				nextAmount = Mathf.Max(lowerLimit, statusPanelController.getFillAmount(quizType) - StatusPanel.Fill_AMOUNT_UPDATE_STEP);
 				statusPanelController.setFillAmount(quizType, nextAmount);
 				await UniTask.DelayFrame(1);
 			}

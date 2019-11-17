@@ -59,8 +59,9 @@ namespace QuizManagement
 			// ランク情報更新
 			this.rankUpdate(correctNum);
 
-			// 階級挑戦クイズの場合は身分情報を更新
-			if (GamePlayInfo.PlayQuizType == GamePlayInfo.QuizType.CareerQuiz) {
+			// 階級挑戦クイズの場合かつ現在上げることができる身分の上限まで達していない場合は身分情報を更新
+			if (GamePlayInfo.PlayQuizType == GamePlayInfo.QuizType.CareerQuiz
+                && !OshiroUtil.IsCareerLimit(this.beforeCareer, this.beforeCareerMeter)) {
 
                 // 正解不正解の差
                 int correctDiff = (correctNum * 2) - GameDirector.QUIZ_MAX_NUM;
@@ -149,7 +150,7 @@ namespace QuizManagement
             // 身分の経験値メーターを更新
             // 大名は身分が最大なのでメーターはMAXを設定しておく
             if (this.afterCareer == (int)StatusCalcBasis.Career.大名) {
-				this.afterCareerMeter = 1.0f;
+				this.afterCareerMeter = StatusPanel.Fill_AMOUNT_MAX;
 
 			} else {
                 // 現在のメーターの数値
@@ -164,7 +165,7 @@ namespace QuizManagement
                 if (this.afterCareer > (int)StatusCalcBasis.Career.足軽) {
 					// 今の身分に上がる時の閾値だった経験値を取得
 					int prevCareerUpExp = StatusCalcBasis.NextCareerUpExps[afterCareer - 1];
-                    // 現在の身分に上がるときの閾値時点が0で、次の身分に上がる時がMAXのゲージ値を取得する
+                    // 現在の身分に上がるときの閾値時点が0で、次の身分に上がる直前がMAXのゲージ値を取得する
                     nowMeterPoint = this.afterCareerExp - prevCareerUpExp;
                     maxMeterPoint = nextCarrerUpExp - prevCareerUpExp;
 
@@ -175,7 +176,7 @@ namespace QuizManagement
                 // 次に経験値が上がるためのMAX値からの割合値を取得（小数点第2位まで）
                 this.afterCareerMeter = StatusCalcBasis.CalcMeter(nowMeterPoint, maxMeterPoint);
 			}
-				
+			
 			Debug.Log("career: " + this.afterCareer);
 			Debug.Log("nowCareerExp: " + this.afterCareerExp);
 
@@ -238,11 +239,16 @@ namespace QuizManagement
         private void updateCareerExp(int correctDiff)
         {
             // 現在の身分経験値と今回獲得分を合計(0より小さくはならないように)
-            this.afterCareerExp = this.beforeCareerExp + correctDiff;
-            if (this.afterCareerExp < 0)
+            int careerExp = Mathf.Max(0, this.beforeCareerExp + correctDiff);
+            // 身分の上限になっている場合は経験値がメーターMAX分よりも多くならないように調整
+            if (this.beforeCareer >= GamePlayInfo.CareerLimitNum)
             {
-                this.afterCareerExp = 0;
+                if (careerExp >= StatusCalcBasis.NextCareerUpExps[this.beforeCareer])
+                {
+                    careerExp = StatusCalcBasis.NextCareerUpExps[this.beforeCareer] - 1;
+                }
             }
+            this.afterCareerExp = careerExp;
 
             // 身分経験値から該当の身分を取得
             this.afterCareer = (int)StatusCalcBasis.CareerFromCareerExp(this.afterCareerExp);

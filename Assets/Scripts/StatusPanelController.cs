@@ -18,6 +18,8 @@ namespace QuizManagement
 		private Image careerCrack;
         [SerializeField]
         private Text castleDominance;
+       [SerializeField]
+        private Text careerLimitText;
 
         // Start is called before the first frame update
         void Start()
@@ -68,6 +70,8 @@ namespace QuizManagement
 			this.careerMeter.fillAmount = careerExpMeter;
 
 			SetCareerMeterColor(careerNum, daimyouClass);
+
+			UpdateCareerLimitOutput(careerNum, careerExpMeter);
 		}
 
 /*
@@ -145,12 +149,12 @@ namespace QuizManagement
 		}
 
 		/// <summary>身分メーター色を指定
-		/// <param name="career">身分</param>
+		/// <param name="careerNum">身分</param>
 		/// <param name="daimyouClass">大名格</param>
         /// </summary>
-		public void SetCareerMeterColor(int career, int daimyouClass)
+		public void SetCareerMeterColor(int careerNum, int daimyouClass)
 		{
-			Color meterColor = StatusCalcBasis.CareerMeterColorCode(career, daimyouClass);
+			Color meterColor = StatusCalcBasis.CareerMeterColorCode(careerNum, daimyouClass);
 
 			careerMeter.color = meterColor;
 		}
@@ -161,6 +165,22 @@ namespace QuizManagement
 		public void setCareerCrack(bool isCrack)
 		{
 			careerCrack.enabled = isCrack;
+		}
+
+		/// <summary>階級の上限達成表示の更新
+		/// <param name="careerNum">身分</param>
+        /// </summary>
+        public void UpdateCareerLimitOutput(int careerNum, float careerExpMeter)
+        {
+			// 今の身分が大名未満かつ現在対応している身分の上限まで達している場合
+			if (OshiroUtil.IsCareerLimit(careerNum, careerExpMeter))
+			{
+				careerLimitText.text = "階級の上限に達しています\n上限は今後解放されます";
+			}
+			else
+			{
+				careerLimitText.text = "";
+			}
 		}
 
 		/// <summary>ステータスパネルを表示するかどうかの切り替え
