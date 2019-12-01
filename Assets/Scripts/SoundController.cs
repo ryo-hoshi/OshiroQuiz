@@ -14,7 +14,7 @@ namespace Common
 		}
 
 		[SerializeField]
-		private AudioClip rankUp;
+		private AudioClip[] rankUps;
 		[SerializeField]
 		private AudioClip rankDown;
 		[SerializeField]
@@ -36,7 +36,11 @@ namespace Common
 		[SerializeField]
 		private AudioClip correctAnswer;
 		[SerializeField]
+		private AudioClip manyCorrectAnswer;
+		[SerializeField]
 		private AudioClip inCorrectAnswer;
+		[SerializeField]
+		private AudioClip manyInCorrectAnswer;
 		[SerializeField]
 		private AudioClip fireworks1;
 		[SerializeField]
@@ -85,7 +89,11 @@ namespace Common
 
 		public void RankUp() {
 			audioSource.outputAudioMixerGroup = voiceGroup;
-			audioSource.PlayOneShot(rankUp);
+
+			var index = Random.Range(0, rankUps.Length);
+			audioSource.PlayOneShot(rankUps[index]);
+			// audioSource.PlayOneShot(rankUp);
+			// audioSource.PlayOneShot(rankUp2);
 		}
 
 		public void RankDown() {
@@ -149,9 +157,19 @@ namespace Common
 			audioSource.PlayOneShot(correctAnswer);
 		}
 		
+		public void ManyCorrectAnswer() {
+			audioSource.outputAudioMixerGroup = voiceGroup;
+			audioSource.PlayOneShot(manyCorrectAnswer);
+		}
+		
 		public void InCorrectAnswer() {
 			audioSource.outputAudioMixerGroup = seGroup;
 			audioSource.PlayOneShot(inCorrectAnswer);
+		}
+		
+		public void ManyInCorrectAnswer() {
+			audioSource.outputAudioMixerGroup = voiceGroup;
+			audioSource.PlayOneShot(manyInCorrectAnswer);
 		}
 		
 		public void Fireworks1() {

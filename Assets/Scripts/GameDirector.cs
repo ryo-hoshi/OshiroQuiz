@@ -310,9 +310,7 @@ namespace QuizManagement
 		{
 			Debug.Log("回答時間制限オーバー");
 			if (choiceNo == TIME_OVER) {
-				SoundController.instance.InCorrectAnswer();
-				
-				this.charactorController.InCorrectAnswerTrigger();
+				inCorrectAnswerExpression();
 			} else {
 				StopCoroutine(timeLimitCoroutine);
 			}
@@ -338,8 +336,7 @@ namespace QuizManagement
 
 					if (this.alreadyQuizNum == QUIZ_MAX_NUM && this.correctAnswerNum >= 2) {
 						// 最終問題かつ正解が多い場合はアニメーションと音声を変える
-						SoundController.instance.QuizStart();
-						
+						SoundController.instance.ManyCorrectAnswer();
 						this.charactorController.CorrectAnswerAnotherTrigger();
 						this.charactorController.FaceChange("smile2");
 					} else {
@@ -352,18 +349,26 @@ namespace QuizManagement
 
 				} else {
 					Debug.Log("不正解です！");
-					SoundController.instance.InCorrectAnswer();
-
-					if (this.alreadyQuizNum == QUIZ_MAX_NUM && (this.alreadyQuizNum - this.correctAnswerNum) >= 3) {
-						// 最終問題かつ不正解が多い場合はアニメーションを変える
-						this.charactorController.InCorrectAnswerAnotherTrigger();
-						this.charactorController.FaceChange("confuse");
-					} else {
-						this.charactorController.InCorrectAnswerTrigger();
-					}
+					inCorrectAnswerExpression();
 				}
 				// 出題状況チェックしてクイズを作成
 				StartCoroutine(quizOutputCheck());
+			}
+		}
+
+        /// <summary>
+		/// 不正解の場合の表現
+        /// </summary>
+		private void inCorrectAnswerExpression()
+		{
+			if (this.alreadyQuizNum == QUIZ_MAX_NUM && (this.alreadyQuizNum - this.correctAnswerNum) >= 3) {
+				// 最終問題かつ不正解が多い場合はアニメーションと音声を変える
+				SoundController.instance.ManyInCorrectAnswer();
+				this.charactorController.InCorrectAnswerAnotherTrigger();
+				this.charactorController.FaceChange("confuse");
+			} else {
+				SoundController.instance.InCorrectAnswer();
+				this.charactorController.InCorrectAnswerTrigger();
 			}
 		}
 

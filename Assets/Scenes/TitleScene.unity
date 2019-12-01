@@ -3072,7 +3072,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20b8949b3e057ee44a5caf887a67f622, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rankUp: {fileID: 8300000, guid: 2bb55c7ae9c13d946ae4dbe138d16aa7, type: 3}
+  rankUps:
+  - {fileID: 8300000, guid: 2bb55c7ae9c13d946ae4dbe138d16aa7, type: 3}
+  - {fileID: 8300000, guid: 7850a67bbf7f228499dcc1cc4cf30d82, type: 3}
   rankDown: {fileID: 8300000, guid: c8c0c5e4ae50e234090dc66b498016fe, type: 3}
   meterUp: {fileID: 8300000, guid: 5e82574dbdf3e4743961ab8e8c936055, type: 3}
   meterDown: {fileID: 8300000, guid: e0de06604afe3af42a2d36b0176673da, type: 3}
@@ -3083,7 +3085,9 @@ MonoBehaviour:
   option: {fileID: 8300000, guid: ee6f6196176bcb04680cc6d9a42bb8e5, type: 3}
   tapToStart: {fileID: 8300000, guid: 8d1059c6ae7b7c34ea09de24ad2b7319, type: 3}
   correctAnswer: {fileID: 8300000, guid: 1243cb65e13631a47bd49ff3b55e134c, type: 3}
+  manyCorrectAnswer: {fileID: 8300000, guid: fdc7b5cf66a300f45b7bc5fc56213793, type: 3}
   inCorrectAnswer: {fileID: 8300000, guid: ade4d5bc484f33f4c91e516a9452a1d4, type: 3}
+  manyInCorrectAnswer: {fileID: 8300000, guid: 0df17943ee586b546873b1cb0b9922a8, type: 3}
   fireworks1: {fileID: 8300000, guid: b34e822dee6afb64499a8c33b3645173, type: 3}
   fireworks2: {fileID: 8300000, guid: b25652b9640e50446aeb81ed9555e879, type: 3}
   masterGroup: {fileID: 24300002, guid: d990b88310e85084886d3c4b2eab45cd, type: 2}

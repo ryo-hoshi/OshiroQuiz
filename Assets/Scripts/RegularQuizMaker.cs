@@ -22,8 +22,17 @@ namespace QuizManagement
 		QuizOutputState quizOutputState = new QuizOutputState();
 
 		public void QuizDataLoad() {
+			SaveData saveData = new SaveData();
+			StatusInfo statusInfo = saveData.GetStatusInfo();
+			if (statusInfo.Rank < 10)
+			{
+				quizOutputState.allQuestionType = new int[]{1, 2, 3, 4, 5};
+			}
+			else
+			{
+				quizOutputState.allQuestionType = new int[]{1, 2, 3, 4, 5, 6};
+			}
 
-			quizOutputState.allQuestionType = new int[]{1, 2, 3, 4, 5};
 
 			// Resouces配下のCSV読み込み
 			TextAsset csvFile = Resources.Load("QuizData") as TextAsset;
