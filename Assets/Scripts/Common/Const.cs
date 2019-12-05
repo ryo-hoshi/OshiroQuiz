@@ -13,11 +13,18 @@
 	public class StatusPanel
 	{
 		// ちょっとずつメーターを更新するための、一度に更新するメータの割合
-		public const float Fill_AMOUNT_UPDATE_STEP = 0.02f;
+		public const float Fill_AMOUNT_UPDATE_STEP = 0.03f;
 		// メータ最大値
 		public const float Fill_AMOUNT_MAX = 1.0f;
+
+		// メーター更新完了状態のMAX表示（メーターが埋まっているのにレベルアップしないように見えてしまうことの考慮）
+		public const float Fill_AMOUNT_BEFORE_UP = 0.99f;
+
 		// メータ最小値
 		public const float Fill_AMOUNT_MIN = 0.0f;
+
+		// メーター更新完了状態のMIN表示
+		public const float Fill_AMOUNT_BEFORE_DOWN = 0.01f;
 	}
 
 	public enum SeAudioType

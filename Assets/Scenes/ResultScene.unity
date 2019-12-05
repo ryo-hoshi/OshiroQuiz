@@ -234,7 +234,6 @@ MonoBehaviour:
   debugText1: {fileID: 52304297}
   debugText2: {fileID: 1884727058}
   statusPanelController: {fileID: 3568928640832879379}
-  soundController: {fileID: 1880466370}
 --- !u!4 &811754719
 Transform:
   m_ObjectHideFlags: 0
@@ -624,13 +623,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 20b8949b3e057ee44a5caf887a67f622, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  rankUp: {fileID: 0}
+  rankUps: []
   rankDown: {fileID: 0}
   meterUp: {fileID: 0}
   meterDown: {fileID: 0}
   meterCrack: {fileID: 0}
-  tap1: {fileID: 0}
-  tap2: {fileID: 0}
+  quizStart: {fileID: 0}
+  decision: {fileID: 0}
+  cancel: {fileID: 0}
+  option: {fileID: 0}
+  tapToStart: {fileID: 0}
+  correctAnswer: {fileID: 0}
+  manyCorrectAnswer: {fileID: 0}
+  inCorrectAnswer: {fileID: 0}
+  manyInCorrectAnswer: {fileID: 0}
+  fireworks1: {fileID: 0}
+  fireworks2: {fileID: 0}
+  masterGroup: {fileID: 0}
+  seGroup: {fileID: 0}
+  voiceGroup: {fileID: 0}
+  audioMixer: {fileID: 0}
 --- !u!4 &1880466371
 Transform:
   m_ObjectHideFlags: 0

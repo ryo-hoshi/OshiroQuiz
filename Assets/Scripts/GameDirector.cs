@@ -111,13 +111,25 @@ namespace QuizManagement
 			// TODO Unitaskに置き換える
 			this.timeLimitCoroutine = timeLimitCheck();
 
+			// セーブデータ
+			SaveData saveData = new SaveData();
+			StatusInfo statusInfo = saveData.GetStatusInfo();
+
+			// リスナー登録
 			// TODO リスナーの解除もやる
             regularQuizButton.onClick.AddListener(() => SelectQuizType((int)GamePlayInfo.QuizType.RegularQuiz));
-            careerQuizButton.onClick.AddListener(() => SelectQuizType((int)GamePlayInfo.QuizType.CareerQuiz));
+			// 階級挑戦問題が解放済ならリスナー登録
+			if (OshiroUtil.IsCareerQuestionRelease(statusInfo.Rank))
+			{
+				careerQuizButton.interactable = true;
+	            careerQuizButton.onClick.AddListener(() => SelectQuizType((int)GamePlayInfo.QuizType.CareerQuiz));
+			}
+			else{
+				careerQuizButton.interactable = false;
+			}
 			titleButton.onClick.AddListener(() => GoTitle());
 
-            statusOutput();
-
+            statusOutput(statusInfo);
         }
 
         // Update is called once per frame
@@ -145,16 +157,14 @@ namespace QuizManagement
 		}
 
 
-		private void statusOutput() {
-			SaveData saveData = new SaveData();
-			StatusInfo statusInfo = saveData.GetStatusInfo();
+		private void statusOutput(StatusInfo statusInfo) {
 
 			Debug.Log("■■■statusInfo.DaimyouClass:"+statusInfo.DaimyouClass);
 
             statusPanelController.StatusOutput(statusInfo.Rank, 
-				statusInfo.RankMeter, 
+				OshiroUtil.AdjustExpMeter(statusInfo.RankMeter), 
 				statusInfo.Career, 
-				statusInfo.CareerMeter,
+				OshiroUtil.AdjustExpMeter(statusInfo.CareerMeter),
                 statusInfo.CastleDominance,
 				statusInfo.DaimyouClass);
 		}

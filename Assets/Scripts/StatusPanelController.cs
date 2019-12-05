@@ -19,7 +19,7 @@ namespace QuizManagement
         [SerializeField]
         private Text castleDominance;
        [SerializeField]
-        private Text careerLimitText;
+        private Text careerDescriptionText;
 
         // Start is called before the first frame update
         void Start()
@@ -71,7 +71,7 @@ namespace QuizManagement
 
 			SetCareerMeterColor(careerNum, daimyouClass);
 
-			UpdateCareerLimitOutput(careerNum, careerExpMeter);
+			UpdateCareerDescription(rank, careerNum, careerExpMeter);
 		}
 
 /*
@@ -168,18 +168,24 @@ namespace QuizManagement
 		}
 
 		/// <summary>階級の上限達成表示の更新
+		/// <param name="rank">ランク</param>
 		/// <param name="careerNum">身分</param>
+		/// <param name="careerExpMeter">身分経験値</param>
         /// </summary>
-        public void UpdateCareerLimitOutput(int careerNum, float careerExpMeter)
+        private void UpdateCareerDescription(int rank, int careerNum, float careerExpMeter)
         {
-			// 今の身分が大名未満かつ現在対応している身分の上限まで達している場合
-			if (OshiroUtil.IsCareerLimit(careerNum, careerExpMeter))
+			if (!OshiroUtil.IsCareerQuestionRelease(rank))
 			{
-				careerLimitText.text = "階級の上限に達しています\n上限は今後解放されます";
+				careerDescriptionText.text = "階級挑戦問題はお城好きレベル5で解放されます";
+			}
+			else if (OshiroUtil.IsCareerLimit(careerNum, careerExpMeter))
+			{
+				// 今の身分が大名未満かつ現在対応している身分の上限まで達している場合
+				careerDescriptionText.text = "階級の上限に達しています\n上限は今後解放されます";
 			}
 			else
 			{
-				careerLimitText.text = "";
+				careerDescriptionText.text = "";
 			}
 		}
 
