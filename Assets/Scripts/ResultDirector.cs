@@ -125,6 +125,12 @@ namespace QuizManagement
 			// 経験値メーターを増減させる演出
 			// ランクや身分が上下する場合はメーターをいったん空かMAXで止める
 
+            // ************ ランク表示更新演出 ************
+			await rankDisplayUpdate();
+
+			// 身分とランクのメーター更新の間の待ち
+			await UniTask.Delay(500);
+
 			// ************ 身分表示更新演出 ************
 			// bool isCareerUpdate = false;
 			// 上げられる身分の上限かつ経験値メーターも上限に達している場合は対象外にする
@@ -141,13 +147,9 @@ namespace QuizManagement
 					// 身分表示更新
 					await careerDisplayUpdate();
 				}
-
-				// 身分とランクのメーター更新の間の待ち
-				await UniTask.Delay(1000);
 			}
 
-            // ************ ランク表示更新演出 ************
-			await rankDisplayUpdate();
+			await UniTask.Delay(300);
 
             // ************ ランクや身分上下時のエフェクト表示と最終的なステータス表示 ************
 			if (GamePlayInfo.Result.RankUp == GamePlayInfo.QuizResult
@@ -441,14 +443,14 @@ namespace QuizManagement
 
 			this.debugText1.text = "ランクM(前)："+GamePlayInfo.BeforeRankExpMeter + "　ランクM(後)："+GamePlayInfo.AfterRankExpMeter + "　ランク経験値："+statusInfo.RankExp+ " 次のレベルアップの経験値："+StatusCalcBasis.CalcNextRankUpExp(statusInfo.Rank);
 
-
+			int prevCareerExp = 0;
             int nextCareerUpExp = StatusCalcBasis.NextCareerUpExps[statusInfo.Career];
             if (statusInfo.Career > (int)StatusCalcBasis.Career.足軽)
             {
-                int prevCareerExp = StatusCalcBasis.NextCareerUpExps[statusInfo.Career - 1];
+                prevCareerExp = StatusCalcBasis.NextCareerUpExps[statusInfo.Career - 1];
                 nextCareerUpExp -= prevCareerExp;
             }
-			this.debugText2.text = "身分M(前)："+GamePlayInfo.BeforeCareerExpMeter + "　身分M(後)："+GamePlayInfo.AfterCareerExpMeter + "　身分経験値："+statusInfo.CareerExp + " 次の身分アップの経験値："+nextCareerUpExp;
+			this.debugText2.text = "身分M(前)："+GamePlayInfo.BeforeCareerExpMeter + "　身分M(後)："+GamePlayInfo.AfterCareerExpMeter + "　身分経験値："+(statusInfo.CareerExp - prevCareerExp) + " 次の身分アップの経験値："+nextCareerUpExp;
 		}
 	}
 }
