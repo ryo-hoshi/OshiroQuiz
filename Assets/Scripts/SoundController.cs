@@ -201,8 +201,11 @@ namespace Common
 			}
 			else
 			{
+				// -20以下の値＋20⇒-20を超過した値
 				float convertvalue = value + thresholdVal;
 				convertvalue*= 6;
+				// -20と-20を超過した値×6の合計
+				// （コンフィグ上は-30が最低値なので-80に補正するための処理）
 				convertvalue-= thresholdVal;
 
 				return convertvalue;
