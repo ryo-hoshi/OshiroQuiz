@@ -5,6 +5,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UniRx.Async;
 
 namespace QuizManagement
 {
@@ -114,6 +115,11 @@ namespace QuizManagement
 			// セーブデータ
 			SaveData saveData = new SaveData();
 			StatusInfo statusInfo = saveData.GetStatusInfo();
+			// 使いまわせるようにデータを退避
+			GamePlayInfo.BeforeRank = statusInfo.Rank;
+			GamePlayInfo.BeforeCareer = statusInfo.Career;
+			GamePlayInfo.BeforeDaimyouClass = statusInfo.DaimyouClass;
+			GamePlayInfo.BeforeCastleDominance = statusInfo.CastleDominance;
 
 			// リスナー登録
 			// TODO リスナーの解除もやる
@@ -172,7 +178,7 @@ namespace QuizManagement
 		/**
 		 * クイズ種類選択
 		 */
-		private void SelectQuizType(int selectType) {
+		private async UniTask SelectQuizType(int selectType) {
 			SoundController.instance.QuizStart();
 
 			// パネルを切り替え
@@ -200,7 +206,7 @@ namespace QuizManagement
 				quizMaker = new CareerQuizMaker();
 
 				// クイズ情報ロード
-				StartCoroutine(this.apiController.CareerQuizLoad((CareerQuizMaker)quizMaker));
+				await this.apiController.CareerQuizLoad((CareerQuizMaker)quizMaker, GamePlayInfo.BeforeCareer);
 			}
 
 			// 出題状況チェックしてクイズを作成

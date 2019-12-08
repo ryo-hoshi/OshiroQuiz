@@ -18,6 +18,8 @@ namespace QuizManagement.Api
 
 		public string question;
 
+		public string question_no;
+
 		public string choice1;
 
 		public string choice2;

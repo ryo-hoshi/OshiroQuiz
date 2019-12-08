@@ -7,7 +7,15 @@
 
 		public const string EXTENSION_WAV = "wav";
 
-
+#if RELEASE
+		public const string Environment = "本番環境";
+		public const string QUIZ_LOAD_URL = "https://asia-northeast1-rmuapp-release.cloudfunctions.net/careerQuizLoad";
+		public const bool IsDevelop = false;
+#elif DEVELOP
+		public const string Environment = "開発環境";
+		public const string QUIZ_LOAD_URL = "https://asia-northeast1-rmuapp-develop.cloudfunctions.net/careerQuizLoad";
+		public const bool IsDevelop = true;
+#endif
     }
 
 	public class StatusPanel
