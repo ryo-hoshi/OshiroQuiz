@@ -88,6 +88,8 @@ namespace QuizManagement
 
 		private string idleTag = CharactorController.AnimationTag.Idle.ToString();
 
+		private ForceUpdateController forceUpdatePrefab;
+
 		private enum QuizOutputStatus
 		{
 			BeforeQuiz,
@@ -178,7 +180,36 @@ namespace QuizManagement
 		/**
 		 * クイズ種類選択
 		 */
-		private async UniTask SelectQuizType(int selectType) {
+		private async UniTask SelectQuizType(int selectType)
+		{
+			// 階級挑戦問題説明文の初期化
+			statusPanelController.OutputCareerDescription("");
+
+			// 強制アップデートチェック
+			if (OshiroUtil.IsForceUpdate())
+			{
+				var modalWindow = GameObject.FindWithTag("Modal");
+
+				if (modalWindow == null) {
+					var canvas = GameObject.Find("Canvas");
+					var forceUpdate = Instantiate(this.forceUpdatePrefab);
+					forceUpdate.tag = "Modal";
+					forceUpdate.transform.SetParent(canvas.transform, false);
+				}
+
+				return;
+			}
+
+			// 階級挑戦クイズはメンテナンス中は実施不可
+			if (OshiroRemoteConfig.Instance().IsMaintenance)
+			{
+				if ((int)GamePlayInfo.QuizType.CareerQuiz == selectType)
+				{
+					statusPanelController.OutputCareerDescription("メンテナンス中のため階級挑戦問題で遊ぶことができません");
+					return;
+				}
+			}
+
 			SoundController.instance.QuizStart();
 
 			// パネルを切り替え

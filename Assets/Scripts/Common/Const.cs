@@ -7,6 +7,8 @@
 
 		public const string EXTENSION_WAV = "wav";
 
+		public const string M_OSHIRO_QUIZ_URL = "https://www.google.com/";
+
 #if RELEASE
 		public const string Environment = "本番環境";
 		public const string QUIZ_LOAD_URL = "https://asia-northeast1-rmuapp-release.cloudfunctions.net/careerQuizLoad";

@@ -167,7 +167,7 @@ namespace QuizManagement
 			careerCrack.enabled = isCrack;
 		}
 
-		/// <summary>階級の上限達成表示の更新
+	/// <summary>階級の上限達成表示の更新
 		/// <param name="rank">ランク</param>
 		/// <param name="careerNum">身分</param>
 		/// <param name="careerExpMeter">身分経験値</param>
@@ -187,6 +187,14 @@ namespace QuizManagement
 			{
 				careerDescriptionText.text = "";
 			}
+		}
+
+		/// <summary>階級挑戦問題の文言更新
+		/// <param name="message">メッセージ</param>
+        /// </summary>
+        public void OutputCareerDescription(string message)
+        {
+			careerDescriptionText.text = message;
 		}
 
 		/// <summary>ステータスパネルを表示するかどうかの切り替え
