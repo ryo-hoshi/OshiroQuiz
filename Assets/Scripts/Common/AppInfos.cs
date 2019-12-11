@@ -33,7 +33,7 @@ namespace Common
 				{
 					string seAudioName = Enum.GetName(typeof(SeAudioType), seAudio);
 
-					AudioClip audioClip = Resources.Load<AudioClip>(Const.SePath + seAudioName + Const.EXTENSION_WAV);
+					AudioClip audioClip = Resources.Load<AudioClip>(Constants.SePath + seAudioName + Constants.EXTENSION_WAV);
 
 					seAudioClips.Add(seAudio, audioClip);
 				}

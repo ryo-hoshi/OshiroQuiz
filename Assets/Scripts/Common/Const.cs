@@ -1,6 +1,6 @@
 ﻿namespace Common
 {
-	public class Const
+	public class Constants
     {
 
 		public const string SePath = "Audios/SE/";
