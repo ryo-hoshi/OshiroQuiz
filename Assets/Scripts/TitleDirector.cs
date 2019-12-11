@@ -58,7 +58,6 @@ namespace QuizManagement
 		// Start is called before the first frame update
 		void Start()
 		{
-			Initialize();
 			/*
 			SaveData saveData = new SaveData();
 
@@ -124,22 +123,6 @@ namespace QuizManagement
 			}
 		}
 		*/
-
-		private void Initialize()
-		{
-			// ContinueWithのコールバック内でMainThreadに関係する処理を呼ぶとクラッシュするので注意
-			Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task => {
-				var dependencyStatus = task.Result;
-				if (dependencyStatus == Firebase.DependencyStatus.Available) {
-					// Set a flag here indiciating that Firebase is ready to use by your
-					// application.
-				} else {
-					UnityEngine.Debug.LogError(System.String.Format(
-					"Could not resolve all Firebase dependencies: {0}", dependencyStatus));
-					// Firebase Unity SDK is not safe to use here.
-				}
-			});
-		}
 
         private async UniTask gameStart()
         {
