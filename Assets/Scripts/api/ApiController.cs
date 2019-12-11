@@ -58,11 +58,32 @@ namespace QuizManagement.Api
 
 					List<int> typeList = new List<int>();
 
+					// 別名問題のTypeを同じにして1問しか出題されないようにする
+					int aliasType = 0;
+
 					Dictionary<int, CareerLoadData> careerQuizDatas = new Dictionary<int, CareerLoadData>();
 					for (int i = 0; i < loadCareerQuizData.value.Count; i++) {
-						careerQuizDatas.Add(loadCareerQuizData.value[i].type, loadCareerQuizData.value[i]);
 
-						typeList.Add(loadCareerQuizData.value[i].type);
+						// 別名問題の場合
+						if ("B".Equals(loadCareerQuizData.value[i].breed))
+						{
+							// 1問目の別名問題の場合はそのまま設定
+							if (aliasType == 0)
+							{
+								careerQuizDatas.Add(loadCareerQuizData.value[i].type, loadCareerQuizData.value[i]);
+								typeList.Add(loadCareerQuizData.value[i].type);
+								aliasType = loadCareerQuizData.value[i].type;
+							}
+							else
+							{
+								careerQuizDatas.Add(aliasType, loadCareerQuizData.value[i]);
+							}
+						}
+						else
+						{
+							careerQuizDatas.Add(loadCareerQuizData.value[i].type, loadCareerQuizData.value[i]);
+							typeList.Add(loadCareerQuizData.value[i].type);
+						}
 					}
 
 					quizMaker.SetCareerQuizDatas(careerQuizDatas, typeList.ToArray());
