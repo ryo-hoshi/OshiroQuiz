@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 using QuizManagement;
+using UniRx.Async;
 
 namespace QuizManagement.Api
 {
@@ -26,67 +27,64 @@ namespace QuizManagement.Api
 		}
 
 
-		public IEnumerator CareerQuizLoad(CareerQuizMaker quizMaker, int career) {
+		public async UniTask<bool> CareerQuizLoad(CareerQuizMaker quizMaker, int career) {
 			Debug.Log("■CareerQuizLoad API実行");
 			Debug.Log("接続URL:"+Constants.QUIZ_LOAD_URL + "?career=" + career);
 			UnityWebRequest request = UnityWebRequest.Get(Constants.QUIZ_LOAD_URL + "?career=" + career);
+			string downloadText = null;
 			// リクエスト送信
-			yield return request.SendWebRequest();
+			await request.SendWebRequest();
 
 			// 通信エラーチェック
 			if (request.isHttpError || request.isNetworkError) {
-				Debug.Log("・API結果がエラー:"+request.error);
-			} else {
-				// UTF8文字列として取得する
-				string text = request.downloadHandler.text;
-				Debug.Log("・API結果のtext:"+text);
-				//testText.text = text;
+				Debug.Log("・APIリクエスト結果がエラー:"+request.error);
+				return false;
+			}
 
-				CareerQuizData loadCareerQuizData = JsonUtility.FromJson<CareerQuizData>(text);
+			// UTF8文字列として取得する
+			downloadText = request.downloadHandler.text;
 
-				if (loadCareerQuizData == null || loadCareerQuizData.value.Count < GameDirector.QUIZ_MAX_NUM) {
+			Debug.Log("・API結果のdownloadText:"+downloadText);
 
-					if (loadCareerQuizData == null) {
-						Debug.Log("・レスポンスがNULL");
-					} else {
-						Debug.Log("・レスポンスのサイズが少ない（サイズ）：" + loadCareerQuizData.value.Count);						
-					}
+			CareerQuizData loadCareerQuizData = JsonUtility.FromJson<CareerQuizData>(downloadText);
 
-					// TODO exception
+			if (loadCareerQuizData == null || loadCareerQuizData.value.Count < GameDirector.QUIZ_MAX_NUM) {
 
+				if (loadCareerQuizData == null) {
+					Debug.Log("・レスポンスがNULL");
 				} else {
-					Debug.Log("・レスポンスのサイズ：" + loadCareerQuizData.value.Count);
+					Debug.Log("・レスポンスのサイズが少ない（サイズ）：" + loadCareerQuizData.value.Count);						
+				}
 
-					List<int> typeList = new List<int>();
+				// TODO exception
 
-					// 別名問題のType値退避用
-					int aliasType = 0;
+			} else {
+				Debug.Log("・レスポンスのサイズ：" + loadCareerQuizData.value.Count);
 
-					Dictionary<int, CareerLoadData> careerQuizDatas = new Dictionary<int, CareerLoadData>();
-					for (int i = 0; i < loadCareerQuizData.value.Count; i++) {
+				List<int> typeList = new List<int>();
 
-						// 別名問題の場合
-						if ("B".Equals(loadCareerQuizData.value[i].breed))
+				// 別名問題のType値退避用
+				int aliasType = 0;
+
+				Dictionary<int, CareerLoadData> careerQuizDatas = new Dictionary<int, CareerLoadData>();
+				for (int i = 0; i < loadCareerQuizData.value.Count; i++) {
+
+					// 別名問題の場合
+					if ("B".Equals(loadCareerQuizData.value[i].breed))
+					{
+						// 問題数が余分にある場合はType値を同じにして別名問題が複数出題されないようにする
+						if (loadCareerQuizData.value.Count > GameDirector.QUIZ_MAX_NUM)
 						{
-							// 問題数が余分にある場合はType値を同じにして別名問題が複数出題されないようにする
-							if (loadCareerQuizData.value.Count > GameDirector.QUIZ_MAX_NUM)
-							{
-								// 別名問題の取得1問目の場合はそのまま設定
-								if (aliasType == 0)
-								{
-									careerQuizDatas.Add(loadCareerQuizData.value[i].type, loadCareerQuizData.value[i]);
-									typeList.Add(loadCareerQuizData.value[i].type);
-									aliasType = loadCareerQuizData.value[i].type;
-								}
-								else
-								{
-									careerQuizDatas.Add(aliasType, loadCareerQuizData.value[i]);									
-								}
-							}
-							else
+							// 別名問題の取得1問目の場合はそのまま設定
+							if (aliasType == 0)
 							{
 								careerQuizDatas.Add(loadCareerQuizData.value[i].type, loadCareerQuizData.value[i]);
 								typeList.Add(loadCareerQuizData.value[i].type);
+								aliasType = loadCareerQuizData.value[i].type;
+							}
+							else
+							{
+								careerQuizDatas.Add(aliasType, loadCareerQuizData.value[i]);									
 							}
 						}
 						else
@@ -95,10 +93,16 @@ namespace QuizManagement.Api
 							typeList.Add(loadCareerQuizData.value[i].type);
 						}
 					}
-
-					quizMaker.SetCareerQuizDatas(careerQuizDatas, typeList.ToArray());
+					else
+					{
+						careerQuizDatas.Add(loadCareerQuizData.value[i].type, loadCareerQuizData.value[i]);
+						typeList.Add(loadCareerQuizData.value[i].type);
+					}
 				}
+
+				quizMaker.SetCareerQuizDatas(careerQuizDatas, typeList.ToArray());
 			}
+			return true;
 		}
 
 		/*

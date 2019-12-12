@@ -79,6 +79,9 @@ namespace QuizManagement
 		[SerializeField]
 		private StatusPanelController statusPanelController;
 
+		[SerializeField]
+		private LoadingTextController loadingText;
+
 		// クイズ出題状態の初期化
 		private QuizOutputStatus quizOutputStatus = QuizOutputStatus.BeforeQuiz;
 
@@ -212,13 +215,8 @@ namespace QuizManagement
 			}
 
 			SoundController.instance.QuizStart();
-
-			// パネルを切り替え
-			this.selectUIPanel.SetActive(false);
-			// this.statusPanel.SetActive(false);
-			this.statusPanelController.DisplayChange(false);
-			this.gameUIPanel.SetActive(true);
-			this.questionPanel.SetActive(true);
+			// Loading表示
+			loadingText.Display();
 
 			// ロード中状態に変更
 			this.quizOutputStatus = QuizOutputStatus.QuizLoad;
@@ -238,8 +236,35 @@ namespace QuizManagement
 				quizMaker = new CareerQuizMaker();
 
 				// クイズ情報ロード
-				await this.apiController.CareerQuizLoad((CareerQuizMaker)quizMaker, GamePlayInfo.BeforeCareer);
+				bool isSuccess = await this.apiController.CareerQuizLoad((CareerQuizMaker)quizMaker, GamePlayInfo.BeforeCareer);
+
+				// 失敗時は1回だけリトライ
+				if (!isSuccess)
+				{
+					await UniTask.Delay(2500);
+					isSuccess = await this.apiController.CareerQuizLoad((CareerQuizMaker)quizMaker, GamePlayInfo.BeforeCareer);
+				}
+
+				// ロードリトライも失敗時
+				if (!isSuccess)
+				{
+					statusPanelController.OutputCareerDescription("サーバーとの通信に失敗しました。");
+					// Loading表示の解除
+					loadingText.Hidden();
+					// ステータスをクイズ開始前に戻す
+					quizOutputStatus = QuizOutputStatus.BeforeQuiz;
+
+					return;
+				}
 			}
+			// Loading表示の解除
+			loadingText.Hidden();
+
+			// パネルを切り替え
+			this.selectUIPanel.SetActive(false);
+			this.statusPanelController.DisplayChange(false);
+			this.gameUIPanel.SetActive(true);
+			this.questionPanel.SetActive(true);
 
 			// 出題状況チェックしてクイズを作成
 			StartCoroutine(quizOutputCheck());
