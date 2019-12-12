@@ -241,7 +241,7 @@ namespace QuizManagement
             // 現在の身分経験値と今回獲得分を合計(0より小さくはならないように)
             int careerExp = Mathf.Max(0, this.beforeCareerExp + correctDiff);
             // 身分の上限になっている場合は経験値がメーターMAX分よりも多くならないように調整
-            if (this.beforeCareer >= GamePlayInfo.CareerLimitNum)
+            if (this.beforeCareer >= OshiroRemoteConfig.Instance().CareerUpLimit)
             {
                 if (careerExp >= StatusCalcBasis.NextCareerUpExps[this.beforeCareer])
                 {

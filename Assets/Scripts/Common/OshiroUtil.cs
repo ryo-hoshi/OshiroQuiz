@@ -1,4 +1,7 @@
-﻿namespace Common
+﻿using System;
+using UnityEngine;
+
+namespace Common
 {
 	public class OshiroUtil
     {
@@ -12,7 +15,7 @@
 		{
 			// 身分上限のメーターチェックはメーター止まった状態の最大値と比較する
 			if (careerNum < (int)StatusCalcBasis.Career.大名
-				&& careerNum >= GamePlayInfo.CareerLimitNum
+				&& careerNum >= OshiroRemoteConfig.Instance().CareerUpLimit
 				&& careerExpMeter >= StatusPanel.Fill_AMOUNT_BEFORE_UP)
 			{
 				return true;
@@ -59,6 +62,27 @@
 			{
 				return false;
 			}
+		}
+
+		/// <summary>強制アップデートの対象かどうか
+        /// <returns>true:アップデート対象、false:対象ではない</returns>
+        /// </summary>
+		public static bool IsForceUpdate()
+		{
+			string currentVersion = Application.version;
+			string forceUpdateVersion = OshiroRemoteConfig.Instance().ForceUpdateVersion;
+
+			int[] currentVersions = Array.ConvertAll(currentVersion.Split('.'), int.Parse);
+			int[] forceUpdateVersions = Array.ConvertAll(forceUpdateVersion.Split('.'), int.Parse);
+
+			for (var i = 0; i < forceUpdateVersions.Length; i++)
+			{
+				if (currentVersions[i] < forceUpdateVersions[i])
+				{
+					return true;
+				}
+			}
+			return false;
 		}
     }
 }

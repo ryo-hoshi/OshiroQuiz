@@ -45,6 +45,8 @@ namespace QuizManagement
 		[SerializeField]
 		private ConfigController configPrefab;
 
+		private bool isGameStart = false;
+
         private Animator titleAnimator;
 //		[SerializeField]
 //		private Text testText;
@@ -58,6 +60,11 @@ namespace QuizManagement
 		// Start is called before the first frame update
 		void Start()
 		{
+			// OshiroRemoteConfig.RemoteConfigInit();
+
+			var oshiroRemoteConfig = OshiroRemoteConfig.Instance();
+			
+			oshiroRemoteConfig.RemoteConfigFetch();
 			/*
 			SaveData saveData = new SaveData();
 
@@ -126,6 +133,12 @@ namespace QuizManagement
 
         private async UniTask gameStart()
         {
+			if (isGameStart)
+			{
+				return;
+			}
+			isGameStart = true;
+
             this.titleAnimator.SetTrigger("blinkEnd");
 
 			SoundController.instance.TapToStart();
