@@ -47,3 +47,16 @@ Assets/Plugins/Editor/VSCode.cs
 .vscode/settings.json
 Assets/Plugins/Editor.meta
 apk/
+Assets/Editor Default Resources/
+Assets/Firebase/
+Assets/PlayServicesResolver/
+Assets/Plugins/
+Assets/StreamingAssets/
+Assets/Parse/
+Assets/StreamingAssets.meta
+Assets/PlayServicesResolver.meta
+Assets/Parse.meta
+ProjectSettings/AndroidResolverDependencies.xml
+Assets/Firebase.meta
+Assets/Editor Default Resources.meta
+ProjectSettings/
