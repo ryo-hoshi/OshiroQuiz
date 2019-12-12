@@ -70,7 +70,9 @@ namespace Common
 		public static bool IsForceUpdate()
 		{
 			string currentVersion = Application.version;
+			Debug.Log("!!!currentVersion:"+currentVersion);
 			string forceUpdateVersion = OshiroRemoteConfig.Instance().ForceUpdateVersion;
+			Debug.Log("!!!forceUpdateVersion:"+forceUpdateVersion);
 
 			int[] currentVersions = Array.ConvertAll(currentVersion.Split('.'), int.Parse);
 			int[] forceUpdateVersions = Array.ConvertAll(forceUpdateVersion.Split('.'), int.Parse);

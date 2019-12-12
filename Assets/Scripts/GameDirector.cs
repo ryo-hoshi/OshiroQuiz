@@ -88,6 +88,7 @@ namespace QuizManagement
 
 		private string idleTag = CharactorController.AnimationTag.Idle.ToString();
 
+		[SerializeField]
 		private ForceUpdateController forceUpdatePrefab;
 
 		private enum QuizOutputStatus

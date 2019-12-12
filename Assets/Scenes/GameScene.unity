@@ -52,7 +52,7 @@ LightmapSettings:
     m_AlbedoBoost: 1
     m_EnvironmentLightingMode: 0
     m_EnableBakedLightmaps: 0
-    m_EnableRealtimeLightmaps: 1
+    m_EnableRealtimeLightmaps: 0
   m_LightmapEditorSettings:
     serializedVersion: 10
     m_Resolution: 2
@@ -535,6 +535,8 @@ MonoBehaviour:
   selectUIPanel: {fileID: 958250500}
   questionPanel: {fileID: 7284925}
   statusPanelController: {fileID: 3568928642475627245}
+  forceUpdatePrefab: {fileID: 4684307267042225177, guid: bd63f708f44c51544a22d26401ebc854,
+    type: 3}
 --- !u!4 &811754719
 Transform:
   m_ObjectHideFlags: 0
