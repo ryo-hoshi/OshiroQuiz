@@ -28,6 +28,7 @@ namespace QuizManagement.Api
 
 		public IEnumerator CareerQuizLoad(CareerQuizMaker quizMaker, int career) {
 			Debug.Log("■CareerQuizLoad API実行");
+			Debug.Log("接続URL:"+Constants.QUIZ_LOAD_URL + "?career=" + career);
 			UnityWebRequest request = UnityWebRequest.Get(Constants.QUIZ_LOAD_URL + "?career=" + career);
 			// リクエスト送信
 			yield return request.SendWebRequest();
@@ -58,7 +59,7 @@ namespace QuizManagement.Api
 
 					List<int> typeList = new List<int>();
 
-					// 別名問題のTypeを同じにして1問しか出題されないようにする
+					// 別名問題のType値退避用
 					int aliasType = 0;
 
 					Dictionary<int, CareerLoadData> careerQuizDatas = new Dictionary<int, CareerLoadData>();
@@ -67,16 +68,25 @@ namespace QuizManagement.Api
 						// 別名問題の場合
 						if ("B".Equals(loadCareerQuizData.value[i].breed))
 						{
-							// 1問目の別名問題の場合はそのまま設定
-							if (aliasType == 0)
+							// 問題数が余分にある場合はType値を同じにして別名問題が複数出題されないようにする
+							if (loadCareerQuizData.value.Count > GameDirector.QUIZ_MAX_NUM)
 							{
-								careerQuizDatas.Add(loadCareerQuizData.value[i].type, loadCareerQuizData.value[i]);
-								typeList.Add(loadCareerQuizData.value[i].type);
-								aliasType = loadCareerQuizData.value[i].type;
+								// 別名問題の取得1問目の場合はそのまま設定
+								if (aliasType == 0)
+								{
+									careerQuizDatas.Add(loadCareerQuizData.value[i].type, loadCareerQuizData.value[i]);
+									typeList.Add(loadCareerQuizData.value[i].type);
+									aliasType = loadCareerQuizData.value[i].type;
+								}
+								else
+								{
+									careerQuizDatas.Add(aliasType, loadCareerQuizData.value[i]);									
+								}
 							}
 							else
 							{
-								careerQuizDatas.Add(aliasType, loadCareerQuizData.value[i]);
+								careerQuizDatas.Add(loadCareerQuizData.value[i].type, loadCareerQuizData.value[i]);
+								typeList.Add(loadCareerQuizData.value[i].type);
 							}
 						}
 						else
