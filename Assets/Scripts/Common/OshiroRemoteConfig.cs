@@ -61,15 +61,15 @@ public class OshiroRemoteConfig
     {
         if (fetchTask.IsCanceled)
         {
-            Debug.Log("Fetch canceled.");
+            Debug.Log("■■■■■Fetch canceled.");
         }
         else if (fetchTask.IsFaulted)
         {
-            Debug.Log("Fetch error.");
+            Debug.Log("■■■■■Fetch error.");
         }
         else if (fetchTask.IsCompleted)
         {
-            Debug.Log("Fetch completed.");
+            Debug.Log("■■■■■Fetch completed.");
         }
 
         var info = Firebase.RemoteConfig.FirebaseRemoteConfig.Info;

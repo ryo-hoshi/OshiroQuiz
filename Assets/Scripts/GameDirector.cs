@@ -142,6 +142,9 @@ namespace QuizManagement
 			titleButton.onClick.AddListener(() => GoTitle());
 
             statusOutput(statusInfo);
+
+			// デバッグ用
+			statusPanelController.OutputCareerDescription("強制アップデート取得値：" + OshiroRemoteConfig.Instance().ForceUpdateVersion);
         }
 
         // Update is called once per frame

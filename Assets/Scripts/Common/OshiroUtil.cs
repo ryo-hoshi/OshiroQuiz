@@ -83,6 +83,10 @@ namespace Common
 				{
 					return true;
 				}
+				if (currentVersions[i] > forceUpdateVersions[i])
+				{
+					return false;
+				}
 			}
 			return false;
 		}

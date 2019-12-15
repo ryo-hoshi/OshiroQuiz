@@ -56,7 +56,7 @@ namespace QuizManagement.Api
 					Debug.Log("・レスポンスのサイズが少ない（サイズ）：" + loadCareerQuizData.value.Count);						
 				}
 
-				// TODO exception
+				return false;
 
 			} else {
 				Debug.Log("・レスポンスのサイズ：" + loadCareerQuizData.value.Count);
