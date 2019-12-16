@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using OshiroFirebase;
 
 namespace Common
 {
@@ -65,8 +66,8 @@ namespace Common
 		}
 
 		/// <summary>強制アップデートの対象かどうか
-        /// <returns>true:アップデート対象、false:対象ではない</returns>
         /// </summary>
+        /// <returns>true:アップデート対象、false:対象ではない</returns>
 		public static bool IsForceUpdate()
 		{
 			string currentVersion = Application.version;

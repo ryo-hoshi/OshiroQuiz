@@ -1,4 +1,5 @@
 ﻿using Common;
+using OshiroFirebase;
 using QuizCollections;
 using System;
 using UnityEngine;
@@ -216,6 +217,7 @@ namespace QuizManagement
         /// <summary>城支配数の更新値を計算
         /// <param name="correctDiff">正解不正解の差</param>
         /// </summary>
+        /// <returns>城支配数の更新値</returns>
         private int castleDominanceUpdateAmount(int correctDiff)
         {
             int updateAmount = Math.Abs(correctDiff);

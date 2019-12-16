@@ -1,8 +1,10 @@
 ﻿using Common;
+using OshiroFirebase;
 using QuizCollections;
 using QuizManagement.Api;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UniRx.Async;
@@ -191,6 +193,14 @@ namespace QuizManagement
 		{
 			// 階級挑戦問題説明文の初期化
 			statusPanelController.OutputCareerDescription("");
+
+			// RemoteConfigのFetch日時が古い場合はFetchを行う
+			if (OshiroRemoteConfig.Instance().IsNeedFetch())
+			{
+				UnityAction callback = () => OshiroRemoteConfig.Instance().RemoteConfigFetch();
+				OshiroFirebases oshiroFirebases = new OshiroFirebases();
+				oshiroFirebases.FirebaseAsyncAction(callback);
+			}
 
 			// 強制アップデートチェック
 			if (OshiroUtil.IsForceUpdate())

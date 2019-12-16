@@ -150,7 +150,7 @@ namespace QuizManagement
 				}
 			}
 
-			await UniTask.Delay(300);
+			await UniTask.Delay(500);
 
             // ************ ランクや身分上下時のエフェクト表示と最終的なステータス表示 ************
 			if (GamePlayInfo.Result.RankUp == GamePlayInfo.QuizResult
