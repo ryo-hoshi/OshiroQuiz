@@ -31,11 +31,11 @@ namespace QuizManagement
 			}
 			else if (statusInfo.Rank == 2)
 			{
-				quizOutputState.allQuestionType = new int[]{2, 3, 92, 93, 94};
+				quizOutputState.allQuestionType = new int[]{2, 3, 92, 94, 95};
 			}
 			else if (statusInfo.Rank == 3)
 			{
-				quizOutputState.allQuestionType = new int[]{2, 3, 5, 93, 94};
+				quizOutputState.allQuestionType = new int[]{2, 3, 5, 94, 95};
 			}
 			else if (statusInfo.Rank == 4)
 			{
