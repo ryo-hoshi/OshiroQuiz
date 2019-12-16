@@ -59,12 +59,13 @@ namespace QuizManagement
 			// ランク情報更新
 			this.rankUpdate(correctNum);
 
-			// 階級挑戦クイズの場合かつ現在上げることができる身分の上限まで達していない場合は身分情報を更新
-			if (GamePlayInfo.PlayQuizType == GamePlayInfo.QuizType.CareerQuiz
-                && !OshiroUtil.IsCareerLimit(this.beforeCareer, this.beforeCareerMeter)) {
+            // 正解不正解の差
+            int correctDiff = (correctNum * 2) - GameDirector.QUIZ_MAX_NUM;
 
-                // 正解不正解の差
-                int correctDiff = (correctNum * 2) - GameDirector.QUIZ_MAX_NUM;
+			// 階級挑戦クイズかつ身分上限で正解数の方が多い場合以外は身分情報を更新
+			if (GamePlayInfo.PlayQuizType == GamePlayInfo.QuizType.CareerQuiz
+                && !(OshiroUtil.IsCareerLimit(this.beforeCareer, this.beforeCareerMeter) 
+                    && correctDiff > 0)) {
 
                 this.careerUpdate(correctDiff);
 			}

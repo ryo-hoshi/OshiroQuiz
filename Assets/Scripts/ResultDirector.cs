@@ -133,9 +133,10 @@ namespace QuizManagement
 
 			// ************ 身分表示更新演出 ************
 			// bool isCareerUpdate = false;
-			// 上げられる身分の上限かつ経験値メーターも上限に達している場合は対象外にする
+			// 身分上限かつ経験値メーターが上限から変更していない場合は対象外にする
 			if (GamePlayInfo.PlayQuizType == GamePlayInfo.QuizType.CareerQuiz
-				&& !OshiroUtil.IsCareerLimit(GamePlayInfo.BeforeCareer, GamePlayInfo.BeforeCareerExpMeter)) {
+				&& !(OshiroUtil.IsCareerLimit(GamePlayInfo.BeforeCareer, GamePlayInfo.BeforeCareerExpMeter)
+					&& GamePlayInfo.BeforeCareerExpMeter == GamePlayInfo.AfterCareerExpMeter)) {
 
 				if (GamePlayInfo.BeforeCareer == (int)StatusCalcBasis.Career.大名)
 				{
