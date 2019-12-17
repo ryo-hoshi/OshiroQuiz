@@ -115,6 +115,10 @@ namespace QuizManagement
 			this.gameUIPanel.SetActive(false);
 			this.questionPanel.SetActive(false);
 
+			regularQuizButton.interactable = false;
+			careerQuizButton.interactable = false;
+			titleButton.interactable = false;
+
 			// this.charactorController = this.charactor.GetComponent<CharactorController>(); 
 			this.apiController = this.api.GetComponent<ApiController>();
 			// TODO Unitaskに置き換える
@@ -136,16 +140,16 @@ namespace QuizManagement
 
 			// リスナー登録
 			// TODO リスナーの解除もやる
-            regularQuizButton.onClick.AddListener(() => SelectQuizType((int)GamePlayInfo.QuizType.RegularQuiz));
 			// 階級挑戦問題が解放済ならリスナー登録
 			if (OshiroUtil.IsCareerQuestionRelease(statusInfo.Rank))
 			{
 				careerQuizButton.interactable = true;
 	            careerQuizButton.onClick.AddListener(() => SelectQuizType((int)GamePlayInfo.QuizType.CareerQuiz));
 			}
-			else{
-				careerQuizButton.interactable = false;
-			}
+			regularQuizButton.interactable = true;
+			titleButton.interactable = true;
+
+			regularQuizButton.onClick.AddListener(() => SelectQuizType((int)GamePlayInfo.QuizType.RegularQuiz));			
 			titleButton.onClick.AddListener(() => GoTitle());
 
 			// デバッグ用
