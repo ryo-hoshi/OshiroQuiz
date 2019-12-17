@@ -21,16 +21,17 @@ namespace QuizManagement
         //private int textBlinkSpeed = (int)TextBlinkType.Init;
         //private float time = 0.0f;
 
-        [SerializeField]
-        private InputField CastleDominanceEdit;
-        [SerializeField]
-		private InputField rankEdit;
-		[SerializeField]
-		private InputField rankExpEdit;
-        [SerializeField]
-        private Text careerValue;
-        [SerializeField]
-		private InputField careerExpEdit;
+		// デバッグ用
+        // [SerializeField]
+        // private InputField CastleDominanceEdit;
+        // [SerializeField]
+		// private InputField rankEdit;
+		// [SerializeField]
+		// private InputField rankExpEdit;
+        // [SerializeField]
+        // private Text careerValue;
+        // [SerializeField]
+		// private InputField careerExpEdit;
 
         [SerializeField]
         private Button helpButton;
@@ -79,7 +80,7 @@ namespace QuizManagement
 //			int currentExp = careerData.Exp;
 //			this.careerText.text = careerData.Career;
 			this.titleAnimator = titleButton.GetComponent<Animator>();
-			outputStatusEdit();
+			// outputStatusEdit();
 
             //			StartCoroutine(GetText());
 
@@ -247,58 +248,58 @@ namespace QuizManagement
 		}
         */
 
-        public void DataClear() {
+//         public void DataClear() {
 
-//			if (EditorUtility.DisplayDialog("警告", "データをクリアしますか？", "OK", "CANCEL"))
-			//			{
-				SaveData saveData = new SaveData();
-				saveData.ClearStatusInfo();
-			Debug.Log("データクリア！");
-			outputStatusEdit();
-			//}
-		}
+// //			if (EditorUtility.DisplayDialog("警告", "データをクリアしますか？", "OK", "CANCEL"))
+// 			//			{
+// 				SaveData saveData = new SaveData();
+// 				saveData.ClearStatusInfo();
+// 			Debug.Log("データクリア！");
+// 			outputStatusEdit();
+// 			//}
+// 		}
 
 
-		public void StatusEdit() {
-			SaveData saveData = new SaveData();
+		// public void StatusEdit() {
+		// 	SaveData saveData = new SaveData();
 
-            int careerNum = (int)StatusCalcBasis.CareerFromCareerExp(int.Parse(this.careerExpEdit.text));
+        //     int careerNum = (int)StatusCalcBasis.CareerFromCareerExp(int.Parse(this.careerExpEdit.text));
 
-            int careerExp = int.Parse(this.careerExpEdit.text);
-            int nextCareerUpExp = StatusCalcBasis.NextCareerUpExps[careerNum];
+        //     int careerExp = int.Parse(this.careerExpEdit.text);
+        //     int nextCareerUpExp = StatusCalcBasis.NextCareerUpExps[careerNum];
 
-            if (careerNum > (int)StatusCalcBasis.Career.足軽)
-            {
-                int prevCareerExp = StatusCalcBasis.NextCareerUpExps[careerNum - 1];
-                careerExp -= prevCareerExp;
-                nextCareerUpExp -= prevCareerExp;
-            }
+        //     if (careerNum > (int)StatusCalcBasis.Career.足軽)
+        //     {
+        //         int prevCareerExp = StatusCalcBasis.NextCareerUpExps[careerNum - 1];
+        //         careerExp -= prevCareerExp;
+        //         nextCareerUpExp -= prevCareerExp;
+        //     }
 
-            Debug.Log("ランクデバッグ値："+ this.rankEdit.text);
+        //     Debug.Log("ランクデバッグ値："+ this.rankEdit.text);
 
-            saveData.SaveStatusInfo(int.Parse(this.rankEdit.text), 
-				int.Parse(this.rankExpEdit.text),
-                StatusCalcBasis.CalcMeter(int.Parse(this.rankExpEdit.text), StatusCalcBasis.CalcNextRankUpExp(int.Parse(this.rankEdit.text))),
-                careerNum,
-				int.Parse(this.careerExpEdit.text),
-                StatusCalcBasis.CalcMeter(careerExp, nextCareerUpExp),
-                int.Parse(this.CastleDominanceEdit.text), // 城支配数
-                (int)StatusCalcBasis.DaimyouClassFromCastleNum(int.Parse(this.CastleDominanceEdit.text))
-            );
+        //     saveData.SaveStatusInfo(int.Parse(this.rankEdit.text), 
+		// 		int.Parse(this.rankExpEdit.text),
+        //         StatusCalcBasis.CalcMeter(int.Parse(this.rankExpEdit.text), StatusCalcBasis.CalcNextRankUpExp(int.Parse(this.rankEdit.text))),
+        //         careerNum,
+		// 		int.Parse(this.careerExpEdit.text),
+        //         StatusCalcBasis.CalcMeter(careerExp, nextCareerUpExp),
+        //         int.Parse(this.CastleDominanceEdit.text), // 城支配数
+        //         (int)StatusCalcBasis.DaimyouClassFromCastleNum(int.Parse(this.CastleDominanceEdit.text))
+        //     );
 
-			// TODO 後で消す　デバッグ用
-			outputStatusEdit();
-		}
+		// 	// TODO 後で消す　デバッグ用
+		// 	outputStatusEdit();
+		// }
 
-		private void outputStatusEdit() {
-			SaveData saveData = new SaveData();
-			StatusInfo statusInfo = saveData.GetStatusInfo();
+		// private void outputStatusEdit() {
+		// 	SaveData saveData = new SaveData();
+		// 	StatusInfo statusInfo = saveData.GetStatusInfo();
 
-            this.CastleDominanceEdit.text = statusInfo.CastleDominance.ToString();
-            this.rankEdit.text = statusInfo.Rank.ToString();
-			this.rankExpEdit.text = statusInfo.RankExp.ToString();
-			this.careerValue.text = (StatusCalcBasis.CareerFromNum((int)statusInfo.Career)).ToString();
-			this.careerExpEdit.text = statusInfo.CareerExp.ToString();
-		}
+        //     this.CastleDominanceEdit.text = statusInfo.CastleDominance.ToString();
+        //     this.rankEdit.text = statusInfo.Rank.ToString();
+		// 	this.rankExpEdit.text = statusInfo.RankExp.ToString();
+		// 	this.careerValue.text = (StatusCalcBasis.CareerFromNum((int)statusInfo.Career)).ToString();
+		// 	this.careerExpEdit.text = statusInfo.CareerExp.ToString();
+		// }
 	}
 }

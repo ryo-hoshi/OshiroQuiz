@@ -26,10 +26,6 @@ namespace QuizManagement
 		private Particle burstParticle;
 
 		[SerializeField]
-		private Text debugText1;
-		[SerializeField]
-		private Text debugText2;
-		[SerializeField]
 		private StatusPanelController statusPanelController;
 
 		// Start is called before the first frame update
@@ -114,9 +110,6 @@ namespace QuizManagement
 			if (isStatusUpdate) {
 				await UniTask.Delay(1000);
 			}
-
-			// TODO 後で消す　デバッグ用
-			outputDebug();
 
 			this.isResultAnimEnd = true;
 		}
@@ -439,23 +432,6 @@ namespace QuizManagement
                 GamePlayInfo.AfterCastleDominance,
 				GamePlayInfo.AfterDaimyouClass);
             Debug.LogWarning("城支配数更新値：" + GamePlayInfo.AfterCastleDominance);
-		}
-
-		private void outputDebug() {
-
-			SaveData saveData = new SaveData();
-			StatusInfo statusInfo = saveData.GetStatusInfo();
-
-			this.debugText1.text = "ランクM(前)："+GamePlayInfo.BeforeRankExpMeter + "　ランクM(後)："+GamePlayInfo.AfterRankExpMeter + "　ランク経験値："+statusInfo.RankExp+ " 次のレベルアップの経験値："+StatusCalcBasis.CalcNextRankUpExp(statusInfo.Rank);
-
-			int prevCareerExp = 0;
-            int nextCareerUpExp = StatusCalcBasis.NextCareerUpExps[statusInfo.Career];
-            if (statusInfo.Career > (int)StatusCalcBasis.Career.足軽)
-            {
-                prevCareerExp = StatusCalcBasis.NextCareerUpExps[statusInfo.Career - 1];
-                nextCareerUpExp -= prevCareerExp;
-            }
-			this.debugText2.text = "身分M(前)："+GamePlayInfo.BeforeCareerExpMeter + "　身分M(後)："+GamePlayInfo.AfterCareerExpMeter + "　身分経験値："+(statusInfo.CareerExp - prevCareerExp) + " 次の身分アップの経験値："+nextCareerUpExp;
 		}
 	}
 }
