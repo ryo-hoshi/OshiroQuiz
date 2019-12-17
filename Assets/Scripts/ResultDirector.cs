@@ -54,6 +54,7 @@ namespace QuizManagement
 			GamePlayInfo.AfterCareerExpMeter = 0.8f;
 			*/
 			/********************************************************************/
+			// フレームを少しだけ抑える
 			QualitySettings.vSyncCount = 1;
 			Application.targetFrameRate = 25;
 
@@ -130,15 +131,15 @@ namespace QuizManagement
             // ************ ランク表示更新演出 ************
 			await rankDisplayUpdate();
 
-			// 身分とランクのメーター更新の間の待ち
-			await UniTask.Delay(500);
-
 			// ************ 身分表示更新演出 ************
 			// bool isCareerUpdate = false;
 			// 身分上限かつ経験値メーターが上限から変更していない場合は対象外にする
 			if (GamePlayInfo.PlayQuizType == GamePlayInfo.QuizType.CareerQuiz
 				&& !(OshiroUtil.IsCareerLimit(GamePlayInfo.BeforeCareer, GamePlayInfo.BeforeCareerExpMeter)
 					&& GamePlayInfo.BeforeCareerExpMeter == GamePlayInfo.AfterCareerExpMeter)) {
+
+				// 身分とランクのメーター更新の間の待ち
+				await UniTask.Delay(500);
 
 				if (GamePlayInfo.BeforeCareer == (int)StatusCalcBasis.Career.大名)
 				{
@@ -152,7 +153,7 @@ namespace QuizManagement
 				}
 			}
 
-			await UniTask.Delay(700);
+			await UniTask.Delay(600);
 
             // ************ ランクや身分上下時のエフェクト表示と最終的なステータス表示 ************
 			if (GamePlayInfo.Result.RankUp == GamePlayInfo.QuizResult
