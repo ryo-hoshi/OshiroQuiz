@@ -109,6 +109,9 @@ namespace QuizManagement
 		// Start is called before the first frame update
 		async UniTask Start()
 		{
+			QualitySettings.vSyncCount = 1;
+			Application.targetFrameRate = 25;
+
 			this.selectUIPanel.SetActive(true);
 			// this.statusPanel.SetActive(true);
 			this.statusPanelController.DisplayChange(true);

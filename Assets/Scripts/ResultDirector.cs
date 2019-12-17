@@ -54,6 +54,8 @@ namespace QuizManagement
 			GamePlayInfo.AfterCareerExpMeter = 0.8f;
 			*/
 			/********************************************************************/
+			QualitySettings.vSyncCount = 1;
+			Application.targetFrameRate = 25;
 
 			string charactorExist = this.charactorController == null ? "null" : "nullじゃない";
 			Debug.LogWarning("結果画面のキャラクター取得：" + charactorExist);
@@ -150,7 +152,7 @@ namespace QuizManagement
 				}
 			}
 
-			await UniTask.Delay(500);
+			await UniTask.Delay(700);
 
             // ************ ランクや身分上下時のエフェクト表示と最終的なステータス表示 ************
 			if (GamePlayInfo.Result.RankUp == GamePlayInfo.QuizResult

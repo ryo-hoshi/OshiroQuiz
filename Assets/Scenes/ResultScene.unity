@@ -903,6 +903,11 @@ PrefabInstance:
       propertyPath: isGUI
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5057667491630162136, guid: d278b95b5a2c87c4197f8be498fac6f6,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2478182976231766052, guid: d278b95b5a2c87c4197f8be498fac6f6,
         type: 3}
       propertyPath: lookAtObj
@@ -938,7 +943,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!215 &2038844354
 ReflectionProbe:
   m_ObjectHideFlags: 0
@@ -1187,6 +1192,31 @@ PrefabInstance:
     - target: {fileID: 3858289719707991443, guid: 81ec97a51b9cb8c4780ec43434eced82,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3858289719707991441, guid: 81ec97a51b9cb8c4780ec43434eced82,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3858289719707991440, guid: 81ec97a51b9cb8c4780ec43434eced82,
+        type: 3}
+      propertyPath: m_LightProbeUsage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3858289719707991440, guid: 81ec97a51b9cb8c4780ec43434eced82,
+        type: 3}
+      propertyPath: m_ReflectionProbeUsage
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3858289719707991440, guid: 81ec97a51b9cb8c4780ec43434eced82,
+        type: 3}
+      propertyPath: m_CastShadows
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3858289719707991440, guid: 81ec97a51b9cb8c4780ec43434eced82,
+        type: 3}
+      propertyPath: m_ReceiveShadows
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
