@@ -107,7 +107,7 @@ namespace QuizManagement
 		}
 
 		// Start is called before the first frame update
-		void Start()
+		async UniTask Start()
 		{
 			this.selectUIPanel.SetActive(true);
 			// this.statusPanel.SetActive(true);
@@ -129,6 +129,11 @@ namespace QuizManagement
 			GamePlayInfo.BeforeDaimyouClass = statusInfo.DaimyouClass;
 			GamePlayInfo.BeforeCastleDominance = statusInfo.CastleDominance;
 
+            statusOutput(statusInfo);
+
+			// 画面連打していた時にすぐにクイズが始まってしまわないように対応
+			await UniTask.Delay(500);
+
 			// リスナー登録
 			// TODO リスナーの解除もやる
             regularQuizButton.onClick.AddListener(() => SelectQuizType((int)GamePlayInfo.QuizType.RegularQuiz));
@@ -142,8 +147,6 @@ namespace QuizManagement
 				careerQuizButton.interactable = false;
 			}
 			titleButton.onClick.AddListener(() => GoTitle());
-
-            statusOutput(statusInfo);
 
 			// デバッグ用
 			statusPanelController.OutputCareerDescription("強制アップデート取得値：" + OshiroRemoteConfig.Instance().ForceUpdateVersion);

@@ -78,10 +78,11 @@ namespace QuizManagement
         /// <param name="correctNum">正解数</param>  
         /// </summary>
         private void rankUpdate(int correctNum) {
-
+Debug.Log("**********beforeRankMeter:"+beforeRankMeter);
+Debug.Log("**********correctNum:"+correctNum);
 			// 現在の経験値と今回獲得分の合計
 			int rankExpSum = this.beforeRankExp + correctNum;
-
+Debug.Log("**********rankExpSum:"+rankExpSum);
             // 次のランクアップに必要な経験値（ステータス更新前の経験値のメーター算出用）
             int nextRankUpExp = StatusCalcBasis.CalcNextRankUpExp(this.beforeRank);
 
@@ -96,17 +97,18 @@ namespace QuizManagement
 				GamePlayInfo.QuizResult = GamePlayInfo.Result.RankUp;
 
 				// 次のランクアップに必要な経験値を更新（ランクアップ後の経験値のメーター算出用）
-				nextRankUpExp = StatusCalcBasis.CalcNextRankUpExp(this.afterRank);
+				nextRankUpExp = StatusCalcBasis.CalcNextRankUpExp(nextRank);
 
 			} else {
 				this.afterRankExp = rankExpSum;
 				GamePlayInfo.QuizResult = GamePlayInfo.Result.STAY;
 			}
+            Debug.Log("**********afterRankExp:"+afterRankExp);
             // 更新後のランク
             this.afterRank = nextRank;
             // ランク更新後の経験値メーターを作成
             this.afterRankMeter = StatusCalcBasis.CalcMeter(this.afterRankExp, nextRankUpExp);
-
+Debug.Log("**********afterRankMeter:"+afterRankMeter);
             // 身分情報は変更がないので計算前の値をそのまま設定する
             this.afterCareer = this.beforeCareer;
             this.afterCareerExp = this.beforeCareerExp;
