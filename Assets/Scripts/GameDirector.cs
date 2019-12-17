@@ -109,6 +109,7 @@ namespace QuizManagement
 		// Start is called before the first frame update
 		async UniTask Start()
 		{
+			// フレームを少しだけ抑える
 			QualitySettings.vSyncCount = 1;
 			Application.targetFrameRate = 25;
 
@@ -117,10 +118,6 @@ namespace QuizManagement
 			this.statusPanelController.DisplayChange(true);
 			this.gameUIPanel.SetActive(false);
 			this.questionPanel.SetActive(false);
-
-			regularQuizButton.interactable = false;
-			careerQuizButton.interactable = false;
-			titleButton.interactable = false;
 
 			// this.charactorController = this.charactor.GetComponent<CharactorController>(); 
 			this.apiController = this.api.GetComponent<ApiController>();
@@ -138,19 +135,22 @@ namespace QuizManagement
 
             statusOutput(statusInfo);
 
-			// 画面連打していた時にすぐにクイズが始まってしまわないように対応
-			await UniTask.Delay(500);
-
 			// リスナー登録
 			// TODO リスナーの解除もやる
 			// 階級挑戦問題が解放済ならリスナー登録
 			if (OshiroUtil.IsCareerQuestionRelease(statusInfo.Rank))
 			{
 				careerQuizButton.interactable = true;
+				// 画面連打していた時にすぐにクイズが始まってしまわないように対応
+				await UniTask.Delay(500);
 	            careerQuizButton.onClick.AddListener(() => SelectQuizType((int)GamePlayInfo.QuizType.CareerQuiz));
 			}
-			regularQuizButton.interactable = true;
-			titleButton.interactable = true;
+			else 
+			{
+				careerQuizButton.interactable = false;
+				// 画面連打していた時にすぐにクイズが始まってしまわないように対応
+				await UniTask.Delay(500);
+			}
 
 			regularQuizButton.onClick.AddListener(() => SelectQuizType((int)GamePlayInfo.QuizType.RegularQuiz));			
 			titleButton.onClick.AddListener(() => GoTitle());
