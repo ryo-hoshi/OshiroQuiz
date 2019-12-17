@@ -50,7 +50,8 @@ namespace QuizManagement
 		 * ステータス表示
 		 */
         public void StatusOutput(int rank, float rankExpMeter, 
-			int careerNum, float careerExpMeter, int castleDominance, int daimyouClass)
+			int careerNum, float careerExpMeter, int castleDominance, int daimyouClass,
+			bool isShowCareerLimit = true)
         {
             this.rankText.text = "お城好きレベル　" + rank;
 			Debug.LogWarning("お城好きレベル経験値メーター：" + rankExpMeter);
@@ -71,7 +72,7 @@ namespace QuizManagement
 
 			SetCareerMeterColor(careerNum, daimyouClass);
 
-			UpdateCareerDescription(rank, careerNum, careerExpMeter);
+			UpdateCareerDescription(rank, careerNum, careerExpMeter, isShowCareerLimit);
 		}
 
 /*
@@ -171,14 +172,15 @@ namespace QuizManagement
 		/// <param name="rank">ランク</param>
 		/// <param name="careerNum">身分</param>
 		/// <param name="careerExpMeter">身分経験値</param>
+		/// <param name="isShowCareerLimit">階級上限の説明を表示するかどうか</param>
         /// </summary>
-        private void UpdateCareerDescription(int rank, int careerNum, float careerExpMeter)
+        private void UpdateCareerDescription(int rank, int careerNum, float careerExpMeter, bool isShowCareerLimit)
         {
 			if (!OshiroUtil.IsCareerQuestionRelease(rank))
 			{
 				careerDescriptionText.text = "階級挑戦問題はお城好きレベル5で解放されます";
 			}
-			else if (OshiroUtil.IsCareerLimit(careerNum, careerExpMeter))
+			else if (OshiroUtil.IsCareerLimit(careerNum, careerExpMeter) && isShowCareerLimit)
 			{
 				// 今の身分が大名未満かつ現在対応している身分の上限まで達している場合
 				careerDescriptionText.text = "階級の上限に達しています\n上限は今後解放されます";

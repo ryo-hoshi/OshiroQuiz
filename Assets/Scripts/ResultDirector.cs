@@ -423,7 +423,8 @@ namespace QuizManagement
 				GamePlayInfo.BeforeCareer, 
 				OshiroUtil.AdjustExpMeter(GamePlayInfo.BeforeCareerExpMeter),
                 GamePlayInfo.BeforeCastleDominance,
-				GamePlayInfo.BeforeDaimyouClass);
+				GamePlayInfo.BeforeDaimyouClass,
+				false);
 		}
 
 		private void AfterStatusOutput() {
