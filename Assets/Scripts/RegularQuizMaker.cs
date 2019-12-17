@@ -41,7 +41,7 @@ namespace QuizManagement
 			{
 				quizOutputState.allQuestionType = new int[]{1, 2, 3, 5, 6};
 			}
-			else if (statusInfo.Rank <= 10)
+			else if (statusInfo.Rank <= 11)
 			{
 				quizOutputState.allQuestionType = new int[]{1, 2, 3, 4, 5, 6};
 			}
