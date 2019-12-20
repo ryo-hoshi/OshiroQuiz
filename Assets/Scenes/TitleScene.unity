@@ -455,8 +455,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -20}
-  m_SizeDelta: {x: -80, y: -200}
+  m_AnchoredPosition: {x: 0, y: -25}
+  m_SizeDelta: {x: -80, y: -210}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &382308487
 MonoBehaviour:
@@ -592,7 +592,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 130, y: -60}
+  m_AnchoredPosition: {x: 140, y: -65}
   m_SizeDelta: {x: 200, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &421444597
@@ -1171,11 +1171,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac29d5875d2d1734d94e42a20b28e44e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CastleDominanceEdit: {fileID: 1376934055}
-  rankEdit: {fileID: 1972018135}
-  rankExpEdit: {fileID: 1962077370}
-  careerValue: {fileID: 1081625012}
-  careerExpEdit: {fileID: 600704013}
   helpButton: {fileID: 421444597}
   configButton: {fileID: 1358896192}
   titleButton: {fileID: 382308487}
@@ -2491,7 +2486,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 360, y: -60}
+  m_AnchoredPosition: {x: 380, y: -65}
   m_SizeDelta: {x: 200, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1358896192

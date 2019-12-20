@@ -7,7 +7,7 @@
 
 		public const string EXTENSION_WAV = "wav";
 
-		public const string M_OSHIRO_QUIZ_URL = "https://www.google.com/";
+		public const string M_OSHIRO_QUIZ_URL = "market://details?id=apl.r_m_unt.m_oshiro_quiz";
 
 #if RELEASE
 		public const string Environment = "本番環境";

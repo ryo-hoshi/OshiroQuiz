@@ -54,7 +54,7 @@ namespace QuizManagement
 			bool isShowCareerLimit = true)
         {
             this.rankText.text = "お城好きレベル　" + rank;
-			Debug.LogWarning("お城好きレベル経験値メーター：" + rankExpMeter);
+			// Debug.LogWarning("お城好きレベル経験値メーター：" + rankExpMeter);
 			this.rankMeter.fillAmount = rankExpMeter;
 
             StatusCalcBasis.Career career = StatusCalcBasis.CareerFromNum(careerNum);
@@ -66,8 +66,8 @@ namespace QuizManagement
                 this.castleDominance.text = "";
             }
             this.careerText.text = "お城好き階級　" + career.ToString();
-            Debug.LogWarning("お城好き階級:" + career);
-			Debug.LogWarning("階級経験値メーター:" + careerExpMeter);
+            // Debug.LogWarning("お城好き階級:" + career);
+			// Debug.LogWarning("階級経験値メーター:" + careerExpMeter);
 			this.careerMeter.fillAmount = careerExpMeter;
 
 			SetCareerMeterColor(careerNum, daimyouClass);
@@ -116,7 +116,7 @@ namespace QuizManagement
 			if (daimyouClassName.Length < 2)
 			{
 				// 値がおかしい場合は表示しない
-				Debug.LogWarning("daimyouClassName:"+daimyouClassName);
+				// Debug.LogWarning("daimyouClassName:"+daimyouClassName);
 				CastleDominanceOutput(castleNum, "");
 			}
 			else{

@@ -212,41 +212,6 @@ namespace QuizManagement
             }
         }
 
-        /*
-        private IEnumerator loadGameScene () {
-
-//			this.textBlinkSpeed = (int)TextBlinkType.Load;
-			
-			float progressTime = 0.0f;
-			float blinkVal = 0.0f;
-
-			while (progressTime < LOAD_GAME_SCENE_TIME) {
-
-				var textColor = this.gameStartText.color;
-				blinkVal += Time.deltaTime * 10.0f;
-				textColor.a = Mathf.Sin(blinkVal) * 0.5f *+ 0.5f;
-
-//				startText.color.a = Mathf.Sin(progressTime);
-				this.gameStartText.color = textColor;
-
-				progressTime += Time.deltaTime;
-
-				yield return null;
-			}
-
-			this.titleAnimator.SetTrigger("blinkEnd");
-
-			yield return new WaitForSeconds(1f);
-
-			var loadingColor = loadingText.color;
-			loadingColor.a = 255;
-			loadingText.color = loadingColor;
-
-
-			// ゲームシーンロード
-			SceneManager.LoadScene("GameScene");
-		}
-        */
 
 //         public void DataClear() {
 

@@ -44,13 +44,13 @@ namespace QuizManagement
 			this.beforeCastleDominance = statusInfo.CastleDominance;
             this.beforeDaimyouClass = statusInfo.DaimyouClass;
 
-            Debug.LogWarning("現在のステータス情報ロード直後");
-			Debug.LogWarning("nowRank:" + this.beforeRank);
-			Debug.LogWarning("nowRankExp:" + this.beforeRankExp);
-			Debug.LogWarning("RankExpMeterの値（バックアップ前）:" + this.beforeRankMeter);
-			Debug.LogWarning("nowCareer:" + this.beforeCareer);
-			Debug.LogWarning("nowCareerExp:" + this.beforeCareerExp);
-			Debug.LogWarning("CareerExpMeterの値（バックアップ前）:" + this.beforeCareerMeter);
+            // Debug.LogWarning("現在のステータス情報ロード直後");
+			// Debug.LogWarning("nowRank:" + this.beforeRank);
+			// Debug.LogWarning("nowRankExp:" + this.beforeRankExp);
+			// Debug.LogWarning("RankExpMeterの値（バックアップ前）:" + this.beforeRankMeter);
+			// Debug.LogWarning("nowCareer:" + this.beforeCareer);
+			// Debug.LogWarning("nowCareerExp:" + this.beforeCareerExp);
+			// Debug.LogWarning("CareerExpMeterの値（バックアップ前）:" + this.beforeCareerMeter);
 		}
 
 		public void StatusUpdate(int correctNum) {
@@ -78,11 +78,10 @@ namespace QuizManagement
         /// <param name="correctNum">正解数</param>  
         /// </summary>
         private void rankUpdate(int correctNum) {
-Debug.Log("**********beforeRankMeter:"+beforeRankMeter);
-Debug.Log("**********correctNum:"+correctNum);
+
 			// 現在の経験値と今回獲得分の合計
 			int rankExpSum = this.beforeRankExp + correctNum;
-Debug.Log("**********rankExpSum:"+rankExpSum);
+
             // 次のランクアップに必要な経験値（ステータス更新前の経験値のメーター算出用）
             int nextRankUpExp = StatusCalcBasis.CalcNextRankUpExp(this.beforeRank);
 
@@ -103,12 +102,12 @@ Debug.Log("**********rankExpSum:"+rankExpSum);
 				this.afterRankExp = rankExpSum;
 				GamePlayInfo.QuizResult = GamePlayInfo.Result.STAY;
 			}
-            Debug.Log("**********afterRankExp:"+afterRankExp);
+
             // 更新後のランク
             this.afterRank = nextRank;
             // ランク更新後の経験値メーターを作成
             this.afterRankMeter = StatusCalcBasis.CalcMeter(this.afterRankExp, nextRankUpExp);
-Debug.Log("**********afterRankMeter:"+afterRankMeter);
+
             // 身分情報は変更がないので計算前の値をそのまま設定する
             this.afterCareer = this.beforeCareer;
             this.afterCareerExp = this.beforeCareerExp;
@@ -289,13 +288,13 @@ Debug.Log("**********afterRankMeter:"+afterRankMeter);
                 this.afterCastleDominance,
                 this.afterDaimyouClass);
 
-            Debug.LogWarning("ステータス更新完了時");
-            Debug.LogWarning("afterRank:" + this.afterRank);
-            Debug.LogWarning("afterRankExp:" + this.afterRankExp);
-            Debug.LogWarning("RankExpMeterの値（バックアップ後）:" + this.afterRankMeter);
-            Debug.LogWarning("afterCareer:" + this.afterCareer);
-            Debug.LogWarning("afterCareerExp:" + this.afterCareerExp);
-            Debug.LogWarning("CareerExpMeterの値（バックアップ後）:" + this.afterCareerMeter);
+            // Debug.LogWarning("ステータス更新完了時");
+            // Debug.LogWarning("afterRank:" + this.afterRank);
+            // Debug.LogWarning("afterRankExp:" + this.afterRankExp);
+            // Debug.LogWarning("RankExpMeterの値（バックアップ後）:" + this.afterRankMeter);
+            // Debug.LogWarning("afterCareer:" + this.afterCareer);
+            // Debug.LogWarning("afterCareerExp:" + this.afterCareerExp);
+            // Debug.LogWarning("CareerExpMeterの値（バックアップ後）:" + this.afterCareerMeter);
         }
 
         /// <summary>ステータス更新前後の値を保存

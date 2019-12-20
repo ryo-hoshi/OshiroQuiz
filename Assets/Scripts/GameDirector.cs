@@ -111,7 +111,7 @@ namespace QuizManagement
 		{
 			// フレームを少しだけ抑える
 			QualitySettings.vSyncCount = 1;
-			Application.targetFrameRate = 25;
+			Application.targetFrameRate = 30;
 
 			this.selectUIPanel.SetActive(true);
 			// this.statusPanel.SetActive(true);
@@ -469,7 +469,7 @@ namespace QuizManagement
 		 * 時間制限チェック
 		 */
 		private IEnumerator timeLimitCheck() {
-			Debug.LogWarning("時間制限チェック開始");
+			// Debug.LogWarning("時間制限チェック開始");
 			float timeLimit = 15.0f;
 
 			while (true) {
@@ -483,7 +483,7 @@ namespace QuizManagement
 				} else {
 					// FillAmountが0-1なのでその中に納まるように調整
 					float meterVal = timeLimit / 15;
-					Debug.Log("時間制限メーター値：" + meterVal);
+					// Debug.Log("時間制限メーター値：" + meterVal);
 					timeLimitMeter.fillAmount = meterVal;
 				}
 				yield return null;

@@ -52,10 +52,10 @@ namespace QuizManagement
 			/********************************************************************/
 			// フレームを少しだけ抑える
 			QualitySettings.vSyncCount = 1;
-			Application.targetFrameRate = 25;
+			Application.targetFrameRate = 30;
 
 			string charactorExist = this.charactorController == null ? "null" : "nullじゃない";
-			Debug.LogWarning("結果画面のキャラクター取得：" + charactorExist);
+			// Debug.LogWarning("結果画面のキャラクター取得：" + charactorExist);
 			beforeStatusOutput();
 
 			await resultAnimation();
@@ -104,7 +104,7 @@ namespace QuizManagement
 				isStatusUpdate = true;
 			}
 
-			Debug.LogWarning("ステータス更新があるか："+isStatusUpdate);
+			// Debug.LogWarning("ステータス更新があるか："+isStatusUpdate);
 			// ステータス更新のアニメーションが終わるまで待つ
 			// TTODO ちゃんとアニメーションの完了をチェックする
 			if (isStatusUpdate) {
@@ -431,7 +431,7 @@ namespace QuizManagement
 				OshiroUtil.AdjustExpMeter(GamePlayInfo.AfterCareerExpMeter),
                 GamePlayInfo.AfterCastleDominance,
 				GamePlayInfo.AfterDaimyouClass);
-            Debug.LogWarning("城支配数更新値：" + GamePlayInfo.AfterCastleDominance);
+            // Debug.LogWarning("城支配数更新値：" + GamePlayInfo.AfterCastleDominance);
 		}
 	}
 }
