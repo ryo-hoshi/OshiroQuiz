@@ -6,6 +6,8 @@
 
 		public static QuizType PlayQuizType = QuizType.RegularQuiz;
 
+		// public static int CareerLimitNum = (int)StatusCalcBasis.Career.足軽組頭;
+
 		public static  int BeforeRank;
 		public static  float BeforeRankExpMeter;
 		public static  int BeforeCareer;

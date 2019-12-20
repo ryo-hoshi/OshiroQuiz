@@ -1,10 +1,13 @@
 ﻿using Common;
+using OshiroFirebase;
 using QuizCollections;
 using QuizManagement.Api;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using UniRx.Async;
 
 namespace QuizManagement
 {
@@ -78,6 +81,9 @@ namespace QuizManagement
 		[SerializeField]
 		private StatusPanelController statusPanelController;
 
+		[SerializeField]
+		private LoadingTextController loadingText;
+
 		// クイズ出題状態の初期化
 		private QuizOutputStatus quizOutputStatus = QuizOutputStatus.BeforeQuiz;
 
@@ -86,6 +92,9 @@ namespace QuizManagement
 		private float selectTypeElapsedTime = 0.0f;
 
 		private string idleTag = CharactorController.AnimationTag.Idle.ToString();
+
+		[SerializeField]
+		private ForceUpdateController forceUpdatePrefab;
 
 		private enum QuizOutputStatus
 		{
@@ -98,8 +107,12 @@ namespace QuizManagement
 		}
 
 		// Start is called before the first frame update
-		void Start()
+		async UniTask Start()
 		{
+			// フレームを少しだけ抑える
+			QualitySettings.vSyncCount = 1;
+			Application.targetFrameRate = 30;
+
 			this.selectUIPanel.SetActive(true);
 			// this.statusPanel.SetActive(true);
 			this.statusPanelController.DisplayChange(true);
@@ -111,13 +124,36 @@ namespace QuizManagement
 			// TODO Unitaskに置き換える
 			this.timeLimitCoroutine = timeLimitCheck();
 
+			// セーブデータ
+			SaveData saveData = new SaveData();
+			StatusInfo statusInfo = saveData.GetStatusInfo();
+			// 使いまわせるようにデータを退避
+			GamePlayInfo.BeforeRank = statusInfo.Rank;
+			GamePlayInfo.BeforeCareer = statusInfo.Career;
+			GamePlayInfo.BeforeDaimyouClass = statusInfo.DaimyouClass;
+			GamePlayInfo.BeforeCastleDominance = statusInfo.CastleDominance;
+
+            statusOutput(statusInfo);
+
+			// リスナー登録
 			// TODO リスナーの解除もやる
-            regularQuizButton.onClick.AddListener(() => SelectQuizType((int)GamePlayInfo.QuizType.RegularQuiz));
-            careerQuizButton.onClick.AddListener(() => SelectQuizType((int)GamePlayInfo.QuizType.CareerQuiz));
+			// 階級挑戦問題が解放済ならリスナー登録
+			if (OshiroUtil.IsCareerQuestionRelease(statusInfo.Rank))
+			{
+				careerQuizButton.interactable = true;
+				// 画面連打していた時にすぐにクイズが始まってしまわないように対応
+				await UniTask.Delay(500);
+	            careerQuizButton.onClick.AddListener(() => SelectQuizType((int)GamePlayInfo.QuizType.CareerQuiz));
+			}
+			else 
+			{
+				careerQuizButton.interactable = false;
+				// 画面連打していた時にすぐにクイズが始まってしまわないように対応
+				await UniTask.Delay(500);
+			}
+
+			regularQuizButton.onClick.AddListener(() => SelectQuizType((int)GamePlayInfo.QuizType.RegularQuiz));			
 			titleButton.onClick.AddListener(() => GoTitle());
-
-            statusOutput();
-
         }
 
         // Update is called once per frame
@@ -145,16 +181,14 @@ namespace QuizManagement
 		}
 
 
-		private void statusOutput() {
-			SaveData saveData = new SaveData();
-			StatusInfo statusInfo = saveData.GetStatusInfo();
+		private void statusOutput(StatusInfo statusInfo) {
 
 			Debug.Log("■■■statusInfo.DaimyouClass:"+statusInfo.DaimyouClass);
 
             statusPanelController.StatusOutput(statusInfo.Rank, 
-				statusInfo.RankMeter, 
+				OshiroUtil.AdjustExpMeter(statusInfo.RankMeter), 
 				statusInfo.Career, 
-				statusInfo.CareerMeter,
+				OshiroUtil.AdjustExpMeter(statusInfo.CareerMeter),
                 statusInfo.CastleDominance,
 				statusInfo.DaimyouClass);
 		}
@@ -162,15 +196,47 @@ namespace QuizManagement
 		/**
 		 * クイズ種類選択
 		 */
-		private void SelectQuizType(int selectType) {
-			SoundController.instance.Tap1();
+		private async UniTask SelectQuizType(int selectType)
+		{
+			// 階級挑戦問題説明文の初期化
+			statusPanelController.OutputCareerDescription("");
 
-			// パネルを切り替え
-			this.selectUIPanel.SetActive(false);
-			// this.statusPanel.SetActive(false);
-			this.statusPanelController.DisplayChange(false);
-			this.gameUIPanel.SetActive(true);
-			this.questionPanel.SetActive(true);
+			// RemoteConfigのFetch日時が古い場合はFetchを行う
+			if (OshiroRemoteConfig.Instance().IsNeedFetch())
+			{
+				UnityAction callback = () => OshiroRemoteConfig.Instance().RemoteConfigFetch();
+				OshiroFirebases oshiroFirebases = new OshiroFirebases();
+				oshiroFirebases.FirebaseAsyncAction(callback);
+			}
+
+			// 強制アップデートチェック
+			if (OshiroUtil.IsForceUpdate())
+			{
+				var modalWindow = GameObject.FindWithTag("Modal");
+
+				if (modalWindow == null) {
+					var canvas = GameObject.Find("Canvas");
+					var forceUpdate = Instantiate(this.forceUpdatePrefab);
+					forceUpdate.tag = "Modal";
+					forceUpdate.transform.SetParent(canvas.transform, false);
+				}
+
+				return;
+			}
+
+			// 階級挑戦クイズはメンテナンス中は実施不可
+			if (OshiroRemoteConfig.Instance().IsMaintenance)
+			{
+				if ((int)GamePlayInfo.QuizType.CareerQuiz == selectType)
+				{
+					statusPanelController.OutputCareerDescription("メンテナンス中のため階級挑戦問題で遊ぶことができません");
+					return;
+				}
+			}
+
+			SoundController.instance.QuizStart();
+			// Loading表示
+			loadingText.Display();
 
 			// ロード中状態に変更
 			this.quizOutputStatus = QuizOutputStatus.QuizLoad;
@@ -190,8 +256,35 @@ namespace QuizManagement
 				quizMaker = new CareerQuizMaker();
 
 				// クイズ情報ロード
-				StartCoroutine(this.apiController.CareerQuizLoad((CareerQuizMaker)quizMaker));
+				bool isSuccess = await this.apiController.CareerQuizLoad((CareerQuizMaker)quizMaker, GamePlayInfo.BeforeCareer);
+
+				// 失敗時は1回だけリトライ
+				if (!isSuccess)
+				{
+					await UniTask.Delay(2500);
+					isSuccess = await this.apiController.CareerQuizLoad((CareerQuizMaker)quizMaker, GamePlayInfo.BeforeCareer);
+				}
+
+				// ロードリトライも失敗時
+				if (!isSuccess)
+				{
+					statusPanelController.OutputCareerDescription("サーバーとの通信に失敗しました。");
+					// Loading表示の解除
+					loadingText.Hidden();
+					// ステータスをクイズ開始前に戻す
+					quizOutputStatus = QuizOutputStatus.BeforeQuiz;
+
+					return;
+				}
 			}
+			// Loading表示の解除
+			loadingText.Hidden();
+
+			// パネルを切り替え
+			this.selectUIPanel.SetActive(false);
+			this.statusPanelController.DisplayChange(false);
+			this.gameUIPanel.SetActive(true);
+			this.questionPanel.SetActive(true);
 
 			// 出題状況チェックしてクイズを作成
 			StartCoroutine(quizOutputCheck());
@@ -202,6 +295,7 @@ namespace QuizManagement
         /// <summary>タイトルに戻る
         /// </summary>
 		private void GoTitle() {
+			SoundController.instance.Option();
 			// タイトルシーンロード
             SceneManager.LoadScene("TitleScene");
 		}
@@ -309,7 +403,7 @@ namespace QuizManagement
 		{
 			Debug.Log("回答時間制限オーバー");
 			if (choiceNo == TIME_OVER) {
-				this.charactorController.InCorrectAnswerTrigger();
+				inCorrectAnswerExpression();
 			} else {
 				StopCoroutine(timeLimitCoroutine);
 			}
@@ -334,10 +428,12 @@ namespace QuizManagement
 					Debug.Log("正解しました！");
 
 					if (this.alreadyQuizNum == QUIZ_MAX_NUM && this.correctAnswerNum >= 2) {
-						// 最終問題かつ正解が多い場合はアニメーションを変える
+						// 最終問題かつ正解が多い場合はアニメーションと音声を変える
+						SoundController.instance.ManyCorrectAnswer();
 						this.charactorController.CorrectAnswerAnotherTrigger();
 						this.charactorController.FaceChange("smile2");
 					} else {
+						SoundController.instance.CorrectAnswer();
 						this.charactorController.CorrectAnswerTrigger();
 					}
 
@@ -346,17 +442,26 @@ namespace QuizManagement
 
 				} else {
 					Debug.Log("不正解です！");
-
-					if (this.alreadyQuizNum == QUIZ_MAX_NUM && (this.alreadyQuizNum - this.correctAnswerNum) >= 3) {
-						// 最終問題かつ不正解が多い場合はアニメーションを変える
-						this.charactorController.InCorrectAnswerAnotherTrigger();
-						this.charactorController.FaceChange("confuse");
-					} else {
-						this.charactorController.InCorrectAnswerTrigger();
-					}
+					inCorrectAnswerExpression();
 				}
 				// 出題状況チェックしてクイズを作成
 				StartCoroutine(quizOutputCheck());
+			}
+		}
+
+        /// <summary>
+		/// 不正解の場合の表現
+        /// </summary>
+		private void inCorrectAnswerExpression()
+		{
+			if (this.alreadyQuizNum == QUIZ_MAX_NUM && (this.alreadyQuizNum - this.correctAnswerNum) >= 3) {
+				// 最終問題かつ不正解が多い場合はアニメーションと音声を変える
+				SoundController.instance.ManyInCorrectAnswer();
+				this.charactorController.InCorrectAnswerAnotherTrigger();
+				this.charactorController.FaceChange("confuse");
+			} else {
+				SoundController.instance.InCorrectAnswer();
+				this.charactorController.InCorrectAnswerTrigger();
 			}
 		}
 
@@ -364,7 +469,7 @@ namespace QuizManagement
 		 * 時間制限チェック
 		 */
 		private IEnumerator timeLimitCheck() {
-			Debug.LogWarning("時間制限チェック開始");
+			// Debug.LogWarning("時間制限チェック開始");
 			float timeLimit = 15.0f;
 
 			while (true) {
@@ -378,7 +483,7 @@ namespace QuizManagement
 				} else {
 					// FillAmountが0-1なのでその中に納まるように調整
 					float meterVal = timeLimit / 15;
-					Debug.Log("時間制限メーター値：" + meterVal);
+					// Debug.Log("時間制限メーター値：" + meterVal);
 					timeLimitMeter.fillAmount = meterVal;
 				}
 				yield return null;

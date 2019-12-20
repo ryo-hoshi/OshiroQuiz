@@ -52,9 +52,9 @@ namespace QuizCollections
         public ConfigInfo GetConfigData()
 		{
 			return new ConfigInfo(
-				PlayerPrefs.GetFloat(quizMasterVolume, -10.0f),
-				PlayerPrefs.GetFloat(quizSeVolume, -10.0f),
-				PlayerPrefs.GetFloat(quizVoiceVolume, -10.0f)
+				PlayerPrefs.GetFloat(quizMasterVolume, -4.0f),
+				PlayerPrefs.GetFloat(quizSeVolume, -5.0f),
+				PlayerPrefs.GetFloat(quizVoiceVolume, -1.0f)
             );
 		}
 

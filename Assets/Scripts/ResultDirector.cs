@@ -26,16 +26,7 @@ namespace QuizManagement
 		private Particle burstParticle;
 
 		[SerializeField]
-		private Text debugText1;
-		[SerializeField]
-		private Text debugText2;
-		[SerializeField]
 		private StatusPanelController statusPanelController;
-
-		// ちょっとずつメーターを更新するための、一度に更新するメータの割合
-		private const float Fill_AMOUNT_UPDATE_STEP = 0.02f;
-		private const float Fill_AMOUNT_MAX = 1.0f;
-		private const float Fill_AMOUNT_MIN = 0.0f;
 
 		// Start is called before the first frame update
 		async UniTask Start()
@@ -59,9 +50,12 @@ namespace QuizManagement
 			GamePlayInfo.AfterCareerExpMeter = 0.8f;
 			*/
 			/********************************************************************/
+			// フレームを少しだけ抑える
+			QualitySettings.vSyncCount = 1;
+			Application.targetFrameRate = 30;
 
 			string charactorExist = this.charactorController == null ? "null" : "nullじゃない";
-			Debug.LogWarning("結果画面のキャラクター取得：" + charactorExist);
+			// Debug.LogWarning("結果画面のキャラクター取得：" + charactorExist);
 			beforeStatusOutput();
 
 			await resultAnimation();
@@ -84,6 +78,9 @@ namespace QuizManagement
 			// 画面ロード直後からアニメーション開始までの時間
 			await UniTask.Delay(1000);
 
+			// 更新時の効果音（結果に関係なく一旦共通にする）
+			SoundController.instance.MeterUp();
+			
 			// ステータス更新演出
 			await statusDisplayUpdate();
 
@@ -92,7 +89,7 @@ namespace QuizManagement
 
 			// ランクまたは身分(大名格)が上がった時のキャラクターのアニメーション
 			if (GamePlayInfo.Result.RankUp == GamePlayInfo.QuizResult) {
-
+				// 喜ぶ声の再生
 				SoundController.instance.RankUp();
 
 				this.charactorController.RankUpTrigger();
@@ -100,22 +97,19 @@ namespace QuizManagement
 
 			// 身分(大名格)が下がった時のキャラクターのアニメーション
 			} else if (GamePlayInfo.Result.RankDown == GamePlayInfo.QuizResult) {
-
+				// 悲しむ声の再生
 				SoundController.instance.RankDown();
 
 				this.charactorController.RankDownTrigger();
 				isStatusUpdate = true;
 			}
 
-			Debug.LogWarning("ステータス更新があるか："+isStatusUpdate);
+			// Debug.LogWarning("ステータス更新があるか："+isStatusUpdate);
 			// ステータス更新のアニメーションが終わるまで待つ
 			// TTODO ちゃんとアニメーションの完了をチェックする
 			if (isStatusUpdate) {
 				await UniTask.Delay(1000);
 			}
-
-			// TODO 後で消す　デバッグ用
-			outputDebug();
 
 			this.isResultAnimEnd = true;
 		}
@@ -127,9 +121,18 @@ namespace QuizManagement
 			// 経験値メーターを増減させる演出
 			// ランクや身分が上下する場合はメーターをいったん空かMAXで止める
 
+            // ************ ランク表示更新演出 ************
+			await rankDisplayUpdate();
+
 			// ************ 身分表示更新演出 ************
 			// bool isCareerUpdate = false;
-			if (GamePlayInfo.PlayQuizType == GamePlayInfo.QuizType.CareerQuiz) {
+			// 身分上限かつ経験値メーターが上限から変更していない場合は対象外にする
+			if (GamePlayInfo.PlayQuizType == GamePlayInfo.QuizType.CareerQuiz
+				&& !(OshiroUtil.IsCareerLimit(GamePlayInfo.BeforeCareer, GamePlayInfo.BeforeCareerExpMeter)
+					&& GamePlayInfo.BeforeCareerExpMeter == GamePlayInfo.AfterCareerExpMeter)) {
+
+				// 身分とランクのメーター更新の間の待ち
+				await UniTask.Delay(500);
 
 				if (GamePlayInfo.BeforeCareer == (int)StatusCalcBasis.Career.大名)
 				{
@@ -141,26 +144,32 @@ namespace QuizManagement
 					// 身分表示更新
 					await careerDisplayUpdate();
 				}
-
-				// 身分とランクのメーター更新の間の待ち
-				await UniTask.Delay(1000);
 			}
 
-            // ************ ランク表示更新演出 ************
-			await rankDisplayUpdate();
+			await UniTask.Delay(600);
 
-            // ************ エフェクト表示と最終的なステータス表示 ************
+            // ************ ランクや身分上下時のエフェクト表示と最終的なステータス表示 ************
 			if (GamePlayInfo.Result.RankUp == GamePlayInfo.QuizResult
 			 || GamePlayInfo.Result.RankDown == GamePlayInfo.QuizResult)
 			{
+				// ランクまたは身分が上がった場合の花火の演出
 				if (GamePlayInfo.Result.RankUp == GamePlayInfo.QuizResult)
 				{
+					SoundController.instance.Fireworks1();
+					
 					var particle = Instantiate(this.burstParticle);
 					particle.transform.position = new Vector3(0.0f, 1.0f, -0.5f);
 					particle.GetComponent<ParticleSystem>().Play();
+
+					await UniTask.Delay(1000);
+
+					SoundController.instance.Fireworks2();
+				}
+				else
+				{
+					await UniTask.Delay(800);
 				}
 
-				await UniTask.Delay(800);
 
 				// ランクや身分などに上下があった時の最終的なステータス
 				AfterStatusOutput();
@@ -186,16 +195,22 @@ namespace QuizManagement
 			// 身分が上がった時
 			if (GamePlayInfo.BeforeCareer < GamePlayInfo.AfterCareer) {
 
-				// メーターアップ時のサウンド
-				SoundController.instance.MeterUp();
+				// // メーターアップ時のサウンド
+				// SoundController.instance.MeterUp();
 
-				// メーターを満タンまで上げる
-				await meterIncrease(GamePlayInfo.QuizType.CareerQuiz, Fill_AMOUNT_MAX);
+				// メーターを満タンまで上た後、0に戻す
+				await meterIncrease(GamePlayInfo.QuizType.CareerQuiz, StatusPanel.Fill_AMOUNT_MAX);
+				await UniTask.Delay(100);
+				statusPanelController.setFillAmount(GamePlayInfo.QuizType.CareerQuiz, StatusPanel.Fill_AMOUNT_BEFORE_DOWN);
 
 				if (GamePlayInfo.AfterCareer == (int)StatusCalcBasis.Career.大名)
 				{
 					// TODO 大名に上がった場合　メーターの色を変える
 				}
+
+				// メーターを一旦止めた所から最終的な値まで上げる
+				await UniTask.Delay(200);
+				await meterIncrease(GamePlayInfo.QuizType.CareerQuiz, OshiroUtil.AdjustExpMeter(GamePlayInfo.AfterCareerExpMeter));
 
 				// // TODO 身分上がるときのサウンド
 				// SoundController.instance.RankUp();
@@ -205,11 +220,17 @@ namespace QuizManagement
 
 				// メーターダウン時のサウンド
 				// SoundController.instance.MeterDown();
-				// いったんメーターアップと共通にしてみる
-				SoundController.instance.MeterUp();
+				// // いったんメーターアップと共通にしてみる
+				// SoundController.instance.MeterUp();
 
-				// メーターを0まで下げる
-				await meterDecrease(GamePlayInfo.QuizType.CareerQuiz, Fill_AMOUNT_MIN);
+				// メーターを0まで下げた後、MAXに戻す
+				await meterDecrease(GamePlayInfo.QuizType.CareerQuiz, StatusPanel.Fill_AMOUNT_MIN);
+				await UniTask.Delay(100);
+				statusPanelController.setFillAmount(GamePlayInfo.QuizType.CareerQuiz, StatusPanel.Fill_AMOUNT_BEFORE_UP);
+
+				// メーターを一旦止めた所から最終的な値まで下げる
+				await UniTask.Delay(200);
+				await meterDecrease(GamePlayInfo.QuizType.CareerQuiz, OshiroUtil.AdjustExpMeter(GamePlayInfo.AfterCareerExpMeter));
 
 				// // TODO 身分落ちるときのサウンド
 				// SoundController.instance.RankDown();
@@ -219,21 +240,21 @@ namespace QuizManagement
 				// メーターが増える場合
 				if (GamePlayInfo.BeforeCareerExpMeter < GamePlayInfo.AfterCareerExpMeter)
 				{
-					// メーターアップ時のサウンド
-					SoundController.instance.MeterUp();
+					// // メーターアップ時のサウンド
+					// SoundController.instance.MeterUp();
 					await UniTask.Delay(300);
 
-					await meterIncrease(GamePlayInfo.QuizType.CareerQuiz, GamePlayInfo.AfterCareerExpMeter);
+					meterIncrease(GamePlayInfo.QuizType.CareerQuiz, OshiroUtil.AdjustExpMeter(GamePlayInfo.AfterCareerExpMeter)).Forget();
 				}
 				else if (GamePlayInfo.BeforeCareerExpMeter > GamePlayInfo.AfterCareerExpMeter)
 				{
 					// メーターダウン時のサウンド
 					// SoundController.instance.MeterDown();
-					// いったんメーターアップと共通にしてみる
-					SoundController.instance.MeterUp();
+					// // いったんメーターアップと共通にしてみる
+					// SoundController.instance.MeterUp();
 					await UniTask.Delay(300);
 
-					await meterDecrease(GamePlayInfo.QuizType.CareerQuiz, GamePlayInfo.AfterCareerExpMeter);
+					meterDecrease(GamePlayInfo.QuizType.CareerQuiz, OshiroUtil.AdjustExpMeter(GamePlayInfo.AfterCareerExpMeter)).Forget();
 				}
 			}
 		}
@@ -245,15 +266,21 @@ namespace QuizManagement
     		// ランクアップしたとき
             if (GamePlayInfo.BeforeRank < GamePlayInfo.AfterRank) {
 
-				// メーターを満タンまで上げる
-				await meterIncrease(GamePlayInfo.QuizType.RegularQuiz, Fill_AMOUNT_MAX);
+				// メーターを満タンまで上げた後、0に戻す
+				await meterIncrease(GamePlayInfo.QuizType.RegularQuiz, StatusPanel.Fill_AMOUNT_MAX);
+				await UniTask.Delay(100);
+				statusPanelController.setFillAmount(GamePlayInfo.QuizType.RegularQuiz, StatusPanel.Fill_AMOUNT_MIN);
+
+				// メーターを一旦止めた所から最終的な値まで上げる
+				await UniTask.Delay(300);
+				meterIncrease(GamePlayInfo.QuizType.RegularQuiz, OshiroUtil.AdjustExpMeter(GamePlayInfo.AfterRankExpMeter)).Forget();
 
 				// ランク維持
 			} else {
 				// ランクは減らないので経験値が増えた場合のみメーターを増やす
 				if (GamePlayInfo.BeforeRankExpMeter < GamePlayInfo.AfterRankExpMeter)
 				{
-					await meterIncrease(GamePlayInfo.QuizType.RegularQuiz, GamePlayInfo.AfterRankExpMeter);
+					await meterIncrease(GamePlayInfo.QuizType.RegularQuiz, OshiroUtil.AdjustExpMeter(GamePlayInfo.AfterRankExpMeter));
 				}
 			}
 		}
@@ -264,9 +291,10 @@ namespace QuizManagement
         /// </summary>
 		private async UniTask meterIncrease(GamePlayInfo.QuizType quizType, float upperLimit)
 		{
-			float nextAmount = Fill_AMOUNT_MIN;
+			// メーターは0よりちょっと多いところから表示開始
+			float nextAmount = StatusPanel.Fill_AMOUNT_BEFORE_DOWN;
 			while (nextAmount < upperLimit) {
-				nextAmount = Mathf.Min(upperLimit, statusPanelController.getFillAmount(quizType) + Fill_AMOUNT_UPDATE_STEP);
+				nextAmount = Mathf.Min(upperLimit, statusPanelController.getFillAmount(quizType) + StatusPanel.Fill_AMOUNT_UPDATE_STEP);
 				statusPanelController.setFillAmount(quizType, nextAmount);
 				await UniTask.DelayFrame(1);
 			}
@@ -278,9 +306,11 @@ namespace QuizManagement
         /// </summary>
 		private async UniTask meterDecrease(GamePlayInfo.QuizType quizType, float lowerLimit)
 		{
-			float nextAmount = Fill_AMOUNT_MAX;
+			// float nextAmount = StatusPanel.Fill_AMOUNT_MAX;
+			// メーターが止まった状態のMAX表示は0.95fとするので、メーター更新時に一瞬メーターが増えないように考慮
+			float nextAmount = StatusPanel.Fill_AMOUNT_BEFORE_UP;
 			while (nextAmount > lowerLimit) {
-				nextAmount = Mathf.Max(lowerLimit, statusPanelController.getFillAmount(quizType) - Fill_AMOUNT_UPDATE_STEP);
+				nextAmount = Mathf.Max(lowerLimit, statusPanelController.getFillAmount(quizType) - StatusPanel.Fill_AMOUNT_UPDATE_STEP);
 				statusPanelController.setFillAmount(quizType, nextAmount);
 				await UniTask.DelayFrame(1);
 			}
@@ -385,31 +415,23 @@ namespace QuizManagement
 			Debug.Log("■■■GamePlayInfo.BeforeDaimyouClass:"+GamePlayInfo.BeforeDaimyouClass);
 
             statusPanelController.StatusOutput(GamePlayInfo.BeforeRank, 
-				GamePlayInfo.BeforeRankExpMeter, 
+				OshiroUtil.AdjustExpMeter(GamePlayInfo.BeforeRankExpMeter), 
 				GamePlayInfo.BeforeCareer, 
-				GamePlayInfo.BeforeCareerExpMeter,
+				OshiroUtil.AdjustExpMeter(GamePlayInfo.BeforeCareerExpMeter),
                 GamePlayInfo.BeforeCastleDominance,
-				GamePlayInfo.BeforeDaimyouClass);
+				GamePlayInfo.BeforeDaimyouClass,
+				false);
 		}
 
 		private void AfterStatusOutput() {
 
             statusPanelController.StatusOutput(GamePlayInfo.AfterRank, 
-				GamePlayInfo.AfterRankExpMeter, 
+				OshiroUtil.AdjustExpMeter(GamePlayInfo.AfterRankExpMeter), 
 				GamePlayInfo.AfterCareer, 
-				GamePlayInfo.AfterCareerExpMeter,
+				OshiroUtil.AdjustExpMeter(GamePlayInfo.AfterCareerExpMeter),
                 GamePlayInfo.AfterCastleDominance,
 				GamePlayInfo.AfterDaimyouClass);
-            Debug.LogWarning("城支配数更新値：" + GamePlayInfo.AfterCastleDominance);
-		}
-
-		private void outputDebug() {
-
-			SaveData saveData = new SaveData();
-			StatusInfo statusInfo = saveData.GetStatusInfo();
-
-			this.debugText1.text = "ランクM(前)："+GamePlayInfo.BeforeRankExpMeter + "　ランクM(後)："+GamePlayInfo.AfterRankExpMeter + "　ランク経験値："+statusInfo.RankExp;
-			this.debugText2.text = "身分M(前)："+GamePlayInfo.BeforeCareerExpMeter + "　身分M(後)："+GamePlayInfo.AfterCareerExpMeter + "　身分経験値："+statusInfo.CareerExp;
+            // Debug.LogWarning("城支配数更新値：" + GamePlayInfo.AfterCastleDominance);
 		}
 	}
 }

@@ -46,3 +46,20 @@ Assets/Plugins/Editor/VSCode.cs
 .vs/OshiroQuiz/v15/Server/sqlite3/storage.ide
 .vscode/settings.json
 Assets/Plugins/Editor.meta
+apk/
+Assets/Editor Default Resources/
+Assets/Firebase/
+Assets/PlayServicesResolver/
+Assets/Plugins/
+Assets/StreamingAssets/
+Assets/Parse/
+Assets/StreamingAssets.meta
+Assets/PlayServicesResolver.meta
+Assets/Parse.meta
+ProjectSettings/AndroidResolverDependencies.xml
+Assets/Firebase.meta
+Assets/Editor Default Resources.meta
+ProjectSettings/
+remote_config_data
+Assets/StompyRobot/
+Assets/StompyRobot.meta

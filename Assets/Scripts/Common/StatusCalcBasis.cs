@@ -174,12 +174,15 @@ namespace Common
         }
 
         /// <summary>メーター表示に使用する値を計算する（小数点2位までの値）
-        /// メーターMax値に対する現在地の割合
+		/// <param name="nowValue">現在の経験値</param>
+		/// <param name="nextStateUpValue">次のランクや身分に上がるときの経験値</param>
+        /// <returns>メーターMax値に対する現在値の割合(0～1の小数点2位までの値)</returns>
         /// </summary>
         public static float CalcMeter(int nowValue, int nextStateUpValue)
         {
-            Debug.Log("CalcMeter値："+ (float)Math.Round((float)nowValue / nextStateUpValue, 2, MidpointRounding.AwayFromZero));
-            return (float)Math.Round((float)nowValue / nextStateUpValue, 2, MidpointRounding.AwayFromZero);
+            Debug.Log("CalcMeter値："+ (float)Math.Round((float)nowValue / (nextStateUpValue - 1), 2, MidpointRounding.AwayFromZero));
+            // ランクや身分が上がった直後が0で次に上がる直前がMAXになる
+            return (float)Math.Round((float)nowValue / (nextStateUpValue - 1), 2, MidpointRounding.AwayFromZero);
         }
 
         /// <summary>キャリアの数値からキャリアのEnum値を取得

@@ -18,6 +18,8 @@ namespace QuizManagement
 		private Image careerCrack;
         [SerializeField]
         private Text castleDominance;
+       [SerializeField]
+        private Text careerDescriptionText;
 
         // Start is called before the first frame update
         void Start()
@@ -48,10 +50,11 @@ namespace QuizManagement
 		 * ステータス表示
 		 */
         public void StatusOutput(int rank, float rankExpMeter, 
-			int careerNum, float careerExpMeter, int castleDominance, int daimyouClass)
+			int careerNum, float careerExpMeter, int castleDominance, int daimyouClass,
+			bool isShowCareerLimit = true)
         {
             this.rankText.text = "お城好きレベル　" + rank;
-			Debug.LogWarning("お城好きレベル経験値メーター：" + rankExpMeter);
+			// Debug.LogWarning("お城好きレベル経験値メーター：" + rankExpMeter);
 			this.rankMeter.fillAmount = rankExpMeter;
 
             StatusCalcBasis.Career career = StatusCalcBasis.CareerFromNum(careerNum);
@@ -63,11 +66,13 @@ namespace QuizManagement
                 this.castleDominance.text = "";
             }
             this.careerText.text = "お城好き階級　" + career.ToString();
-            Debug.LogWarning("お城好き階級:" + career);
-			Debug.LogWarning("階級経験値メーター:" + careerExpMeter);
+            // Debug.LogWarning("お城好き階級:" + career);
+			// Debug.LogWarning("階級経験値メーター:" + careerExpMeter);
 			this.careerMeter.fillAmount = careerExpMeter;
 
 			SetCareerMeterColor(careerNum, daimyouClass);
+
+			UpdateCareerDescription(rank, careerNum, careerExpMeter, isShowCareerLimit);
 		}
 
 /*
@@ -111,7 +116,7 @@ namespace QuizManagement
 			if (daimyouClassName.Length < 2)
 			{
 				// 値がおかしい場合は表示しない
-				Debug.LogWarning("daimyouClassName:"+daimyouClassName);
+				// Debug.LogWarning("daimyouClassName:"+daimyouClassName);
 				CastleDominanceOutput(castleNum, "");
 			}
 			else{
@@ -145,12 +150,12 @@ namespace QuizManagement
 		}
 
 		/// <summary>身分メーター色を指定
-		/// <param name="career">身分</param>
+		/// <param name="careerNum">身分</param>
 		/// <param name="daimyouClass">大名格</param>
         /// </summary>
-		public void SetCareerMeterColor(int career, int daimyouClass)
+		public void SetCareerMeterColor(int careerNum, int daimyouClass)
 		{
-			Color meterColor = StatusCalcBasis.CareerMeterColorCode(career, daimyouClass);
+			Color meterColor = StatusCalcBasis.CareerMeterColorCode(careerNum, daimyouClass);
 
 			careerMeter.color = meterColor;
 		}
@@ -161,6 +166,37 @@ namespace QuizManagement
 		public void setCareerCrack(bool isCrack)
 		{
 			careerCrack.enabled = isCrack;
+		}
+
+	/// <summary>階級の上限達成表示の更新
+		/// <param name="rank">ランク</param>
+		/// <param name="careerNum">身分</param>
+		/// <param name="careerExpMeter">身分経験値</param>
+		/// <param name="isShowCareerLimit">階級上限の説明を表示するかどうか</param>
+        /// </summary>
+        private void UpdateCareerDescription(int rank, int careerNum, float careerExpMeter, bool isShowCareerLimit)
+        {
+			if (!OshiroUtil.IsCareerQuestionRelease(rank))
+			{
+				careerDescriptionText.text = "階級挑戦問題はお城好きレベル5で解放されます";
+			}
+			else if (OshiroUtil.IsCareerLimit(careerNum, careerExpMeter) && isShowCareerLimit)
+			{
+				// 今の身分が大名未満かつ現在対応している身分の上限まで達している場合
+				careerDescriptionText.text = "階級の上限に達しています\n上限は今後解放されます";
+			}
+			else
+			{
+				careerDescriptionText.text = "";
+			}
+		}
+
+		/// <summary>階級挑戦問題の文言更新
+		/// <param name="message">メッセージ</param>
+        /// </summary>
+        public void OutputCareerDescription(string message)
+        {
+			careerDescriptionText.text = message;
 		}
 
 		/// <summary>ステータスパネルを表示するかどうかの切り替え

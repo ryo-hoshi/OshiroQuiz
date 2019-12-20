@@ -14,7 +14,7 @@ namespace Common
 		}
 
 		[SerializeField]
-		private AudioClip rankUp;
+		private AudioClip[] rankUps;
 		[SerializeField]
 		private AudioClip rankDown;
 		[SerializeField]
@@ -24,11 +24,27 @@ namespace Common
 		[SerializeField]
 		private AudioClip meterCrack;
 		[SerializeField]
-		private AudioClip tap1;
+		private AudioClip quizStart;
 		[SerializeField]
-		private AudioClip tap2;
+		private AudioClip decision;
 		[SerializeField]
-		private AudioClip tapStart;
+		private AudioClip cancel;
+		[SerializeField]
+		private AudioClip option;
+		[SerializeField]
+		private AudioClip tapToStart;
+		[SerializeField]
+		private AudioClip correctAnswer;
+		[SerializeField]
+		private AudioClip manyCorrectAnswer;
+		[SerializeField]
+		private AudioClip inCorrectAnswer;
+		[SerializeField]
+		private AudioClip manyInCorrectAnswer;
+		[SerializeField]
+		private AudioClip fireworks1;
+		[SerializeField]
+		private AudioClip fireworks2;
 
 		[SerializeField]
 		private AudioMixerGroup masterGroup;
@@ -73,7 +89,11 @@ namespace Common
 
 		public void RankUp() {
 			audioSource.outputAudioMixerGroup = voiceGroup;
-			audioSource.PlayOneShot(rankUp);
+
+			var index = Random.Range(0, rankUps.Length);
+			audioSource.PlayOneShot(rankUps[index]);
+			// audioSource.PlayOneShot(rankUp);
+			// audioSource.PlayOneShot(rankUp2);
 		}
 
 		public void RankDown() {
@@ -96,17 +116,27 @@ namespace Common
 			audioSource.PlayOneShot(meterCrack);
 		}
 
-		public void Tap1() {
+		public void QuizStart() {
 			audioSource.outputAudioMixerGroup = seGroup;
-			audioSource.PlayOneShot(tap1);
+			audioSource.PlayOneShot(quizStart);
 		}
 
-		public void Tap2() {
+		public void Decision() {
 			audioSource.outputAudioMixerGroup = seGroup;
-			audioSource.PlayOneShot(tap2);
+			audioSource.PlayOneShot(decision);
 		}
 		
-		public void TapStart() {
+		public void Cancel() {
+			audioSource.outputAudioMixerGroup = seGroup;
+			audioSource.PlayOneShot(cancel);
+		}
+		
+		public void Option() {
+			audioSource.outputAudioMixerGroup = seGroup;
+			audioSource.PlayOneShot(option);
+		}
+		
+		public void TapToStart() {
 			audioSource.outputAudioMixerGroup = seGroup;
 
 			float masterVol;
@@ -119,9 +149,39 @@ namespace Common
 			bool voiceBool = audioMixer.GetFloat(ExposedParameters.VoiceVolume.ToString(), out voiceVol);
 			Debug.Log("!!!!!!!!!!voiceGroup.name[]:"+ExposedParameters.VoiceVolume.ToString()+"["+voiceVol+"]["+voiceBool+"]");
 
-			audioSource.PlayOneShot(tapStart);
+			audioSource.PlayOneShot(tapToStart);
 		}
-
+		
+		public void CorrectAnswer() {
+			audioSource.outputAudioMixerGroup = seGroup;
+			audioSource.PlayOneShot(correctAnswer);
+		}
+		
+		public void ManyCorrectAnswer() {
+			audioSource.outputAudioMixerGroup = voiceGroup;
+			audioSource.PlayOneShot(manyCorrectAnswer);
+		}
+		
+		public void InCorrectAnswer() {
+			audioSource.outputAudioMixerGroup = seGroup;
+			audioSource.PlayOneShot(inCorrectAnswer);
+		}
+		
+		public void ManyInCorrectAnswer() {
+			audioSource.outputAudioMixerGroup = voiceGroup;
+			audioSource.PlayOneShot(manyInCorrectAnswer);
+		}
+		
+		public void Fireworks1() {
+			audioSource.outputAudioMixerGroup = seGroup;
+			audioSource.PlayOneShot(fireworks1);
+		}
+		
+		public void Fireworks2() {
+			audioSource.outputAudioMixerGroup = seGroup;
+			audioSource.PlayOneShot(fireworks2);
+		}
+		
 		public void SetAudioMixerVolume(float masterVolume, float seVolume, float voiceVolume)
 		{
 			Debug.Log("!!!!!!!!!!パラメータ:["+masterVolume+"]["+seVolume+"]["+voiceVolume+"]");
@@ -141,8 +201,11 @@ namespace Common
 			}
 			else
 			{
+				// -20以下の値＋20⇒-20を超過した値
 				float convertvalue = value + thresholdVal;
 				convertvalue*= 6;
+				// -20と-20を超過した値×6の合計
+				// （コンフィグ上は-30が最低値なので-80に補正するための処理）
 				convertvalue-= thresholdVal;
 
 				return convertvalue;

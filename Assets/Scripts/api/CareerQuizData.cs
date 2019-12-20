@@ -14,9 +14,13 @@ namespace QuizManagement.Api
 	[System.Serializable]
 	public class CareerLoadData
 	{
+		public string breed;
+		
 		public int type;
 
 		public string question;
+
+		public string question_no;
 
 		public string choice1;
 

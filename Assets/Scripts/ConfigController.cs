@@ -1,9 +1,8 @@
-﻿using Common;
-using QuizCollections;
+﻿using QuizCollections;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace QuizManagement
+namespace Common
 {
     public class ConfigController : MonoBehaviour
     {
@@ -54,10 +53,14 @@ namespace QuizManagement
             
             SoundController.instance.SetAudioMixerVolume(masterVolumeSlider.value, seVolumeSlider.value, voiceVolumeSlider.value);
 
+            SoundController.instance.Decision();
+
             Destroy(gameObject);
         }
 
         private void close() {
+            SoundController.instance.Cancel();
+
             Destroy(gameObject);
         }
     }

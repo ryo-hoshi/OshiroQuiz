@@ -150,17 +150,13 @@ namespace QuizManagement
         }
 
         public bool IsAnimation(string animTagName) {
-			Debug.LogWarning("確認するタグ："+animTagName);
 
 			if (animator.GetCurrentAnimatorStateInfo(0).IsTag(animTagName)) {
-				Debug.LogWarning(animTagName+"のアニメーション中！");
 
 				return true;
 			} else {
-				Debug.LogWarning(animTagName+"のアニメーション以外！");
 
 				if (animator.GetCurrentAnimatorStateInfo(0).IsTag("Idle")) {
-					Debug.LogWarning("Idleのアニメーション中！");
 				}
 				return false;
 			}

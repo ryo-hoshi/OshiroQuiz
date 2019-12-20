@@ -1,4 +1,5 @@
 ﻿using Common;
+using OshiroFirebase;
 using QuizCollections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -20,16 +21,17 @@ namespace QuizManagement
         //private int textBlinkSpeed = (int)TextBlinkType.Init;
         //private float time = 0.0f;
 
-        [SerializeField]
-        private InputField CastleDominanceEdit;
-        [SerializeField]
-		private InputField rankEdit;
-		[SerializeField]
-		private InputField rankExpEdit;
-        [SerializeField]
-        private Text careerValue;
-        [SerializeField]
-		private InputField careerExpEdit;
+		// デバッグ用
+        // [SerializeField]
+        // private InputField CastleDominanceEdit;
+        // [SerializeField]
+		// private InputField rankEdit;
+		// [SerializeField]
+		// private InputField rankExpEdit;
+        // [SerializeField]
+        // private Text careerValue;
+        // [SerializeField]
+		// private InputField careerExpEdit;
 
         [SerializeField]
         private Button helpButton;
@@ -45,6 +47,8 @@ namespace QuizManagement
 		[SerializeField]
 		private ConfigController configPrefab;
 
+		private bool isGameStart = false;
+
         private Animator titleAnimator;
 //		[SerializeField]
 //		private Text testText;
@@ -58,6 +62,14 @@ namespace QuizManagement
 		// Start is called before the first frame update
 		void Start()
 		{
+			QualitySettings.vSyncCount = 0;
+			Application.targetFrameRate = 10;
+
+			// OshiroRemoteConfig.RemoteConfigInit();
+			// FirebaseInit();
+			OshiroFirebases oshiroFirebases = new OshiroFirebases();
+			oshiroFirebases.Init();
+
 			/*
 			SaveData saveData = new SaveData();
 
@@ -68,7 +80,7 @@ namespace QuizManagement
 //			int currentExp = careerData.Exp;
 //			this.careerText.text = careerData.Career;
 			this.titleAnimator = titleButton.GetComponent<Animator>();
-			outputStatusEdit();
+			// outputStatusEdit();
 
             //			StartCoroutine(GetText());
 
@@ -124,11 +136,40 @@ namespace QuizManagement
 		}
 		*/
 
+		// private void FirebaseInit()
+		// {
+		// 	Firebase.FirebaseApp.CheckAndFixDependenciesAsync().ContinueWith(task => {
+		// 		var dependencyStatus = task.Result;
+		// 		if (dependencyStatus == Firebase.DependencyStatus.Available) {
+		// 			// Create and hold a reference to your FirebaseApp,
+		// 			// where app is a Firebase.FirebaseApp property of your application class.
+		// 			//   app = Firebase.FirebaseApp.DefaultInstance;
+
+		// 			// Set a flag here to indicate whether Firebase is ready to use by your app.
+
+		// 			var oshiroRemoteConfig = OshiroRemoteConfig.Instance();
+					
+		// 			oshiroRemoteConfig.RemoteConfigFetch();
+
+		// 		} else {
+		// 			UnityEngine.Debug.LogError(System.String.Format(
+		// 			"Could not resolve all Firebase dependencies: {0}", dependencyStatus));
+		// 			// Firebase Unity SDK is not safe to use here.
+		// 		}
+		// 	});
+		// }
+
         private async UniTask gameStart()
         {
+			if (isGameStart)
+			{
+				return;
+			}
+			isGameStart = true;
+
             this.titleAnimator.SetTrigger("blinkEnd");
 
-			SoundController.instance.TapStart();
+			SoundController.instance.TapToStart();
 
             await UniTask.Delay(650);
 
@@ -152,6 +193,8 @@ namespace QuizManagement
 				var help = Instantiate(this.howToPlayPrefab);
                 help.tag = "Modal";
                 help.transform.SetParent(canvas.transform, false);
+
+				SoundController.instance.Option();
             }
         }
 
@@ -164,97 +207,64 @@ namespace QuizManagement
 				var config = Instantiate(this.configPrefab);
                 config.tag = "Modal";
                 config.transform.SetParent(canvas.transform, false);
+
+				SoundController.instance.Option();
             }
         }
 
-        /*
-        private IEnumerator loadGameScene () {
 
-//			this.textBlinkSpeed = (int)TextBlinkType.Load;
-			
-			float progressTime = 0.0f;
-			float blinkVal = 0.0f;
+//         public void DataClear() {
 
-			while (progressTime < LOAD_GAME_SCENE_TIME) {
-
-				var textColor = this.gameStartText.color;
-				blinkVal += Time.deltaTime * 10.0f;
-				textColor.a = Mathf.Sin(blinkVal) * 0.5f *+ 0.5f;
-
-//				startText.color.a = Mathf.Sin(progressTime);
-				this.gameStartText.color = textColor;
-
-				progressTime += Time.deltaTime;
-
-				yield return null;
-			}
-
-			this.titleAnimator.SetTrigger("blinkEnd");
-
-			yield return new WaitForSeconds(1f);
-
-			var loadingColor = loadingText.color;
-			loadingColor.a = 255;
-			loadingText.color = loadingColor;
+// //			if (EditorUtility.DisplayDialog("警告", "データをクリアしますか？", "OK", "CANCEL"))
+// 			//			{
+// 				SaveData saveData = new SaveData();
+// 				saveData.ClearStatusInfo();
+// 			Debug.Log("データクリア！");
+// 			outputStatusEdit();
+// 			//}
+// 		}
 
 
-			// ゲームシーンロード
-			SceneManager.LoadScene("GameScene");
-		}
-        */
+		// public void StatusEdit() {
+		// 	SaveData saveData = new SaveData();
 
-        public void DataClear() {
+        //     int careerNum = (int)StatusCalcBasis.CareerFromCareerExp(int.Parse(this.careerExpEdit.text));
 
-//			if (EditorUtility.DisplayDialog("警告", "データをクリアしますか？", "OK", "CANCEL"))
-			//			{
-				SaveData saveData = new SaveData();
-				saveData.ClearStatusInfo();
-			Debug.Log("データクリア！");
-			outputStatusEdit();
-			//}
-		}
+        //     int careerExp = int.Parse(this.careerExpEdit.text);
+        //     int nextCareerUpExp = StatusCalcBasis.NextCareerUpExps[careerNum];
 
+        //     if (careerNum > (int)StatusCalcBasis.Career.足軽)
+        //     {
+        //         int prevCareerExp = StatusCalcBasis.NextCareerUpExps[careerNum - 1];
+        //         careerExp -= prevCareerExp;
+        //         nextCareerUpExp -= prevCareerExp;
+        //     }
 
-		public void StatusEdit() {
-			SaveData saveData = new SaveData();
+        //     Debug.Log("ランクデバッグ値："+ this.rankEdit.text);
 
-            int careerNum = (int)StatusCalcBasis.CareerFromCareerExp(int.Parse(this.careerExpEdit.text));
+        //     saveData.SaveStatusInfo(int.Parse(this.rankEdit.text), 
+		// 		int.Parse(this.rankExpEdit.text),
+        //         StatusCalcBasis.CalcMeter(int.Parse(this.rankExpEdit.text), StatusCalcBasis.CalcNextRankUpExp(int.Parse(this.rankEdit.text))),
+        //         careerNum,
+		// 		int.Parse(this.careerExpEdit.text),
+        //         StatusCalcBasis.CalcMeter(careerExp, nextCareerUpExp),
+        //         int.Parse(this.CastleDominanceEdit.text), // 城支配数
+        //         (int)StatusCalcBasis.DaimyouClassFromCastleNum(int.Parse(this.CastleDominanceEdit.text))
+        //     );
 
-            int careerExp = int.Parse(this.careerExpEdit.text);
-            int nextCareerUpExp = StatusCalcBasis.NextCareerUpExps[careerNum];
+		// 	// TODO 後で消す　デバッグ用
+		// 	outputStatusEdit();
+		// }
 
-            if (careerNum > (int)StatusCalcBasis.Career.足軽)
-            {
-                int prevCareerExp = StatusCalcBasis.NextCareerUpExps[careerNum - 1];
-                careerExp -= prevCareerExp;
-                nextCareerUpExp -= prevCareerExp;
-            }
+		// private void outputStatusEdit() {
+		// 	SaveData saveData = new SaveData();
+		// 	StatusInfo statusInfo = saveData.GetStatusInfo();
 
-            Debug.Log("ランクデバッグ値："+ this.rankEdit.text);
-
-            saveData.SaveStatusInfo(int.Parse(this.rankEdit.text), 
-				int.Parse(this.rankExpEdit.text),
-                StatusCalcBasis.CalcMeter(int.Parse(this.rankExpEdit.text), StatusCalcBasis.CalcNextRankUpExp(int.Parse(this.rankEdit.text))),
-                careerNum,
-				int.Parse(this.careerExpEdit.text),
-                StatusCalcBasis.CalcMeter(careerExp, nextCareerUpExp),
-                int.Parse(this.CastleDominanceEdit.text), // 城支配数
-                (int)StatusCalcBasis.DaimyouClassFromCastleNum(int.Parse(this.CastleDominanceEdit.text))
-            );
-
-
-			outputStatusEdit();
-		}
-
-		private void outputStatusEdit() {
-			SaveData saveData = new SaveData();
-			StatusInfo statusInfo = saveData.GetStatusInfo();
-
-            this.CastleDominanceEdit.text = statusInfo.CastleDominance.ToString();
-            this.rankEdit.text = statusInfo.Rank.ToString();
-			this.rankExpEdit.text = statusInfo.RankExp.ToString();
-			this.careerValue.text = (StatusCalcBasis.CareerFromNum((int)statusInfo.Career)).ToString();
-			this.careerExpEdit.text = statusInfo.CareerExp.ToString();
-		}
+        //     this.CastleDominanceEdit.text = statusInfo.CastleDominance.ToString();
+        //     this.rankEdit.text = statusInfo.Rank.ToString();
+		// 	this.rankExpEdit.text = statusInfo.RankExp.ToString();
+		// 	this.careerValue.text = (StatusCalcBasis.CareerFromNum((int)statusInfo.Career)).ToString();
+		// 	this.careerExpEdit.text = statusInfo.CareerExp.ToString();
+		// }
 	}
 }
