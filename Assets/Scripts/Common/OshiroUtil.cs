@@ -55,7 +55,7 @@ namespace Common
 		public static bool IsCareerQuestionRelease(int rank)
 		{
 			// 身分上限のメーターチェックはメーター止まった状態の最大値と比較する
-			if (rank >= 5)
+			if (rank >= 3)
 			{
 				return true;
 			}

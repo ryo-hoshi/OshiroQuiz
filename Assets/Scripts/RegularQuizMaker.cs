@@ -29,19 +29,15 @@ namespace QuizManagement
 				// チュートリアルレベルの問題
 				quizOutputState.allQuestionType = new int[]{2, 91, 92, 93, 94};
 			}
-			else if (statusInfo.Rank == 2)
+			else if (statusInfo.Rank <= 3)
 			{
-				quizOutputState.allQuestionType = new int[]{2, 3, 92, 94, 95};
+				quizOutputState.allQuestionType = new int[]{2, 3, 5, 6, 94};
 			}
-			else if (statusInfo.Rank == 3)
-			{
-				quizOutputState.allQuestionType = new int[]{2, 3, 5, 94, 95};
-			}
-			else if (statusInfo.Rank == 4)
+			else if (statusInfo.Rank <= 5)
 			{
 				quizOutputState.allQuestionType = new int[]{1, 2, 3, 5, 6};
 			}
-			else if (statusInfo.Rank <= 11)
+			else if (statusInfo.Rank <= 9)
 			{
 				quizOutputState.allQuestionType = new int[]{1, 2, 3, 4, 5, 6};
 			}

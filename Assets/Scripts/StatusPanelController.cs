@@ -178,7 +178,7 @@ namespace QuizManagement
         {
 			if (!OshiroUtil.IsCareerQuestionRelease(rank))
 			{
-				careerDescriptionText.text = "階級挑戦問題はお城好きレベル5で解放されます";
+				careerDescriptionText.text = "階級挑戦問題はお城好きレベル3で解放されます";
 			}
 			else if (OshiroUtil.IsCareerLimit(careerNum, careerExpMeter) && isShowCareerLimit)
 			{
