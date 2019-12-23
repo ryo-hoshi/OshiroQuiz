@@ -1619,16 +1619,16 @@ Canvas:
   m_GameObject: {fileID: 1698201069}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 0
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
+  m_RenderMode: 1
+  m_Camera: {fileID: 958451502}
+  m_PlaneDistance: 1
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
+  m_SortingLayerID: 1221736403
   m_SortingOrder: 0
   m_TargetDisplay: 0
 --- !u!224 &1698201073
@@ -2140,21 +2140,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7202762058718087215, guid: 49fc8181b5f6df943b49cfbb73873a06,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 811754718}
-    - target: {fileID: 7202762057910656607, guid: 49fc8181b5f6df943b49cfbb73873a06,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 811754718}
-    - target: {fileID: 7202762059871038893, guid: 49fc8181b5f6df943b49cfbb73873a06,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 811754718}
     - target: {fileID: 7202762059485997580, guid: 49fc8181b5f6df943b49cfbb73873a06,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2260,5 +2245,20 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 7202762057910656607, guid: 49fc8181b5f6df943b49cfbb73873a06,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 811754718}
+    - target: {fileID: 7202762058718087215, guid: 49fc8181b5f6df943b49cfbb73873a06,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 811754718}
+    - target: {fileID: 7202762059871038893, guid: 49fc8181b5f6df943b49cfbb73873a06,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 811754718}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49fc8181b5f6df943b49cfbb73873a06, type: 3}

@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6640609867631874622}
   - component: {fileID: 6640609867631874609}
   - component: {fileID: 6640609867631874608}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Particle System
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4710,7 +4710,7 @@ GameObject:
   - component: {fileID: 6640609868083557819}
   - component: {fileID: 1158381606762926244}
   - component: {fileID: 6640609868083557818}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: BurstParticle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -9443,8 +9443,8 @@ ParticleSystemRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 1624529475
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_RenderMode: 0
   m_SortMode: 0
@@ -9480,7 +9480,7 @@ GameObject:
   - component: {fileID: 6640609868588159963}
   - component: {fileID: 6640609868588159965}
   - component: {fileID: 6640609868588159962}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Burst
   m_TagString: Untagged
   m_Icon: {fileID: 0}
