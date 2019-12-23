@@ -161,10 +161,16 @@ namespace QuizManagement
 
         private async UniTask gameStart()
         {
+            var modalWindow = GameObject.FindWithTag("Modal");
+            if (modalWindow != null) {
+                return;
+            }
+
 			if (isGameStart)
 			{
 				return;
 			}
+			
 			isGameStart = true;
 
             this.titleAnimator.SetTrigger("blinkEnd");
