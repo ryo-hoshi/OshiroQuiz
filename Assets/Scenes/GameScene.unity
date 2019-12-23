@@ -736,7 +736,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 0}
   m_AnchorMax: {x: 1, y: 0}
-  m_AnchoredPosition: {x: -160, y: 400}
+  m_AnchoredPosition: {x: -160, y: 430}
   m_SizeDelta: {x: 300, y: 600}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &958250502
@@ -1621,7 +1621,7 @@ Canvas:
   serializedVersion: 3
   m_RenderMode: 1
   m_Camera: {fileID: 958451502}
-  m_PlaneDistance: 1
+  m_PlaneDistance: 1.5
   m_PixelPerfect: 0
   m_ReceivesEvents: 1
   m_OverrideSorting: 0
@@ -1879,11 +1879,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1916792042055721097, guid: d278b95b5a2c87c4197f8be498fac6f6,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 5057667491630162136, guid: d278b95b5a2c87c4197f8be498fac6f6,
         type: 3}
       propertyPath: isGUI
@@ -1899,6 +1894,11 @@ PrefabInstance:
       propertyPath: lookAtObj
       value: 
       objectReference: {fileID: 294753759}
+    - target: {fileID: 1916792042055721097, guid: d278b95b5a2c87c4197f8be498fac6f6,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4821163064947583758, guid: d278b95b5a2c87c4197f8be498fac6f6,
         type: 3}
       propertyPath: m_Delegates.Array.data[0].callback.m_PersistentCalls.m_Calls.Array.size
@@ -2044,7 +2044,7 @@ PrefabInstance:
     - target: {fileID: 3858289719707991443, guid: 81ec97a51b9cb8c4780ec43434eced82,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.1
       objectReference: {fileID: 0}
     - target: {fileID: 3858289719707991443, guid: 81ec97a51b9cb8c4780ec43434eced82,
         type: 3}
@@ -2140,6 +2140,21 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7202762058718087215, guid: 49fc8181b5f6df943b49cfbb73873a06,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 811754718}
+    - target: {fileID: 7202762057910656607, guid: 49fc8181b5f6df943b49cfbb73873a06,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 811754718}
+    - target: {fileID: 7202762059871038893, guid: 49fc8181b5f6df943b49cfbb73873a06,
+        type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 811754718}
     - target: {fileID: 7202762059485997580, guid: 49fc8181b5f6df943b49cfbb73873a06,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2203,7 +2218,7 @@ PrefabInstance:
     - target: {fileID: 7202762059485997580, guid: 49fc8181b5f6df943b49cfbb73873a06,
         type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: 390
+      value: 450
       objectReference: {fileID: 0}
     - target: {fileID: 7202762059485997580, guid: 49fc8181b5f6df943b49cfbb73873a06,
         type: 3}
@@ -2245,20 +2260,5 @@ PrefabInstance:
       propertyPath: m_Pivot.y
       value: 0.5
       objectReference: {fileID: 0}
-    - target: {fileID: 7202762057910656607, guid: 49fc8181b5f6df943b49cfbb73873a06,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 811754718}
-    - target: {fileID: 7202762058718087215, guid: 49fc8181b5f6df943b49cfbb73873a06,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 811754718}
-    - target: {fileID: 7202762059871038893, guid: 49fc8181b5f6df943b49cfbb73873a06,
-        type: 3}
-      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
-      value: 
-      objectReference: {fileID: 811754718}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 49fc8181b5f6df943b49cfbb73873a06, type: 3}
