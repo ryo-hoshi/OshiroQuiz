@@ -2,6 +2,7 @@
 using OshiroFirebase;
 using QuizCollections;
 using UnityEngine;
+using UnityEngine.Rendering;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using UniRx.Async;
@@ -87,11 +88,10 @@ namespace QuizManagement
 
             //			StartCoroutine(GetText());
 
-            titleButton.onClick.AddListener(() => gameStart().Forget());
+			// エディタでスプラッシュ表示お試し用
+			// SplashScreen.Begin();
 
-            helpButton.onClick.AddListener(() => helpOpen());
-
-			configButton.onClick.AddListener(() => configOpen());
+			setListener().Forget();
         }
 
 		// Update is called once per frame
@@ -164,12 +164,7 @@ namespace QuizManagement
 
         private async UniTask gameStart()
         {
-            var modalWindow = GameObject.FindWithTag("Modal");
-            if (modalWindow != null) {
-                return;
-            }
-
-			if (isGameStart)
+			if (!isListenerAvailable())
 			{
 				return;
 			}
@@ -195,31 +190,77 @@ namespace QuizManagement
 
         private void helpOpen()
         {
-            var modalWindow = GameObject.FindWithTag("Modal");
+			if (!isListenerAvailable())
+			{
+				return;
+			}
 
-            if (modalWindow == null) {
-                var canvas = GameObject.Find("Canvas");
-				var help = Instantiate(this.howToPlayPrefab);
-                help.tag = "Modal";
-                help.transform.SetParent(canvas.transform, false);
+			var canvas = GameObject.Find("Canvas");
+			var help = Instantiate(this.howToPlayPrefab);
+			help.tag = "Modal";
+			help.transform.SetParent(canvas.transform, false);
 
-				SoundController.instance.Option();
-            }
+			SoundController.instance.Option();
         }
 
         private void configOpen()
         {
-            var modalWindow = GameObject.FindWithTag("Modal");
+			if (!isListenerAvailable())
+			{
+				return;
+			}
 
-            if (modalWindow == null) {
-                var canvas = GameObject.Find("Canvas");
-				var config = Instantiate(this.configPrefab);
-                config.tag = "Modal";
-                config.transform.SetParent(canvas.transform, false);
+			var canvas = GameObject.Find("Canvas");
+			var config = Instantiate(this.configPrefab);
+			config.tag = "Modal";
+			config.transform.SetParent(canvas.transform, false);
 
-				SoundController.instance.Option();
-            }
+			SoundController.instance.Option();
         }
+
+
+        private async UniTask setListener()
+        {
+			// スプラッシュ表示完了後にリスナーを設定
+			while (!SplashScreen.isFinished) {
+				await UniTask.DelayFrame(2);
+				// Debug.Log("!!!!!!!!リスナー設定待機");
+			}
+
+			await UniTask.Delay(200);
+
+            titleButton.onClick.AddListener(() => gameStart().Forget());
+
+            helpButton.onClick.AddListener(() => helpOpen());
+
+			configButton.onClick.AddListener(() => configOpen());
+        }
+
+		/// <summary>
+		/// リスナーが利用可能かどうか
+        /// </summary>
+		/// <returns>true:利用可能、false：利用不可</returns>
+		private bool isListenerAvailable()
+		{
+			// スプラッシュ表示完了前は利用させない
+			if (!SplashScreen.isFinished) {
+				return false;
+			}
+
+			// ゲーム開始して画面遷移中は利用させない
+			if (isGameStart)
+			{
+				return false;
+			}
+
+			// モーダルウィンドウOPEN中は利用させない
+            var modalWindow = GameObject.FindWithTag("Modal");
+            if (modalWindow != null) {
+                return false;
+            }
+
+			return true;
+		}
 
 
 //         public void DataClear() {
