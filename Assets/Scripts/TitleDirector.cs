@@ -62,8 +62,11 @@ namespace QuizManagement
 		// Start is called before the first frame update
 		void Start()
 		{
-			QualitySettings.vSyncCount = 0;
-			Application.targetFrameRate = 10;
+			// ディスプレイの更新のタイミングに同期させて処理を行う仕組みの設定
+			// 0の方が負荷が少ないが、動きがなめらかでなくなるので1に戻す
+			// QualitySettings.vSyncCount = 1;
+			// ターゲットフレームレート
+			Application.targetFrameRate = 15;
 
 			// OshiroRemoteConfig.RemoteConfigInit();
 			// FirebaseInit();
@@ -84,7 +87,7 @@ namespace QuizManagement
 
             //			StartCoroutine(GetText());
 
-            titleButton.onClick.AddListener(() => gameStart());
+            titleButton.onClick.AddListener(() => gameStart().Forget());
 
             helpButton.onClick.AddListener(() => helpOpen());
 

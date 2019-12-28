@@ -301,7 +301,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 7b913e974a6aceb4aa852bdf8f796267, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 370b3d9a14410104fb87b48afd433e74, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -516,6 +516,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bc50c902ed6caf408effa0a40917842, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rectTran: {fileID: 8644384429820692164}
   closeButton: {fileID: 6319012222077651887}
 --- !u!1 &6319012222290977983
 GameObject:

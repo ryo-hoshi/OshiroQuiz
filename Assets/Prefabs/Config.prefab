@@ -148,7 +148,7 @@ MonoBehaviour:
       m_Calls: []
     m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
       Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_Sprite: {fileID: 21300000, guid: 7b913e974a6aceb4aa852bdf8f796267, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 370b3d9a14410104fb87b48afd433e74, type: 3}
   m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1648,6 +1648,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6c4d413c746c76343aee013b0c6544e9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  rectTran: {fileID: 8644384429820692164}
   cancelButton: {fileID: 6319012222077651887}
   okButton: {fileID: 4322786810773637029}
   masterVolumeSlider: {fileID: 1093960002285105016}

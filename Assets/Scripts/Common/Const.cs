@@ -23,7 +23,7 @@
 	public class StatusPanel
 	{
 		// ちょっとずつメーターを更新するための、一度に更新するメータの割合
-		public const float Fill_AMOUNT_UPDATE_STEP = 0.03f;
+		public const float Fill_AMOUNT_UPDATE_STEP = 0.05f;
 		// メータ最大値
 		public const float Fill_AMOUNT_MAX = 1.0f;
 

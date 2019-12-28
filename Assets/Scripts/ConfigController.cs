@@ -1,4 +1,5 @@
-﻿using QuizCollections;
+﻿using DG.Tweening;
+using QuizCollections;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,6 +7,9 @@ namespace Common
 {
     public class ConfigController : MonoBehaviour
     {
+        [SerializeField]
+        RectTransform rectTran;
+
         [SerializeField]
         private Button cancelButton;
         [SerializeField]
@@ -27,6 +31,8 @@ namespace Common
             cancelButton.onClick.AddListener(() => close());
 
             okButton.onClick.AddListener(() => save());
+
+            open();
         }
 
         // Update is called once per frame
@@ -62,6 +68,16 @@ namespace Common
             SoundController.instance.Cancel();
 
             Destroy(gameObject);
+        }
+
+        public void open()
+        {
+            rectTran.localScale = new Vector3(0.0f, 0.0f, 1.0f);
+
+            rectTran.DOScale (
+                new Vector3(1.0f, 1.0f, 1.0f),
+                0.2f
+            );
         }
     }
 }

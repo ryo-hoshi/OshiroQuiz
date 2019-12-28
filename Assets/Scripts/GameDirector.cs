@@ -110,7 +110,7 @@ namespace QuizManagement
 		async UniTask Start()
 		{
 			// フレームを少しだけ抑える
-			QualitySettings.vSyncCount = 1;
+			// QualitySettings.vSyncCount = 1;
 			Application.targetFrameRate = 30;
 
 			this.selectUIPanel.SetActive(true);
