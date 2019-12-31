@@ -52,7 +52,7 @@ namespace QuizManagement
 			/********************************************************************/
 			// フレームを少しだけ抑える
 			// QualitySettings.vSyncCount = 1;
-			Application.targetFrameRate = 26;
+			Application.targetFrameRate = 27;
 
 			// string charactorExist = this.charactorController == null ? "null" : "nullじゃない";
 			// Debug.LogWarning("結果画面のキャラクター取得：" + charactorExist);

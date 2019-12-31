@@ -227,7 +227,7 @@ namespace QuizManagement
 				// Debug.Log("!!!!!!!!リスナー設定待機");
 			}
 
-			await UniTask.Delay(200);
+			await UniTask.Delay(100);
 
             titleButton.onClick.AddListener(() => gameStart().Forget());
 

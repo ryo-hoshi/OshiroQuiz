@@ -145,7 +145,7 @@ namespace QuizManagement
          */
         public void OnCharactortap()
         {
-            Debug.Log("◆◆◆CharactorController OnCharactortap◆◆◆");
+            // Debug.Log("◆◆◆CharactorController OnCharactortap◆◆◆");
             this.animator.SetTrigger("WaveHandsTrigger");
         }
 

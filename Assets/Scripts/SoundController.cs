@@ -141,13 +141,13 @@ namespace Common
 
 			float masterVol;
 			bool masterBool = audioMixer.GetFloat(ExposedParameters.MasterVolume.ToString(), out masterVol);
-			Debug.Log("!!!!!!!!!!masterGroup.name[]:"+ExposedParameters.MasterVolume.ToString()+"["+masterVol+"]["+masterBool+"]");
+			// Debug.Log("!!!!!!!!!!masterGroup.name[]:"+ExposedParameters.MasterVolume.ToString()+"["+masterVol+"]["+masterBool+"]");
 			float seVol;
 			bool seBool = audioMixer.GetFloat(ExposedParameters.SeVolume.ToString(), out seVol);
-			Debug.Log("!!!!!!!!!!seGroup.name[]:"+ExposedParameters.SeVolume.ToString()+"["+seVol+"]["+seBool+"]");
+			// Debug.Log("!!!!!!!!!!seGroup.name[]:"+ExposedParameters.SeVolume.ToString()+"["+seVol+"]["+seBool+"]");
 			float voiceVol;
 			bool voiceBool = audioMixer.GetFloat(ExposedParameters.VoiceVolume.ToString(), out voiceVol);
-			Debug.Log("!!!!!!!!!!voiceGroup.name[]:"+ExposedParameters.VoiceVolume.ToString()+"["+voiceVol+"]["+voiceBool+"]");
+			// Debug.Log("!!!!!!!!!!voiceGroup.name[]:"+ExposedParameters.VoiceVolume.ToString()+"["+voiceVol+"]["+voiceBool+"]");
 
 			audioSource.PlayOneShot(tapToStart);
 		}

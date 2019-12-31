@@ -471,9 +471,12 @@ namespace QuizManagement
 		private IEnumerator timeLimitCheck() {
 			// Debug.LogWarning("時間制限チェック開始");
 			float timeLimit = 15.0f;
+			int drawStep = 7;
+			int passageCount = 0;
 
 			while (true) {
 				timeLimit -= Time.deltaTime;
+				passageCount++;
 
 				// 制限時間オーバー
 				if (timeLimit < 0.0f) {
@@ -481,10 +484,13 @@ namespace QuizManagement
 					AnswerChoice(TIME_OVER);
 					yield break;
 				} else {
-					// FillAmountが0-1なのでその中に納まるように調整
-					float meterVal = timeLimit / 15;
-					// Debug.Log("時間制限メーター値：" + meterVal);
-					timeLimitMeter.fillAmount = meterVal;
+					if (passageCount >= drawStep) {
+						// FillAmountが0-1なのでその中に納まるように調整
+						float meterVal = timeLimit / 15;
+						// Debug.Log("時間制限メーター値：" + meterVal);
+						timeLimitMeter.fillAmount = meterVal;
+						passageCount = 0;
+					}
 				}
 				yield return null;
 			}

@@ -31,7 +31,7 @@ namespace QuizManagement
 			}
 			else if (statusInfo.Rank <= 3)
 			{
-				quizOutputState.allQuestionType = new int[]{2, 3, 5, 6, 94};
+				quizOutputState.allQuestionType = new int[]{2, 3, 5, 6, 95};
 			}
 			else if (statusInfo.Rank <= 5)
 			{
